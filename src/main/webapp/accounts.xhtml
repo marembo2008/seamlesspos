@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Accounts</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:panel header="Existing Accounts">
+                        <p:dataTable id="dataTableAccounts" var="v"
+                                     value="#{visitorController.visitors}"
+
+                                     emptyMessage="No Student found"
+                                     paginator="false"
+                                     rows="10"
+                                     paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+
+
+                            <p:column style="width:4%">
+                                <p:rowToggler />
+                            </p:column>
+
+                            <p:column id="name" headerText="Name" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            <p:column id="no" headerText="Type" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="debit" headerText="Debit" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="credit" headerText="Credit" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="bal" headerText="Balance" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:panel>
+                    <br/>
+                    <p:commandButton value="Add New" onclick="cha.show();"/>
+                    <p:commandButton value="Journal Entry" onclick="journal.show();"/>
+                    <p:commandButton value="Close"/>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+
+            <p:dialog header="Chart 0f Accounts" id="ch" widgetVar="cha" height="305" width="580">
+                <table >
+                    <tr>
+                        <td valign="top">
+                            <p:panel header="Account type">
+                                <h:outputText value="Create An Account"/>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Income" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Expenses" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Asset" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Loan" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Owner's Equity" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Bank" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:separator/>
+                                <p:selectOneRadio id="codeRadio3S" >
+                                    <f:selectItem itemLabel="Others" itemValue="1"/>
+                                </p:selectOneRadio>
+                                <p:selectOneMenu value="" editable="true"
+                                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                                    <f:selectItem itemLabel="One" itemValue="" />
+                                    <f:selectItem itemLabel="Two" itemValue="" />
+
+                                </p:selectOneMenu>
+                            </p:panel>
+                        </td>
+                        <td valign="top">
+                            <p:panel header="Add Account" style="height: 290px">
+                                <table>
+                                    <tr>
+                                        <td><h:outputText value="Accout Type"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><h:outputText value="Accout Name"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <p:selectManyCheckbox id="codeRadio3S" label="Sub account of" >
+                                                <f:selectItem itemLabel="Sub Account of" itemValue="1"/>
+                                            </p:selectManyCheckbox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Opening Balance"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>   
+                                        <td><h:outputText value="As At"/></td>
+                                        <td><p:calendar/></td>
+                                    </tr>
+
+
+                                </table>
+
+                            </p:panel>
+                        </td>
+                    </tr>
+                </table>
+            </p:dialog>
+            
+            <p:dialog header="Journal Corrections" id="ja" widgetVar="journal" width="420">
+                <p:panel header="Details">
+                    <table>
+                        <tr>
+                            <td><h:outputText value="Account To Debit" style="width: 80px; text-align: right"/></td>
+                            <td>
+                                <p:selectOneMenu value="" editable="true"
+                                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                                    <f:selectItem itemLabel="One" itemValue="" />
+                                    <f:selectItem itemLabel="Two" itemValue="" />
+
+                                </p:selectOneMenu>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            
+                            <td><h:outputText value="Account To Credit" style="width: 80px;"/></td>
+                            <td>
+                                <p:selectOneMenu value="" editable="true"
+                                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                                    <f:selectItem itemLabel="One" itemValue="" />
+                                    <f:selectItem itemLabel="Two" itemValue="" />
+
+                                </p:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><h:outputText value="Amount" style="width: 80px;"/></td>
+                            <td><p:inputText style="width: 190px;"/></td>
+                        </tr>
+                        
+                    </table>
+                    <table>
+                        <tr>
+                            <td><h:outputText value="Explanation" style="width: 80px;"/></td>
+                            
+                        </tr>
+                        <tr>
+                            <td><p:inputTextarea cols="40" rows="5"/></td>
+                        </tr>
+                    </table>
+                </p:panel>
+                <p:commandButton value="Save"/>
+                <p:commandButton value="Close"/>
+            </p:dialog>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

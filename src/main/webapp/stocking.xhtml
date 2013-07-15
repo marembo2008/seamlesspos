@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">New Product</ui:define>
+    <ui:define name="body">
+      <p:panel>
+        <p:dataTable id="batchPanel" var="b"
+                     value="#{batchController.batches}"
+                     emptyMessage="No item batches added yet"
+                     paginator="true"
+                     paginatorAlwaysVisible="false"
+                     rows="10" >
+          <f:facet name="header">
+            <h:panelGroup layout="block" style="width: 100%">
+              <p:accordionPanel id="itemControlPanel" activeIndex="-1" widgetVar="newItemPanel">
+                <p:tab title="Stock in">
+                  <h:form id="newStockIn">
+                    <p:panelGrid id="newBatchPanel" columns="2" style="width: 100%">
+                      <p:outputLabel value="Batch Number: " for="batchNumber"/>
+                      <p:inputText id="batchNumber" value="#{batchController.batch.batchNumber}"
+                                   required="true"/>
+                      <p:outputLabel value="Manufactured Date: " for="manufacturedDate"/>
+                      <p:calendar id="manufacturedDate" value="#{batchController.batch.manufacturedDate}"
+                                  pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"/>
+                      <p:outputLabel value="Best Before Date: " for="bestBeforeDate"/>
+                      <p:calendar id="bestBeforeDate" value="#{batchController.batch.bestBefore}"
+                                  pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"/>
+                      <p:outputLabel value="Item Quantity in Batch" for="quantity"/>
+                      <p:inputText id="quantity" value="#{batchController.batch.quantity}"
+                                   required="true" requiredMessage="You must enter the quantity of items in this batch"
+                                   validator="#{batchController.validateQuantity}"/>
+                      <p:outputLabel value="Frozen" for="frozen"/>
+                      <p:selectBooleanCheckbox id="frozen" value="#{batchController.batch.frozen}"/>
+                      <p:outputLabel value="Item" for="item"/>
+                      <p:autoComplete id="item" value="#{itemController.item}"
+                                      completeMethod="#{itemController.searchItem}"
+                                      var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                      converter="itemConverter" minQueryLength="" forceSelection="true" queryDelay="100" dropdown="true"
+                                      required="true">
+                        <p:ajax event="itemSelect" listener="#{itemController.onItemLoaded}" partialSubmit="true" process="@this"
+                                update=":batchPanel:itemControlPanel:newStockIn:itemStore
+                                :batchPanel:itemControlPanel:newStockIn:currentValue
+                                :batchPanel:itemControlPanel:newStockIn:stockinPrice"/>
+                      </p:autoComplete>
+                      <h:outputLabel value="Store" for="itemStore"/>
+                      <h:outputText id="itemStore" value="#{itemController.item.itemStore}"/>
+                      <p:outputLabel value="Item Supplier" for="supplier"/>
+                      <p:autoComplete id="supplier" value="#{batchController.batch.supplier}"
+                                      completeMethod="#{supplierController.searchSupplier}"
+                                      var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                      converter="supplierConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"
+                                      required="true"/>
+                      <h:outputLabel value="Cost Amount" for="currentValue_new"/>
+                      <h:panelGroup id="currentValue" layout="block" style="width: 100%">
+                        <h:outputText id="currentValue_txt" value="#{itemController.item.costAmount}"
+                                      rendered="#{not itemController.changeItemCost}"/>
+                        <p:inputText id="currentValue_new" value="#{itemController.item.costAmount}"
+                                     rendered="#{itemController.changeItemCost}"
+                                     required="true"/>
+                        <p:commandButton value="?" title="Change cost" partialSubmit="true" process="currentValue"
+                                         style="width: 30px; height: 30px; background: #343; border-radius: 20px; float: right"
+                                         actionListener="#{itemController.setChangeItemCost(true)}"
+                                         update="currentValue"
+                                         rendered="#{not itemController.changeItemCost}"/>
+                      </h:panelGroup>
+                      <p:outputLabel value="Stockin Prices" for="price1"/>
+                      <p:panelGrid id="stockinPrice" columns="3" style="width: 100%">
+                        <p:outputLabel value="Price 1" for="price1"/>
+                        <p:outputLabel value="Price 2" for="price2"/>
+                        <p:outputLabel value="Price 3" for="price3"/>
+                        <p:inputText id="price1" value="#{itemController.item.price1}"/>
+                        <p:inputText id="price2" value="#{itemController.item.price2}"/>
+                        <p:inputText id="price3" value="#{itemController.item.price3}"/>
+                      </p:panelGrid>
+                    </p:panelGrid>
+                    <p:separator style="margin: 10px 0px"/>
+                    <p:commandButton value="Stockin" actionListener="#{itemController.stockin}"
+                                     update="@form :batchPanel" onsuccess="newItemPanel.unselect(1)"/>
+                  </h:form>
+                </p:tab>
+              </p:accordionPanel>
+            </h:panelGroup>
+          </f:facet>
+          <p:column style="width:4%">
+            <p:rowToggler />
+          </p:column>
+          <p:column id="no" headerText="Batch No." >
+            <h:outputText value="#{b.batchNumber}" />
+          </p:column>
+          <p:column   headerText="Received Date"  >
+            <h:outputText value="#{b.receivedDate}" converter="calendarConverter" />
+          </p:column>
+          <p:column   headerText="Manufactured Date"  >
+            <h:outputText value="#{b.manufacturedDate}" converter="calendarConverter" />
+          </p:column>
+          <p:column   headerText="Expiry Date"  >
+            <h:outputText value="#{b.bestBefore}" converter="calendarConverter" />
+          </p:column>
+          <p:column headerText="Item" >
+            <h:outputText value="#{b.item.name}" />
+          </p:column>
+          <p:column headerText="Quantity" >
+            <h:outputText value="#{b.quantity}" />
+          </p:column>
+          <p:column  headerText="Current Quantity" >
+            <h:outputText value="#{b.currentQuantity}" />
+          </p:column>
+          <p:column headerText="Total Batch Cost" >
+            <h:outputText value="#{b.totalCost}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:column headerText="Frozen" >
+            <h:form>
+              <p:selectBooleanCheckbox value="#{b.frozen}" >
+                <p:ajax listener="#{batchController.updateFrozenState(b, b.frozen)}" update=":batchPanel"/>
+              </p:selectBooleanCheckbox>
+            </h:form>
+          </p:column>
+        </p:dataTable>
+      </p:panel>
+      <p:dialog header="" id="yesa" widgetVar="yes" >
+        <h:outputText value="You have chosen to unfreeze this item,"/>
+        <h:outputText value="Do you want to adjust price?"/>
+        <br/><br/>
+        <p:commandButton value="Yes" onclick="yes.hide();
+            pr.show();"/>
+        <p:commandButton value="No" onclick="yes.hide();"/>
+      </p:dialog>
+
+      <p:dialog header="" id="yesa2" widgetVar="yes2" >
+        <h:outputText value="Do you want to freeze this Item?"/>
+        <br/><br/>
+        <p:commandButton value="Yes" onclick="yes2.hide();"/>
+        <p:commandButton value="No" onclick="yes2.hide();"/>
+      </p:dialog>
+
+      <p:dialog header="Adjust Price" id="prc" widgetVar="pr" >
+        <p:panel header="Old Prices">
+          <table>
+            <tr>
+              <td><h:outputText value="Price 1"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Price 2"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Price 3"/></td>
+              <td><p:inputText/></td>
+            </tr>
+          </table>
+
+
+        </p:panel>
+        <p:panel header="New Prices">
+          <table>
+            <tr>
+              <td><h:outputText value="Price 1"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Price 2"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Price 3"/></td>
+              <td><p:inputText/></td>
+            </tr>
+          </table>
+
+
+        </p:panel>
+        <br/>
+        <br/>
+        <p:commandButton value="Adjust" onclick="pr.hide();"/>
+      </p:dialog>
+    </ui:define>
+  </ui:composition>
+</html>
+

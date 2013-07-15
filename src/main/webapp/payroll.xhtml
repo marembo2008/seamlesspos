@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Payroll</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:layout>
+                        <p:layoutUnit position="north">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Slip No."/></td>
+                                    <td><h:outputText value="8786668"/></td>
+
+                                    <td><h:outputText value="Month"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:100px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="JAN" itemValue="" />
+                                            <f:selectItem itemLabel="FEB" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+
+                                    <td><h:outputText value="Year"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:100px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="2013" itemValue="" />
+                                            <f:selectItem itemLabel="2014" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+
+                                    <td><h:outputText value="Employee"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:150px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="One" itemValue="" />
+                                            <f:selectItem itemLabel="Two" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+
+                                    <td>
+                                        <table>
+                                            <tr valign="top">
+                                                <td>
+                                                    <p:selectManyCheckbox>
+                                                        <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
+                                                    </p:selectManyCheckbox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p:selectManyCheckbox>
+                                                        <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
+                                                    </p:selectManyCheckbox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p:selectManyCheckbox>
+                                                        <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
+                                                    </p:selectManyCheckbox>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <td><p:commandButton value="Create New Payroll"/></td>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </p:layoutUnit>
+                        <p:layoutUnit position="west" size="280">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Bank Acc No."/></td>
+                                    <td><p:inputText/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="ID Number"/></td>
+                                    <td><p:inputText/></td>
+                                </tr>
+                            </table>
+
+                            <p:panel header="Earnings">
+                                <table>
+                                    <tr>
+                                        <td><h:outputText value="Balance b/f"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Basic Pay"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><h:outputText value="Other Earnings"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Gross Pay"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                </table>
+                            </p:panel>
+
+                            <p:panel header="Deductions">
+                                <table>
+                                    <tr>
+                                        <td><h:outputText value="NSSF"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="NHIF"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><h:outputText value="PAYE"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Loan"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Advance"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Union/SACCO"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h:outputText value="Total"/></td>
+                                        <td><p:inputText/></td>
+                                    </tr>
+                                </table>
+                            </p:panel>
+                        </p:layoutUnit>
+
+                        <p:layoutUnit position="south" size="50">
+                            <p:commandButton value="Save"/>
+                            <p:commandButton value="Print Slips"/>
+                            <p:commandButton value="Print Payroll"/>
+                            <p:commandButton value="Print Bank Pay List"/>
+                            <p:commandButton value="Close"/>
+                        </p:layoutUnit>
+
+                        <p:layoutUnit position="center">
+                            <p:panel header="View Details">
+                                <p:dataTable id="dataTableAccounts" var="v"
+                                             value="#{visitorController.visitors}"
+
+                                             emptyMessage="No Student found"
+                                             paginator="false"
+                                             rows="10"
+                                             paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                             rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+
+
+                                    <p:column style="width:4%">
+                                        <p:rowToggler />
+                                    </p:column>
+
+                                    <p:column id="eid" headerText="Records" >
+                                        <h:outputText value="" />
+
+                                    </p:column>
+
+
+
+                                </p:dataTable>
+
+                            </p:panel>
+                        </p:layoutUnit>
+                    </p:layout>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

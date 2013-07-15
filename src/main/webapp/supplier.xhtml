@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">New Product</ui:define>
+    <ui:define name="body">
+      <p:dataTable id="supplierViewPanel" var="s"
+                   emptyMessage="You have no supplier yet. Add suppliers using the left panel"
+                   value="#{supplierController.suppliers}"
+                   selectionMode="single">
+        <f:facet name="header">
+          <p:accordionPanel id="newSupplierPanel" activeIndex="#{supplierController.activeIndex}">
+            <p:tab title="Supplier Information">
+              <h:form id="newSupplierForm">
+                <p:panel header="Basic Details">
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <h:outputLabel value="Code: " for="supplier_code"/>
+                    <h:outputText id="supplier_code" value="#{supplierController.supplier.id}" style="width: 90%"/>
+                    <p:outputLabel value="Name: " for="supplier_name"/>
+                    <p:inputText id="supplier_name" value="#{supplierController.supplier.name}" style="width: 90%"/>
+                  </p:panelGrid>
+                </p:panel>
+                <p:panel header="Address Details">
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Postal Address: " for="postal_address"/>
+                    <p:inputTextarea id="postal_address" value="#{supplierController.supplier.address.postalAddress}"  style="width: 90%"/>
+                    <p:outputLabel value="City: " for="city"/>
+                    <p:inputText id="city" value="#{supplierController.supplier.address.city}" style="width: 90%"/>
+                    <p:outputLabel value="Telephone Number: " for="telephone_number"/>
+                    <p:inputText id="telephone_number" value="#{supplierController.supplier.address.telephoneNumber}" style="width: 90%"/>
+                    <p:outputLabel value="Email: " for="email"/>
+                    <p:inputText id="email" value="#{supplierController.supplier.address.email}" style="width: 90%"/>
+                  </p:panelGrid>
+                  <p:separator style="width: 100%; height: 2px"/>
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Opening Balance: " for="opening_balance"/>
+                    <p:inputText id="opening_balance" value="#{supplierController.supplier.openingBalance}" style="width: 90%"/>
+                    <p:outputLabel value="Target: " for="target"/>
+                    <p:inputText id="target" value="#{supplierController.supplier.target}" style="width: 90%"/>
+                    <p:outputLabel value="Quick Supplier" for="quick_supplier"/>
+                    <p:selectBooleanCheckbox id="quick_supplier" value="#{supplierController.supplier.quickSupplier}"/>
+                  </p:panelGrid>
+                </p:panel>
+                <p:panel header="Options">
+                  <p:commandButton value="Save" actionListener="#{supplierController.create()}"
+                                   update="@form :supplierViewPanel"
+                                   rendered="#{supplierController.newSupplier}"/>
+                  <p:commandButton value="Update" actionListener="#{supplierController.update()}"
+                                   update="@form :supplierViewPanel"
+                                   rendered="#{not supplierController.newSupplier}"/>
+                  <p:commandButton value="Cancel" partialSubmit="true" process="@this" actionListener="#{supplierController.prepareCreate()}"/>
+                </p:panel>
+              </h:form>
+            </p:tab>
+          </p:accordionPanel>
+        </f:facet>
+        <p:ajax event="rowSelect" listener="#{supplierController.supplierSelected}" update=":supplierViewPanel:newSupplierPanel"/>
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Supplier Code" >
+          <h:outputText value="#{s.id}" />
+        </p:column>
+        <p:column headerText="Name" >
+          <h:outputText value="#{s.name}" />
+        </p:column>
+        <p:column headerText="Address" >
+          <h:outputText value="#{s.address.postalAddress}" />
+        </p:column>
+        <p:column headerText="City" >
+          <h:outputText value="#{s.address.city}" />
+        </p:column>
+        <p:rowExpansion>
+          <p:panel header="#{s.name} Address Information">
+            <p:panelGrid columns="2" style="width: 100%">
+              <h:outputLabel value="Postal Address: " for="postal_address"/>
+              <h:outputText id="postal_address" value="#{s.address.postalAddress}"  style="width: 90%"/>
+              <h:outputLabel value="City: " for="city"/>
+              <h:outputText id="city" value="#{s.address.city}" style="width: 90%"/>
+              <h:outputLabel value="Telephone Number: " for="telephone_number"/>
+              <h:outputText id="telephone_number" value="#{s.address.telephoneNumber}" style="width: 90%"/>
+              <h:outputLabel value="Email: " for="email"/>
+              <h:outputText id="email" value="#{s.address.email}" style="width: 90%"/>
+            </p:panelGrid>
+          </p:panel>
+        </p:rowExpansion>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>
+

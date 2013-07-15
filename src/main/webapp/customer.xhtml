@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">New Product</ui:define>
+    <ui:define name="body">
+      <p:layout>
+        <p:layoutUnit position="center">
+          <p:dataTable id="dataTable" var="v"
+                       value="#{visitorController.visitors}"
+
+                       emptyMessage="No Student found"
+                       paginator="true"
+                       rows="10"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+            <f:facet name="header">
+
+              <p:outputPanel>
+
+
+                <h:outputText value="Customers" style="font-size:20px;"/>
+                <!-- <p:inputText id="globalFilter" onkeyup="carsTable.filter()"
+                        style="width:150px" /> -->
+              </p:outputPanel>
+            </f:facet>
+
+
+
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+
+            <p:column id="name" headerText="Code" >
+              <h:outputText value="" />
+
+            </p:column>
+            <p:column id="no" headerText="Name" >
+              <h:outputText value="" />
+
+            </p:column>
+
+            <p:column id="no" headerText="Address" >
+              <h:outputText value="" />
+
+            </p:column>
+
+            <p:column id="no" headerText="City" >
+              <h:outputText value="" />
+
+            </p:column>
+
+            <p:column id="no" headerText="" >
+              <h:outputText value="" />
+
+            </p:column>
+
+            <p:column id="no" headerText="" >
+              <h:outputText value="" />
+
+            </p:column>
+
+            <p:column id="no" headerText="" >
+              <h:outputText value="" />
+
+            </p:column>
+          </p:dataTable>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit position="west" size="400">
+          <p:panel>
+            <p:commandButton value="Add"/>
+            <p:commandButton value="Cancel"/>
+            <p:commandButton value="Search"/>
+
+          </p:panel>
+
+          <p:panel header="Details">
+
+            <table>
+              <tr>
+                <td><h:outputText value="Client No"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Reg Date"/></td>
+                <td><p:calendar/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Name"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Postal Address"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="City"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Discount"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Tel"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Opening Bal"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Email"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Salesman"/></td>
+                <td><p:inputText/></td>
+              </tr> <tr>
+                <td><h:outputText value="Crdit Limit"/></td>
+                <td><p:inputText/></td>
+              </tr>
+
+            </table>
+
+
+            <br/>
+
+            <p:commandButton value="Close"/>
+            <p:commandButton value="Delete"/>
+            <p:commandButton value="Save"/>
+          </p:panel>
+
+
+        </p:layoutUnit>
+      </p:layout>
+    </ui:define>
+  </ui:composition>
+</html>
+

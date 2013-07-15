@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">Item View</ui:define>
+    <ui:define name="body">
+      <p:panel>
+        <f:facet name="header">
+          <h:panelGroup layout="block" style="width: 100%">
+            <p:accordionPanel id="itemControlPanel" activeIndex="-1" widgetVar="newItemPanel">
+              <p:tab title="New Item">
+                <h:form id="newItemForm" style="width: 100%">
+                  <p:panel header="Item Details" style="width: 100%">
+                    <p:panelGrid columns="2" style="width: 100%">
+                      <p:outputLabel value="Item Product" for="productItem"/>
+                      <p:autoComplete id="productItem" value="#{productController.product}"
+                                      completeMethod="#{productController.searchProduct}"
+                                      var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                                      converter="productConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+                      <p:outputLabel value="Store" for="itemStore"/>
+                      <p:autoComplete id="itemStore" value="#{itemController.item.itemStore}"
+                                      completeMethod="#{storeController.searchStore}"
+                                      var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                      converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+                      <p:outputLabel value="Item Code:" for="itemCode"/>
+                      <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
+                        <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>
+                        <p:commandButton value="Generate" partialSubmit="true" process="itemCodePanel"
+                                         actionListener="#{itemController.generateItemCode()}" update="itemCodePanel"/>
+                      </p:panelGrid>
+                      <p:outputLabel value="Item Name:" for="itemName"/>
+                      <p:inputText id="itemName" value="#{itemController.item.name}"/>
+                      <p:outputLabel value="Item Cost" for="itemCost"/>
+                      <p:inputText id="itemCost" value="#{itemController.item.costAmount}"/>
+                      <p:outputLabel value="Price Options:" for="price1"/>
+                      <p:panelGrid columns="3" style="width: 100%">
+                        <p:outputLabel value="Price 1" for="price1"/>
+                        <p:outputLabel value="Price 2" for="price2"/>
+                        <p:outputLabel value="Price 3" for="price3"/>
+                        <p:inputText id="price1" value="#{itemController.item.price1}"/>
+                        <p:inputText id="price2" value="#{itemController.item.price2}"/>
+                        <p:inputText id="price3" value="#{itemController.item.price3}"/>
+                      </p:panelGrid>
+                      <p:outputLabel value="Reorder Level: " for="reorderLevel"/>
+                      <p:inputText id="reorderLevel" value="#{itemController.item.reorderLevel}"/>
+                      <p:outputLabel value="Taxable" for="taxable"/>
+                      <p:selectBooleanCheckbox id="taxable" value="#{itemController.item.taxable}"/>
+                    </p:panelGrid>
+                    <f:facet name="footer">
+                      <p:commandButton value="Add Item" actionListener="#{itemController.create()}"
+                                       update="@form :itemView" oncomplete="newItemPanel.unselect(0)" />
+                    </f:facet>
+                  </p:panel>
+                </h:form>
+              </p:tab>
+              <p:tab title="Mixed Item" rendered="false">
+                <h:form id="mixedItemForm">
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Store" for="itemStore"/>
+                    <p:autoComplete id="itemStore" value="#{itemController.item.itemStore}"
+                                    completeMethod="#{storeController.searchStore}"
+                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                    converter="storeConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+                    <p:outputLabel value="Batch No: " for="batchNo"/>
+                    <p:panelGrid columns="1" style="width: 100%">
+                      <p:autoComplete id="batchNo" value="#{itemController.itemBatch}"
+                                      completeMethod="#{batchItemController.findBatchItems}"
+                                      var="bi" itemLabel="#{bi.batchNumber}" itemValue="#{bi}"
+                                      converter="batchConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+                      <p:accordionPanel activeIndex="-1" >
+                        <p:tab title="New Batch" id="newBatchTab">
+                          <p:panelGrid id="newBatchPanel" columns="2" style="width: 100%">
+                            <p:outputLabel value="Batch Number: " for="batchNumber"/>
+                            <p:inputText id="batchNumber" value="#{batchItemController.batchItem.batchNumber}"/>
+                            <p:outputLabel value="Manufactured Date: " for="manufacturedDate"/>
+                            <p:calendar id="manufacturedDate" value="#{batchItemController.batchItem.manufacturedDate}"
+                                        pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"/>
+                            <p:outputLabel value="Best Before Date: " for="bestBeforeDate"/>
+                            <p:calendar id="bestBeforeDate" value="#{batchItemController.batchItem.bestBefore}"
+                                        pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter" />
+                            <p:commandButton value="Create" actionListener="#{batchItemController.create()}"
+                                             partialSubmit="true" process="newBatchPanel" update="newBatchPanel"/>
+                            <h:outputText/>
+                          </p:panelGrid>
+                        </p:tab>
+                      </p:accordionPanel>
+                    </p:panelGrid>
+                    <p:outputLabel value="Item Code:" for="itemCode"/>
+                    <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
+                      <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>
+                      <p:commandButton value="Generate" partialSubmit="true" process="itemCodePanel"
+                                       actionListener="#{itemController.generateItemCode()}" update="itemCodePanel"/>
+                    </p:panelGrid>
+                    <p:outputLabel value="Item Name:" for="itemName"/>
+                    <p:inputText id="itemName" value="#{itemController.item.name}"/>
+                    <p:outputLabel value="Item Product" for="productItem"/>
+                    <p:autoComplete id="productItem" value="#{productController.product}"
+                                    completeMethod="#{productController.searchProduct}"
+                                    var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                                    converter="productConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+                    <p:outputLabel value="Item Supplier" for="supplier"/>
+                    <p:autoComplete id="supplier" value="#{itemController.item.supplier}"
+                                    completeMethod="#{supplierController.searchSupplier}"
+                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                    converter="supplierConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+                    <p:outputLabel value="Quantity: " for="quantity"/>
+                    <p:inputText id="quantity" value="#{itemController.item.quantity}"/>
+                  </p:panelGrid>
+                  <p:dataTable id="availableItems" var="i"
+                               value="#{itemController.items}"
+                               paginator="true"
+                               selection="#{itemController.selectedItems}"
+                               emptyMessage="You have entered no items yet"
+                               rows="20">
+                    <p:ajax event="rowSelectCheckbox" listener="#{itemController.onItemSelected}" update="availableItems:mixedItemCost"/>
+                    <p:ajax event="rowUnselectCheckbox" listener="#{itemController.onItemUnselected}"  update="availableItems:mixedItemCost"/>
+                    <p:column selectionMode="multiple" style="width: 15px"/>
+                    <p:column headerText="Item Code" >
+                      <h:outputText value="#{i.itemCode}" />
+                    </p:column>
+                    <p:column headerText="Item Description" >
+                      <h:outputText value="#{i.name}" />
+                    </p:column>
+                    <p:column headerText="Store" >
+                      <h:outputText value="#{i.itemStore}" />
+                    </p:column>
+                    <p:column headerText="Quantity in Store" >
+                      <h:outputText value="#{i.quantity}" />
+                    </p:column>
+                    <p:column  headerText="Cost">
+                      <h:outputText value="#{i.costAmount}" />
+                      <f:facet name="footer">
+                        <h:outputText id="mixedItemCost" value="#{itemController.totalMixedItemCost}"/>
+                      </f:facet>
+                    </p:column>
+                  </p:dataTable>
+                  <p:outputLabel value="Stockin Prices" for="price1"/>
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Price 1" for="price1"/>
+                    <p:inputText id="price1" value="#{itemController.item.price1}"/>
+                    <p:outputLabel value="Price 2" for="price2"/>
+                    <p:inputText id="price2" value="#{itemController.item.price2}"/>
+                    <p:outputLabel value="Price 3" for="price3"/>
+                    <p:inputText id="price3" value="#{itemController.item.price3}"/>
+                  </p:panelGrid>
+                  <p:separator style="margin: 10px 0px"/>
+                  <p:commandButton value="Add Mixed Item" actionListener="#{itemController.create()}"
+                                   update="@form :itemView" oncomplete="newItemPanel.unselect(2)"/>
+                </h:form>
+              </p:tab>
+            </p:accordionPanel>
+          </h:panelGroup>
+        </f:facet>
+        <p:dataTable id="itemView" var="i"
+                     value="#{itemController.items}"
+                     paginator="true"
+                     emptyMessage="You have entered no items yet"
+                     rows="20">
+          <p:column >
+            <p:rowToggler />
+          </p:column>
+          <p:column headerText="Item Code" >
+            <h:outputText value="#{i.itemCode}" />
+          </p:column>
+          <p:column headerText="Item Description" >
+            <h:outputText value="#{i.name}" />
+          </p:column>
+          <p:column headerText="Store" >
+            <h:outputText value="#{i.itemStore}" />
+          </p:column>
+          <p:column headerText="Cost" >
+            <h:outputText value="#{i.costAmount}" />
+          </p:column>
+          <p:column  headerText="Price1" >
+            <h:outputText value="#{i.price1}" />
+          </p:column>
+          <p:column  headerText="Price2" >
+            <h:outputText value="#{i.price2}" />
+          </p:column>
+          <p:column  headerText="Price3" >
+            <h:outputText value="#{i.price3}" />
+          </p:column>
+          <p:column  headerText="Reorder Level" >
+            <h:outputText value="#{i.reorderLevel}" />
+          </p:column>
+          <p:rowExpansion>
+            <p:dataTable value="#{batchController.itemBatches(i)}" var="b">
+              <p:column headerText="Batch Number">
+                #{b.batchNumber}
+              </p:column>
+              <p:column headerText="Received Date">
+                <h:outputText value="#{b.receivedDate}" converter="calendarConverter"/>
+              </p:column>
+              <p:column headerText="Manufactured Date">
+                <h:outputText value="#{b.manufacturedDate}" converter="calendarConverter"/>
+              </p:column>
+              <p:column headerText="Expiry Date">
+                <h:outputText value="#{b.bestBefore}" converter="calendarConverter"/>
+              </p:column>
+              <p:column headerText="Frozen">
+                <p:selectBooleanCheckbox value="#{b.frozen}"/>
+              </p:column>
+              <p:column headerText="Quantity">
+                #{b.quantity}
+              </p:column>
+              <p:column headerText="Supplier">
+                #{b.supplier}
+              </p:column>
+            </p:dataTable>
+          </p:rowExpansion>
+        </p:dataTable>
+      </p:panel>
+
+
+
+      <p:dialog id="mix" widgetVar="mx" header="Mixed Stock" appendToBody="true">
+        <p:panel>
+          <table>
+            <tr>
+              <td>
+                <p:selectOneMenu id="it" value="" editable="true"
+                                 style="width:160px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+                  <f:selectItem itemLabel="Cement" itemValue="" />
+                  <f:selectItem itemLabel="Ballast" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+              <td><p:inputText id="qt" style="width: 50px;"/></td>
+              <p:watermark value="Select Item" for="it"/>
+              <p:watermark value="Qty" for="qt"/>
+            </tr>
+          </table>
+          <br/>
+
+          <p:dataTable id="dataTable" var="v"
+                       value="#{itemBean.carsSmall}">
+
+
+
+
+            <p:column id="batch" headerText="Item" >
+
+              <h:outputText value="#{v.manufacturer}" />
+
+            </p:column>
+            <p:column id="name" headerText="Qty" >
+              <h:outputText value="#{v.year}" />
+
+            </p:column>
+            <p:column id="no" headerText="Price" footerText="2556">
+              <h:outputText value="#{v.year * 45}" />
+
+            </p:column>
+
+
+          </p:dataTable>
+
+          <br/>
+
+
+
+
+
+        </p:panel>
+
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Supplier"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:360px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+                  <f:selectItem itemLabel="Cement" itemValue="" />
+                  <f:selectItem itemLabel="Ballast" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+              <td>
+                <p:selectOneMenu id="store1" value="" editable="true"
+                                 style="width:100px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+                  <f:selectItem itemLabel="Cement" itemValue="" />
+                  <f:selectItem itemLabel="Ballast" itemValue="" />
+                </p:selectOneMenu>
+                <p:watermark value="Outlet" for="store1"/>
+              </td>
+
+
+
+            </tr>
+          </table>
+
+
+        </p:panel>
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Item"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Qty"/></td>
+              <td><p:inputText/></td>
+
+              <td>
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="VAT Inclusive" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+
+
+            </tr>
+          </table>
+        </p:panel>
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Previous Qty"/></td>
+              <td><p:inputText style="width: 70px;"/></td>
+              <td><h:outputText value="Current Qty"/></td>
+              <td><p:inputText style="width: 70px;"/></td>
+              <td><h:outputText value="Current Value"/></td>
+              <td><p:inputText style="width: 70px;"/></td>
+
+
+
+            </tr>
+          </table>
+
+        </p:panel>
+        <br/>
+        <p:commandButton value="Mix"/>
+      </p:dialog>
+    </ui:define>
+  </ui:composition>
+</html>
+

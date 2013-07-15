@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">New Product</ui:define>
+    <ui:define name="body">
+      <style type="text/css">
+        .ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td, .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+          text-align: left;
+        }
+      </style>
+      <p:panel id="productViewPanel">
+        <f:facet name="header">
+          <h:form id="newProductForm">
+            <p:accordionPanel activeIndex="-1" >
+              <p:tab title="Add New Product">
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Product Number: " for="product_number"/>
+                  <p:inputText id="product_number" value="#{productController.product.productNumber}"/>
+                  <p:outputLabel value="Product Name: " for="product_name"/>
+                  <p:inputText id="product_name" value="#{productController.product.name}"/>
+                  <p:outputLabel value="Product Scale: " for="product_scale"/>
+                  <p:inputText id="product_scale" value="#{productController.product.scale}"/>
+                </p:panelGrid>
+                <p:commandButton value="Add Product" actionListener="#{productController.create()}"
+                                 update=":productViewTable @form"  />
+              </p:tab>
+            </p:accordionPanel>
+          </h:form>
+        </f:facet>
+        <p:dataTable id="productViewTable" var="p"
+                     value="#{productController.products}"
+                     emptyMessage="No Products added yet" >
+          <p:column>
+            <p:rowToggler />
+          </p:column>
+          <p:column headerText="Product No." filterBy="#{p.productNumber}" filterMatchMode="startsWith" >
+            <h:outputText value="#{p.productNumber}" />
+          </p:column>
+          <p:column headerText="Name" filterBy="#{p.name}" filterMatchMode="contains" >
+            <h:outputText value="#{p.name}" />
+          </p:column>
+          <p:column headerText="Scale" >
+            <h:outputText value="#{p.scale}" />
+          </p:column>
+          <p:rowExpansion>
+            <p:panel id="productItemView" header="Product Items">
+              <p:dataTable id="productItemViewtable" var="i"
+                           value="#{p.items}" >
+                <f:facet name="footer">
+                  <p:commandButton value="Re-Print"/>
+                </f:facet>
+                <p:column  headerText="Item Code" >
+                  <h:outputText value="#{i.itemCode}" />
+                </p:column>
+                <p:column headerText="Item Name" >
+                  <h:outputText value="#{i.name}" />
+                </p:column>
+                <p:column  headerText="Cost Amount (KSh)" >
+                  <h:outputText value="#{i.costAmount}" />
+                </p:column>
+                <p:column headerText="Tax (KSh)" >
+                  <h:outputText value="$0.00" />
+                </p:column>
+                <p:column  headerText="Net (KSh)" >
+                  <h:outputText value="#{i.costAmount}" />
+                </p:column>
+              </p:dataTable>
+            </p:panel>
+          </p:rowExpansion>
+        </p:dataTable>
+        <f:facet name="footer">
+          <p:commandButton value="Re-Print"/>
+          <p:commandButton value="Cancel"/>
+        </f:facet>
+      </p:panel>
+    </ui:define>
+  </ui:composition>
+</html>
+

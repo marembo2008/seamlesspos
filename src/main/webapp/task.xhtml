@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Tasks</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:layout>
+                        <p:layoutUnit position="north" size="80">
+                            <h:outputText value="ADMIN TRANSACTIONS"/>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center">
+                            <p:commandButton value="jjjjjjj" image="us.png"/>  
+                            <p:graphicImage value="us.png" style="text-align: justify"/>
+                             <p:graphicImage value="us.png"/>
+                            <br/>
+                            <p:commandButton value="Cancel Receipt"/>
+                            <p:commandButton value="Exit"/>
+
+                        </p:layoutUnit>
+
+                        <p:layoutUnit position="west" size="150">
+                         
+
+                        </p:layoutUnit>
+                    </p:layout>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logisticss 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+                    <p:commandLink value="Create Re-Order" onclick="reorder.show();"/>
+
+                </p:layoutUnit>
+            </p:layout>
+            
+             <p:dialog header="Create Re-order" id="cr" widgetVar="reorder" >
+                 <h:outputText value="" style="text-align: center; font-size: 20px;"/>
+                 <br/>
+                 <p:panel header="Supplier">
+                     <table>
+                         <tr>
+                             <td><h:outputText value="Name"/></td>
+                             <td>
+                                 <p:selectOneMenu value="" editable="true"
+                                                         style="width:250px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="One" itemValue="" />
+                                            <f:selectItem itemLabel="Two" itemValue="" />
+
+                                        </p:selectOneMenu>
+                             </td>
+                             
+                              
+                         </tr>
+                         
+                     </table>
+                     
+                 </p:panel>
+                 
+                 <p:panel header="Memo">
+                     <table>
+                         <tr>
+                             <td>
+                                 <p:panel header="Order Based On">
+                                     <p:selectOneRadio id="codeRadio2" >
+                                        <f:selectItem itemLabel="Re-Order Level" itemValue="1"/>
+                                        <f:selectItem itemLabel="Sales" itemValue="2"/>
+
+                                    </p:selectOneRadio>
+                                     
+                                 </p:panel>
+                             </td>
+                             <td>
+                                 <p:panel header="Period">
+                                     <table>
+                                         <tr>
+                                             <td>
+                                                 <p:calendar/>
+                                             </td>
+                                             <td><h:outputText value="To"/></td>
+                                             
+                                             <td>
+                                                 <p:calendar/>
+                                             </td>
+                                         </tr>
+                                     </table>
+                                     
+                                 </p:panel>
+                             </td>
+                         </tr>
+                     </table>
+                 </p:panel>
+                 <br/>
+                 
+                 <p:commandButton value="Print Order"/>
+                 <p:commandButton value="Cancel"/>
+             </p:dialog>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

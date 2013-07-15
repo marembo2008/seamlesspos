@@ -1,0 +1,461 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">Point of Sale</ui:define>
+    <ui:define name="body">
+      <style type="text/css">
+        .ui-selectoneradio tr{
+          border: 0px none !important;
+        }
+        .ui-panel .ui-panel-title {
+          font-size: 19px;
+          color: coral;
+        }
+      </style>
+      <p:dataTable id="saleItemTable" var="v"
+                   value="#{salesController.saleItems}"
+                   emptyMessage="No sales has been made under this receipt"
+                   sortBy="#{salesController.sorter}"
+                   selectionMode="single">
+        <f:facet name="header">
+          <p:panel id="salePanel" header="Sale Receipt: #{salesController.sale.receiptId}">
+            <h:form>
+              <p:hotkey bind="F2" handler="recallHeldSalesDlg.show()"/>
+              <p:hotkey bind="F3" actionListener="#{salesController.holdSale()}"
+                        update="@all" partialSubmit="true" process="@this"/>
+              <p:hotkey bind="F4" handler="cancelSalesDlg.show()"/>
+              <p:hotkey bind="tab" actionListener="#{salesController.prepareToTender()}"
+                        oncomplete="completeSaleDlg.show()" update=":saleTenderForm"/>
+            </h:form>
+            <h:form id="salesCustomer">
+              <p:panelGrid columns="2" style="width: 100%; border-radius: 20px">
+                <p:outputLabel value="Customer" for="customer"/>
+                <p:autoComplete id="customer" value="#{salesController.sale.customer}"
+                                completeMethod="#{clientController.searchClients}"
+                                var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                converter="clientConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true"
+                                required="true">
+                  <p:ajax event="itemSelect" listener="#{salesController.setSelectedCustomer}" update="@form"/>
+                </p:autoComplete>
+              </p:panelGrid>
+            </h:form>
+            <p:accordionPanel id="saleItemAccordionPanel" activeIndex="0">
+              <p:tab title="Add Sale Item">
+                <h:form id="saleItemForm">
+                  <p:hotkey actionListener="#{salesController.addItem()}" bind="a"
+                            process="@form"
+                            update=":saleItemTable:saleItemAccordionPanel:saleItemForm :saleItemTable :saleTenderForm"/>
+                  <p:panelGrid id="saleItemPanel" columns="2" style="width: 100%; text-align: left">
+                    <h:outputLabel value="Available Quantities" for="availableQuantities"/>
+                    <h:outputText id="availableQuantities" value="#{salesController.totalItemQuantitiesAvailable}"
+                                  style="font-size: 15px; font-weight: bold; color: cyan"/>
+                    <p:outputLabel value="Item" for="item"/>
+                    <p:autoComplete id="item" value="#{salesController.saleItem.item}"
+                                    completeMethod="#{itemController.searchItem}"
+                                    var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                    converter="itemConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+                      <p:ajax event="itemSelect" listener="#{salesController.onItemLoaded}" partialSubmit="true" process="@this"
+                              update="saleItemPanel"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Selling Price:" for="salePrice" />
+                    <p:selectOneRadio id="salePrice"  style="width: 100px;"
+                                      value="#{salesController.saleItem.salePrice}">
+                      <f:selectItems value="#{salesController.salePriceOptions}"/>
+                      <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="quantity @this"
+                              update="totalSales taxPanel"/>
+                    </p:selectOneRadio>
+                    <p:outputLabel value="Quantity" for="quantity"/>
+                    <p:inputText id="quantity" value="#{salesController.saleItem.orderedQuantity}"
+                                 validator="#{salesController.validateQuantity}">
+                      <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="salePrice @this"
+                              update="totalSales taxPanel"/>
+                    </p:inputText>
+                    <p:outputLabel value="Discount" for="discount"/>
+                    <p:inputText id="discount" value="#{salesController.saleItem.discount}"/>
+                    <p:outputLabel value="Tax" for="taxt"/>
+                    <h:panelGroup id="taxPanel" layout="block" style="width: 89.5%; padding: 5px; border: 2px solid green; border-radius: 10px">
+                      <h:outputText id="taxt" value="#{salesController.saleItem.totalTax}"
+                                    converter="bigDecimalConverter"/>
+                    </h:panelGroup>
+                    <h:outputLabel value="Total Sales" for="totalSales"/>
+                    <h:outputText id="totalSales" value="#{salesController.saleItem.totalSale}" converter="bigDecimalConverter"/>
+                    <p:commandButton value="Add" partialSubmit="true" process="@this"
+                                     update=":saleItemTable:saleItemAccordionPanel:saleItemForm :saleItemTable :saleTenderForm"
+                                     actionListener="#{salesController.addItem()}"/>
+                    <h:outputText value=""/>
+                  </p:panelGrid>
+                </h:form>
+              </p:tab>
+            </p:accordionPanel>
+          </p:panel>
+        </f:facet>
+        <p:ajax event="rowSelect" listener="#{salesController.saleItemSelected}" update="@this"/>
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Item Code" style="width: 20%;">
+          <h:outputText value="#{v.item.itemCode}" />
+        </p:column>
+        <p:column headerText="Description" style="width: 30%;">
+          <h:outputText value="#{v.item.name}"/>
+        </p:column>
+        <p:column headerText="Unit Price" style="width: 10%;">
+          <h:outputText value="#{v.salePrice}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:column headerText="Quantity" style="width: 10%;">
+          <h:outputText value="#{v.orderedQuantity}" />
+        </p:column>
+        <p:column headerText="Discount" >
+          <h:outputText value="#{v.discount}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:column headerText="Tax" >
+          <h:outputText value="#{v.totalTax}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:column headerText="Net Sale Price" style="width: 20%;">
+          <h:outputText value="#{v.totalSale}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:column>
+          <h:form>
+            <p:commandButton title="Remove" icon="ui-icon-circle-plus"
+                             actionListener="#{salesController.removeItem(v)}" update=":saleItemTable"/>
+          </h:form>
+        </p:column>
+        <p:summaryRow>
+          <p:column colspan="7" style="text-align: right; font-size: 18px">
+            <h:outputText value="Total Sales"/>
+          </p:column>
+          <p:column colspan="2" style="font-size: 18px">
+            <h:outputText value="#{salesController.sale.totalSale}" converter="bigDecimalConverter"/>
+          </p:column>
+        </p:summaryRow>
+        <f:facet name="footer">
+          <h:form>
+            <p:panelGrid columns="7">
+              <p:commandButton value="Complete Sale[tab]" actionListener="#{salesController.prepareToTender()}"
+                               oncomplete="completeSaleDlg.show()" update=":saleTenderForm"/>
+              <p:commandButton value="Recall[F2]" oncomplete="recallHeldSalesDlg.show()"/>
+              <p:commandButton value="Hold[F3]" actionListener="#{salesController.holdSale()}"
+                               update=":saleItemTable"/>
+              <p:commandButton value="Cancel[F4]" onclick="cancelSalesDlg.show()"/>
+              <p:commandButton value="Orders[F5]"/>
+              <p:commandButton value="Close[F6]"/>
+              <p:commandButton value="Print Quotation"/>
+            </p:panelGrid>
+          </h:form>
+        </f:facet>
+      </p:dataTable>
+      <p:dialog id="cancelSales" widgetVar="cancelSalesDlg" header="Are you sure?" appendToBody="true"
+                modal="true" width="300">
+        <h:panelGroup layout="block" style="text-align: center">
+          Are you sure, you want to cancel this sale?
+        </h:panelGroup>
+        <h:form>
+          <h:panelGroup layout="block" style="width: 100%">
+            <p:commandButton value="continue" style="float: left; margin-left: 10px"
+                             actionListener="#{salesController.cancelSale()}" update="@all"/>
+            <p:commandButton value="close" style="float: left; margin-left: 10px" oncomplete="cancelSalesDlg.hide()"/>
+          </h:panelGroup>
+        </h:form>
+      </p:dialog>
+      <p:dialog id="recallHeldSales" widgetVar="recallHeldSalesDlg" header="Search Sales"
+                appendToBody="true" modal="true" style="width: 400px" width="400">
+        <h:form>
+          <p:panelGrid columns="2" style="width: 100%">
+            <p:outputLabel value="Search Sale Receipts" for="receiptId"/>
+            <p:autoComplete id="receiptId" value="#{salesController.sale}"
+                            completeMethod="#{salesController.searchHeldSales}"
+                            var="i" itemLabel="#{i.receiptId}" itemValue="#{i}"
+                            converter="saleConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+              <p:ajax event="itemSelect" listener="#{salesController.recallHeldSales}"
+                      update="@all" oncomplete="recallHeldSalesDlg.hide()"/>
+            </p:autoComplete>
+          </p:panelGrid>
+        </h:form>
+      </p:dialog>
+      <p:dialog id="completeSale" widgetVar="completeSaleDlg" header="Sales" appendToBody="true" modal="true">
+        <h:form id="saleTenderForm">
+          <p:selectOneRadio value="#{salesController.paymentOption}">
+            <f:selectItems value="#{salesController.paymentOptions}"/>
+            <p:ajax listener="#{salesController.calculatePaymentOption()}" partialSubmit="true" process="@this"
+                    update="@form"/>
+          </p:selectOneRadio>
+          <p:panelGrid columns="2" style="width: 100%; font-size: 23px">
+            <p:outputLabel value="Credit Maturity Date:" for="creditDate" rendered="#{salesController.creditPayment}"/>
+            <p:calendar id="creditDate" value="#{salesController.sale.payment.paymentDate}" pattern="yyyy-mm-dd hh:mm:ss"
+                        converter="calendarConverter" rendered="#{salesController.creditPayment}"
+                        required="true"/>
+            <p:outputLabel value="Cheque Number:" for="chequeNumber" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="chequeNumber" value="#{salesController.sale.payment.chequeNumber}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Drawer" for="drawer" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="drawer" value="#{salesController.sale.payment.drawer}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Bank" for="bank" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="bank" value="#{salesController.sale.payment.bank}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Branch" for="branch" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="branch" value="#{salesController.sale.payment.branch}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Maturity Date" for="maturityDate" rendered="#{salesController.chequePayment}"/>
+            <p:calendar id="maturityDate" value="#{salesController.sale.payment.maturityDate}"
+                        pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"
+                        rendered="#{salesController.chequePayment}"
+                        required="true"/>
+            <h:outputText value="Total Sales: " style="width: 100%; font-size: 23px"/>
+            <h:outputText value="#{salesController.sale.totalSale}" style="width: 100%; font-size: 23px"/>
+            <h:outputText value="Tendered:  " style="width: 100%; font-size: 23px"/>
+            <p:inputText  value="#{salesController.sale.tenderedAmount}" style="width: 100%; font-size: 23px">
+              <p:ajax event="change" process="@form" update="@form"/>
+            </p:inputText>
+            <h:outputText value="Change:  " style="width: 100%; font-size: 23px"/>
+            <h:outputText  value="#{salesController.sale.change}" style="width: 100%; font-size: 23px"/>
+            <p:commandButton value="OK" actionListener="#{salesController.doSale()}" oncomplete="completeSaleDlg.hide()"
+                             update="@all" />
+            <p:commandButton value="Cancel" oncomplete="completeSaleDlg.hide()"/>
+          </p:panelGrid>
+        </h:form>
+      </p:dialog>
+      <h:form>
+        <p:dialog header="Search Receipt No." id="rp" widgetVar="rec" appendToBody="true">
+
+          <p:panel header="Search">
+
+            <table style="">
+
+              <tr>
+                <td>
+                  <p:selectOneRadio>
+                    <f:selectItem itemLabel="Enter Receipt No." itemValue="1"/>
+                  </p:selectOneRadio>
+                </td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+
+                <td>
+                  <p:selectOneRadio>
+                    <f:selectItem itemLabel="Enter Receipt No." itemValue="1"/>
+                  </p:selectOneRadio>
+                </td>
+                <td><p:inputText/></td>
+              </tr>
+
+              <tr>
+                <td> <p:commandButton value="GO"/></td>
+                <td> <p:commandButton value="Abort"/></td>
+              </tr>
+
+
+            </table>
+          </p:panel>
+        </p:dialog>
+        <p:dialog id="cdet" widgetVar="cd" header="Sale Details" appendToBody="true">
+
+          <table>
+            <tr>
+              <td><h:outputText value="Item"/></td>
+              <td><p:inputText/></td>
+            </tr>
+
+          </table>
+
+          <p:panel header="Details">
+            <table>
+              <tr>
+                <td><h:outputText value="Quantity"/></td>
+                <td><p:inputText /></td>
+                <td><h:outputText value="Discount"/></td>
+                <td><p:inputText/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Price"/></td>
+                <td><p:inputText/></td>
+                <td><h:outputText value="Tax"/></td>
+                <td><p:inputText/></td>
+              </tr>
+            </table>
+
+          </p:panel>
+          <p:panel>
+            <table>
+              <tr>
+                <td><h:outputText value="Min Price"/> </td>
+                <td><h:outputText value="Unit Price"/> </td>
+                <td><h:outputText value="Total"/> </td>
+                <td><h:outputText value="Profit/Loss"/> </td>
+              </tr>
+              <tr>
+                <td><p:inputText style="width: 70px;"/></td>
+                <td><p:inputText style="width: 70px;"/></td>
+                <td><p:inputText style="width: 70px;"/></td>
+                <td><p:inputText style="width: 70px;"/></td>
+              </tr>
+
+
+            </table>
+          </p:panel>
+          <p:panel>
+            <table>
+              <tr>
+                <td><h:outputText value="Available Qty"/> </td>
+
+              </tr>
+              <tr>
+                <td><p:inputText style="width: 70px;"/></td>
+                <td>
+                  <p:selectOneMenu value="" editable="true"
+                                   style="width:300px; font-size:100%; margin:0px 0px 0px 0px">
+                    <f:selectItem itemLabel="Cement" itemValue="" />
+                    <f:selectItem itemLabel="Ballast" itemValue="" />
+                  </p:selectOneMenu>
+                </td>
+              </tr>
+            </table>
+          </p:panel>
+          <p:panel header="Action" >
+            <p:selectOneMenu value="" editable="true"
+                             style="width:300px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+              <f:selectItem itemLabel="Cement" itemValue="" />
+              <f:selectItem itemLabel="Ballast" itemValue="" />
+            </p:selectOneMenu>
+
+          </p:panel>
+          <br/>
+          <p:commandButton value="OK" onclick="sed.show();
+                  cd.hide();"/>
+          <p:commandButton value="Exit" onclick="ext.show();"/>
+        </p:dialog>
+        <p:dialog id="xt" widgetVar="ext" header="Stores" width="750" appendToBody="true">
+          <p:dataTable id="dataTable" var="v"
+                       value="#{chequeBean.carsSmall}"
+                       emptyMessage="No Student found"
+                       paginator="false"
+                       rows="10"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column id="batch" headerText="Item" >
+              <h:outputText value="" />
+
+            </p:column>
+            <p:column headerText="Quantity" >
+              <h:outputText value="" />
+
+            </p:column>
+            <p:column headerText="" style="width: 20%" >
+              <p:splitButton value="Select">
+                <p:menuitem value="Town"/>
+                <p:menuitem value="Stage"/>
+              </p:splitButton>
+            </p:column>
+          </p:dataTable>
+          <br />
+
+          <p:selectOneMenu value="" editable="true"
+                           style="width:300px; font-size:100%; margin:0px 0px 0px 0px">
+            <f:selectItem itemLabel="Jokagi Ent." itemValue="" />
+            <f:selectItem itemLabel="Wa-Kamau Hardware" itemValue="" />
+
+          </p:selectOneMenu>
+          <p:commandButton value="Get"/>
+
+
+        </p:dialog>
+
+
+
+        <p:dialog id="cr" widgetVar="cre" header="Credit" appendToBody="true">
+          <p:panel>
+            <p:selectOneMenu value="" editable="true"
+                             style="width:300px; font-size:100%; margin:0px 0px 0px 0px" onchange="cre.show();">
+
+              <f:selectItem itemLabel="David Wanyoike" itemValue="" />
+              <f:selectItem itemLabel="Lawrence Mwaura" itemValue="" />
+
+            </p:selectOneMenu>
+          </p:panel>
+
+          <p:panel>
+            <table>
+              <tr>
+                <td><h:outputText value="Days"/> </td>
+                <td><p:inputText /></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Effective Date"/> </td>
+                <td><p:calendar/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Due Date" /> </td>
+                <td><p:calendar/></td>
+              </tr>
+
+              <tr>
+                <td><h:outputText value="Previous" /> </td>
+                <td><p:inputText /></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Updated" /> </td>
+                <td><p:inputText /></td>
+              </tr>
+
+            </table>
+          </p:panel>
+          <br/>
+          <p:commandButton value="OK" onclick="cre.hide();"/>
+          <p:commandButton value="Cancel"/>
+        </p:dialog>
+
+        <p:dialog id="ch" widgetVar="chq" header="Cheques" appendToBody="true">
+
+          <p:panel>
+            <table>
+              <tr>
+                <td><h:outputText value="Cheque No."/> </td>
+                <td><p:inputText/></td>
+                <td><h:outputText value="Bank" /> </td>
+                <td><p:calendar/></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Drawer" /> </td>
+                <td><p:inputText /></td>
+                <td><h:outputText value="Branch"/> </td>
+                <td><p:inputText /></td>
+              </tr>
+              <tr>
+                <td><h:outputText value="Cheque Date" /> </td>
+                <td><p:calendar /></td>
+                <td><h:outputText value="Amount" /> </td>
+                <td><p:inputText /></td>
+              </tr>
+
+              <tr>
+                <td><h:outputText value="Supplier" /> </td>
+                <td colspan="3">
+                  <p:selectOneMenu value="" editable="true"
+                                   style="width:360px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+                    <f:selectItem itemLabel="Cement" itemValue="" />
+                    <f:selectItem itemLabel="Ballast" itemValue="" />
+                  </p:selectOneMenu>
+
+                </td>
+              </tr>
+
+            </table>
+          </p:panel>
+          <br/>
+          <p:commandButton value="OK" onclick="chq.hide();"/>
+          <p:commandButton value="Cancel"/>
+        </p:dialog>
+      </h:form>
+    </ui:define>
+  </ui:composition>
+</html>
+

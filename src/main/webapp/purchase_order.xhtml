@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Purchase Order</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                        <f:facet name="header">
+
+                            <p:outputPanel>
+                                <p:selectCheckboxMenu value="#{formBean.selectedMovies}" label="Add To Order" filter="true"  filterMatchMode="startsWith" panelStyle="width:320px" style="float: left; height: 30px;" onchange="sat.show();" >  
+                                    <f:selectItems value="#{formBean.movies}" />  
+                                </p:selectCheckboxMenu>  
+                                <p:selectOneMenu id="itm" value="" editable="true"
+                                                 style="width:200px;  font-size:100%; margin:0px 0px 0px 0px; float: right;">
+                                    <f:selectItem itemLabel="Hammer" itemValue="" />
+                                    <f:selectItem itemLabel="Laptops" itemValue="" />
+                                    <f:selectItem itemLabel="Omo" itemValue="" />
+                                    
+                                   
+                                </p:selectOneMenu>
+                                <p:watermark value="Filter By Items" for="itm"/>
+                                 <p:commandButton value=">>" style="float: left;"/>
+                                
+                                <p:commandButton value="Delete"/>
+                                <p:commandButton value="Prepare Purchase Order"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+
+                        <p:column style="width:4%">
+                            <p:rowToggler />
+                        </p:column>
+                        
+                        <p:column id="batch" headerText="Item No." >
+                            <h:outputText value="12" />
+
+                        </p:column>
+                        <p:column id="name" headerText="Name" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="no" headerText="Qty" style="width: 1%; text-align: center;" >
+                            
+                            <p:inputText id="qty" value="" />
+                            <p:watermark value="Enter Order Qty" for="qty"/>
+
+                        </p:column>
+                        <p:column id="sup" headerText="Supplier" style="width: 10%;">
+                            <p:selectOneMenu id="su" value="" editable="true"
+                                                 style="width:200px;  font-size:100%; margin:0px 0px 0px 0px; float: right;">
+                                    <f:selectItem itemLabel="Maguna" itemValue="" />
+                                    <f:selectItem itemLabel="Uniliver" itemValue="" />
+                                    <f:selectItem itemLabel="Mabati Mills" itemValue="" />
+                                    
+                                   
+                                </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Total" footerText="540,000.00" style="10%;">
+                            <h:outputText/>
+                        </p:column>
+                        
+                        
+                      
+                    </p:dataTable>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+            <p:dialog widgetVar="sat">
+                <p:commandButton value="sss"/>
+            </p:dialog>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

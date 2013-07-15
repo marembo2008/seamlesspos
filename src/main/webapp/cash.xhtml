@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Cash</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:panel>
+                        <table>
+                            <tr>
+                                <td><h:outputText value="Cash Collection"/></td>
+                                <td><h:outputText value="Date: 2013-06-03"/></td>
+                            </tr>
+                        </table>
+                    </p:panel>
+
+                    
+
+                        <p:panel header="Staff Details">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Name"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:300px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="One" itemValue="" />
+                                            <f:selectItem itemLabel="Two" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Station No."/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Opening Cash"/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Today's Sales"/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Sum Total"/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Remittes"/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Cash At Hand"/></td>
+                                    <td><p:inputText style="width:290px;"/></td>
+                                </tr>
+
+                            </table>
+                        </p:panel>
+                        
+
+                    
+                    <p:panel header="Remission">
+                        <table>
+                            <tr>
+                                    <td><h:outputText value="New Remission"/></td>
+                                    <td><p:inputText style="width:90px;"/></td>
+                                    
+                                    <td><h:outputText value="New Balance"/></td>
+                                    <td><p:inputText style="width:90px;"/></td>
+                                </tr>
+                               
+                                <tr>
+                                    <td><h:outputText value="Receiver"/></td>
+                                    <td colspan="3"><p:inputText style="width:290px;"/></td>
+                                </tr>
+                        </table>
+
+                    </p:panel>
+
+                    <p:commandButton value="Save"/>
+                    <p:commandButton value="Close"/>
+
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

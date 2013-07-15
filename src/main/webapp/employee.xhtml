@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Employees</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:panel header="Employee's Details">
+                        <table>
+                            <tr>
+                                <td><h:outputText value="Staff No:"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Surname:"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Title"/></td>
+                                <td><p:inputText/></td>
+                                
+                                
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="ID No:"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Full Name"/></td>
+                                <td><p:inputText/></td>
+                                
+                                <td><h:outputText value="Hire Date:"/></td>
+                                <td><p:inputText/></td>
+                                
+                                
+                            </tr>
+                            
+                            <tr>
+                                <td><h:outputText value="Sales Comm %"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Username"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Gender"/></td>
+                                <td><p:inputText/></td>
+                                
+                                
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="Basic Salary"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Password"/></td>
+                                <td><p:inputText/></td>
+                                
+                                <td><h:outputText value="Department"/></td>
+                                <td><p:inputText/></td>
+                               
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="Cash At Hand"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Address"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Sales Mode"/></td>
+                                <td><p:inputText/></td>
+                                
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="Bank Acc No."/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="City"/></td>
+                                <td><p:inputText/></td>
+                                <td><h:outputText value="Comm Earned"/></td>
+                                <td><p:inputText/></td>
+                                
+                                
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h:outputText value="Last Salary Increase Date"/></td>
+                                <td><p:calendar/></td>
+                                
+                                 
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="Added Info."/></td>
+                                <td><p:calendar/></td>
+                            </tr>
+                        </table>
+                    </p:panel>
+                    <p:panel header="User Privilleges Access Level">
+                        <p:commandButton value="Set Access Privelleges"/>
+                    </p:panel>
+                    <p:commandButton value="Add New"/>
+                    <p:commandButton value="Delete"/>
+                    <p:commandButton value="Close"/>
+                    <p:panel header="Details">
+                        <p:dataTable id="dataTableAccounts" var="v"
+                                     value="#{visitorController.visitors}"
+
+                                     emptyMessage="No Student found"
+                                     paginator="false"
+                                     rows="10"
+                                     paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+
+
+                            <p:column style="width:4%">
+                                <p:rowToggler />
+                            </p:column>
+
+                            <p:column id="eid" headerText="Emp Id" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            <p:column id="fname" headerText="First Name" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="lName" headerText="Last Name" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="dept" headerText="Department" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="sal" headerText="Basic Salary" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            
+                            <p:column id="com" headerText="%" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            
+                            <p:column id="sale" headerText="Sales" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            
+                            <p:column id="cash" headerText="Cash" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:panel>
+                    
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

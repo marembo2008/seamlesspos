@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Credit Note</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+
+                    <p:panel>
+                        <p:dataTable id="dataTable" var="v"
+                                     value="#{visitorController.visitors}"
+
+                                     emptyMessage="No Student found"
+                                     paginator="false"
+                                     rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                            <f:facet name="header">
+
+                                <p:outputPanel>
+
+
+                                    <p:inputText id="cSaleNo" style="float: left; height: 19px;"/>
+                                    <p:commandButton value="Search" style="float: left;"/>
+                                    <p:watermark value="Enter Receipt No." for="cSaleNo"/>
+
+
+                                </p:outputPanel>
+                            </f:facet>
+
+
+
+                            <p:column style="width:4%">
+                                <p:rowToggler />
+                            </p:column>
+
+                            <p:column id="no" headerText="Product" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="batch" headerText="Item No."  >
+                                <h:outputText value="12" />
+
+                            </p:column>
+                            <p:column id="name" headerText="Name" >
+                                <h:outputText value="" />
+
+                            </p:column>
+                            <p:column id="uPrice" headerText="Unit Price" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="Qty" headerText="Qty" >
+                                <h:outputText value="" />
+
+                            </p:column>
+
+                            <p:column id="no" headerText="Total Price" footerText="14,500.00">
+                                <h:outputText value="" />
+
+                            </p:column>
+                            <p:column id="no" headerText="Returned" >
+                                <p:inputText/>
+
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                        <br/>
+
+                        <p:commandButton value="Add To Credit"/>
+                        <p:commandButton value="Print"/>
+                        <p:commandButton value="Close"/>
+                    </p:panel>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

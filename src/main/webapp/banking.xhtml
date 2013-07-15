@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Banking</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:panel header="Banking Register" style="width: 600px;">
+                        <p:panelGrid style=" margin-top: 20px;" styleClass="grid">
+
+                            <p:row>
+                                <p:column rowspan="2">
+                                    <p:selectOneRadio id="codeRadio2" >
+                                        <f:selectItem itemLabel="Cash" itemValue="1"/>
+                                        <f:selectItem itemLabel="Orders" itemValue="2"/>
+
+                                    </p:selectOneRadio>
+                                </p:column>
+
+                                <p:column style="text-align: center; border: none"  styleClass="grid">
+
+                                    <h:outputText value="Sequence Date"/>
+                                </p:column>
+
+                                <p:column style="text-align: center;">
+                                    <p:calendar/>
+                                </p:column>
+
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="Sequence No."/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:inputText/>
+                                </p:column>
+
+                            </p:row>
+
+                        </p:panelGrid>
+                        <p:panel header="Banking Transactions">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Receiving Bank"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:400px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="City Bank" itemValue="" />
+                                            <f:selectItem itemLabel="Commercial Bank of Africa" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Account No."/></td>
+                                    <td><h:outputText value="Branch Name"/></td>
+                                </tr>
+                                <tr></tr>
+                                <tr>
+                                    <td><p:inputText/></td>
+                                    <td><p:inputText style="width: 400px;"/></td>
+                                </tr>
+                            </table>
+                        </p:panel>
+
+                        <p:panel header="Transaction Details">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Source Account"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:400px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="City Bank" itemValue="" />
+                                            <f:selectItem itemLabel="Commercial Bank of Africa" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="Account No."/></td>
+                                    <td><h:outputText value="Drawer's Name"/></td>
+                                </tr>
+                                <tr></tr>
+                                <tr>
+                                    <td><p:inputText/></td>
+                                    <td><p:inputText style="width: 400px;"/></td>
+                                </tr>
+                            </table>
+
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Deposit Date"/></td>
+                                    <td><h:outputText value="Amount[Figures]"/></td>
+                                    <td><h:outputText value="Deposited By:"/></td>
+                                </tr>
+                                <tr>
+                                    <td><p:calendar/></td>
+                                    <td><p:inputText/></td>
+                                    <td><p:inputText/></td>
+                                </tr>
+                            </table>
+                        </p:panel>
+                    </p:panel>
+                    <br/>
+                    
+                    <p:commandButton value="Save"/>
+                    <p:commandButton value="Close"/>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

@@ -1,0 +1,652 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <h:head>
+    <title>POS</title>
+    <style type="text/css">
+      .ui-layout-north {
+        z-index: 20 !important;
+        overflow: visible !important;;
+      }
+
+      .ui-layout-north .ui-layout-unit-content {
+        overflow: visible !important;
+      }
+
+      .basicList td {
+        border-style: hidden !important;
+      }
+
+      .ui-widget,.ui-widget .ui-widget {
+        font-size: 94% !important;
+      }
+    </style>
+  </h:head>
+  <h:body>
+
+    <h:form>
+
+      <p:layout fullPage="true">
+
+
+        <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+          <p:tabView>
+            <p:tab title="Products">
+              <table>
+                <tr>
+                  <td valign="top">
+                    <p:panel header="n">
+                      <p:commandButton value="Add"/>
+                      <p:commandButton value="Search"/>
+                      <p:commandButton value="Cancel"/>
+                    </p:panel>
+
+                    <p:panel header="Details">
+                      <table>
+                        <tr>
+                          <td>Batch Code</td>
+                          <td><p:inputText/></td>
+                        </tr>
+
+                        <tr>
+                          <td>Product Name</td>
+                          <td><p:inputText/></td>
+                        </tr>
+
+                        <tr>
+                          <td>Product Number</td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+                    </p:panel>
+                    <br/><br/>
+                    <h:outputText value="Additional Information"/>
+                    <br/>
+                    <p:inputTextarea rows="5" cols="30"/>
+                    <br/>
+                    <p:commandButton value="Close"/>
+                    <p:commandButton value="Delete"/>
+                    <p:commandButton value="Save"/>
+                  </td>
+                  <td valign="top">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                      <f:facet name="header">
+
+                        <p:outputPanel>
+
+
+                          <h:outputText value="LEADS" style="font-size:20px;"/>
+                          <!-- <p:inputText id="globalFilter" onkeyup="carsTable.filter()"
+                                  style="width:150px" /> -->
+                        </p:outputPanel>
+                      </f:facet>
+
+
+
+                      <p:column style="width:4%">
+                        <p:rowToggler />
+                      </p:column>
+                      <p:column id="batch" headerText="C" >
+                        <h:outputText value="12" />
+
+                      </p:column>
+                      <p:column id="name" headerText="Code" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                      <p:column id="no" headerText="Desc" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Counter" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Store" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Total" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Cost" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Price" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                    </p:dataTable>
+
+                  </td>
+                </tr>
+              </table>
+            </p:tab>
+
+            <p:tab title="Items">
+
+              <table>
+                <tr>
+                  <td valign="top">
+                    <p:panel header="Operations">
+                      <p:commandButton value="Add"/>
+                      <p:commandButton value="Cancel"/>
+                      <p:commandButton value="Stock-In"/>
+                      <p:commandButton value="Search Items"/>
+                    </p:panel>
+
+                    <p:panel header="Details">
+                      <table>
+                        <tr>
+                          <td>Batch No</td>
+                          <td><p:inputText/></td>
+
+                          <td>Date <p:inputText/></td>
+                        </tr>
+
+                        <tr>
+                          <td>Item Name</td>
+                          <td><p:inputText/></td>
+                        </tr>
+
+                        <tr>
+                          <td>Item Code</td>
+                          <td><p:inputText/></td>
+                          <td><p:commandButton value="Generate"/></td>
+                        </tr>
+                        <tr>
+                          <td>Product Type</td>
+                          <td><p:inputText/></td>
+                          <td><p:commandButton value="Edit"/></td>
+                        </tr>
+                      </table>
+                    </p:panel>
+                    <p:panel header="k">
+                      <table>
+                        <tr>
+                          <td><h:outputText value="Sub Category"/></td>
+                          <td><h:outputText value="Supplier"/></td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p:selectOneMenu value="All" editable="true"
+                                             style="width:100px; font-size:100%; margin:0px 0px 0px 0px">
+                              <f:selectItem itemLabel="1" itemValue="" />
+
+
+                            </p:selectOneMenu>
+                          </td>
+                          <td>
+                            <p:selectOneMenu value="All" editable="true"
+                                             style="width:100px; font-size:100%; margin:0px 0px 0px 0px">
+                              <f:selectItem itemLabel="1" itemValue="" />
+
+
+                            </p:selectOneMenu>
+                          </td>
+                        </tr>
+                      </table>
+                      <table>
+                        <tr>
+                          <td><h:outputText value="Total Qty"/></td>
+                          <td><h:outputText value="Cost @ Item"/></td>
+                          <td><h:outputText value="Re-Order Qty"/></td>
+                        </tr>
+                        <tr>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+
+                      <table>
+                        <tr>
+                          <td><h:outputText value="Price 1"/></td>
+                          <td><h:outputText value="Price 2"/></td>
+                          <td><h:outputText value="Price 3"/></td>
+                        </tr>
+                        <tr>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+
+                      <table>
+                        <tr>
+
+                          <td>
+                            <h:outputText value="Code"/>
+                            <p:selectOneRadio id="codeRadio" >
+                              <f:selectItem itemLabel="A" itemValue="1"/>
+                              <f:selectItem itemLabel="B" itemValue="1"/>
+                              <f:selectItem itemLabel="E" itemValue="1"/>
+                            </p:selectOneRadio>
+                          </td>
+
+                        </tr>
+                        <tr>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+                    </p:panel>
+
+                    <br/>
+                    <p:commandButton value="Transfer Stock"/>
+                    <p:commandButton value="Delete"/><br/>
+                    <p:commandButton value="Close"/>
+                    <p:commandButton value="Set Inactive"/>
+                    <p:commandButton value="Save"/>
+                    <p:commandButton value="Stock Adjustment"/>
+                  </td>
+                  <td valign="top">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                      <f:facet name="header">
+
+                        <p:outputPanel>
+
+
+                          <h:outputText value="LEADS" style="font-size:20px;"/>
+                          <!-- <p:inputText id="globalFilter" onkeyup="carsTable.filter()"
+                                  style="width:150px" /> -->
+                        </p:outputPanel>
+                      </f:facet>
+
+
+
+                      <p:column style="width:4%">
+                        <p:rowToggler />
+                      </p:column>
+                      <p:column id="batch" headerText="C" >
+                        <h:outputText value="12" />
+
+                      </p:column>
+                      <p:column id="name" headerText="Code" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                      <p:column id="no" headerText="Desc" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Counter" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Store" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Total" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Cost" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Price" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                    </p:dataTable>
+
+                  </td>
+                </tr>
+              </table>
+            </p:tab>
+
+
+
+            <p:tab title="Suppliers">
+              <table>
+                <tr>
+                  <td valign="top">
+                    <p:panel header="Operation">
+                      <p:commandButton value="Add"/>
+                      <p:commandButton value="Cancel"/>
+                      <p:commandButton value="Search"/>
+
+                    </p:panel>
+
+                    <p:panel header="Details">
+
+                      <table>
+                        <tr>
+                          <td><h:outputText value="AGENT CODE"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Name"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Address"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="City"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Tel:"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Cel:"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="E-mail"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Contact Name"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Designation"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+
+                      </table>
+                      <table>
+                        <tr>
+                          <td><h:outputText value="Credit Limit"/></td>
+                          <td><h:outputText value="Sales Target"/></td>
+
+                        </tr>
+                        <tr>
+                          <p:inputText/>
+                          <p:inputText/>
+                        </tr>
+                        <tr>
+                          <p:selectManyCheckbox>
+                            <f:selectItem itemLabel="Quick Supplier" itemValue="1"/>
+                          </p:selectManyCheckbox>
+                        </tr>
+                      </table>
+                    </p:panel>
+
+                  </td>
+                  <td valign="top">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                      <f:facet name="header">
+
+                        <p:outputPanel>
+
+
+                          <h:outputText value="LEADS" style="font-size:20px;"/>
+                          <!-- <p:inputText id="globalFilter" onkeyup="carsTable.filter()"
+                                  style="width:150px" /> -->
+                        </p:outputPanel>
+                      </f:facet>
+
+
+
+                      <p:column style="width:4%">
+                        <p:rowToggler />
+                      </p:column>
+
+                      <p:column id="name" headerText="Code" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                      <p:column id="no" headerText="Name" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Address" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="City" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                    </p:dataTable>
+
+                  </td>
+                </tr>
+              </table>
+
+              <p:commandButton value="Close"/>
+              <p:commandButton value="Delete"/>
+              <p:commandButton value="Save"/>
+
+
+
+
+            </p:tab>
+
+            <p:tab title="Customers">
+              <table>
+                <tr>
+                  <td valign="top">
+                    <p:panel header="Operation">
+                      <p:commandButton value="Add"/>
+                      <p:commandButton value="Cancel"/>
+                      <p:commandButton value="Search"/>
+
+                    </p:panel>
+
+                    <p:panel header="Details">
+                      <table>
+                        <tr>
+                          <td>Client No.</td>
+                          <td><p:inputText/></td>
+                        </tr>
+
+                        <tr>
+                          <td>Reg Date</td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+
+                      <table>
+                        <tr>
+                          <td><h:outputText value="Name"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Address"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="City"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Discount Rate"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Tel:"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Opening Bal"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="E-mail"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Contact"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Sales Man"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                          <td><h:outputText value="Credit Limit"/></td>
+                          <td><p:inputText/></td>
+                        </tr>
+                      </table>
+                    </p:panel>
+
+                  </td>
+                  <td valign="top">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                      <f:facet name="header">
+
+                        <p:outputPanel>
+
+
+                          <h:outputText value="LEADS" style="font-size:20px;"/>
+                          <!-- <p:inputText id="globalFilter" onkeyup="carsTable.filter()"
+                                  style="width:150px" /> -->
+                        </p:outputPanel>
+                      </f:facet>
+
+
+
+                      <p:column style="width:4%">
+                        <p:rowToggler />
+                      </p:column>
+
+                      <p:column id="name" headerText="Code" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                      <p:column id="no" headerText="Name" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Address" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="City" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="Debit" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="" >
+                        <h:outputText value="" />
+
+                      </p:column>
+
+                      <p:column id="no" headerText="" >
+                        <h:outputText value="" />
+
+                      </p:column>
+                    </p:dataTable>
+
+                  </td>
+                </tr>
+              </table>
+
+              <p:commandButton value="Close"/>
+              <p:commandButton value="Delete"/>
+              <p:commandButton value="Save"/>
+
+
+            </p:tab>
+          </p:tabView>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit id="top" position="north" size="80">
+
+
+        </p:layoutUnit>
+
+
+        <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+          <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                      closable="true" collapsible="true"
+                      minSize="200">
+
+        </p:layoutUnit>
+      </p:layout>
+    </h:form>
+
+
+
+  </h:body>
+</html>
+

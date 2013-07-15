@@ -1,0 +1,507 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <h:head>
+    <title>
+      <ui:insert name="title">
+        <h:outputText value="Seamless Pos"/>
+      </ui:insert>
+    </title>
+    <style type="text/css">
+      html, body, div, span, input, select, button, textarea{
+        font-size: 10px;
+      }
+      .ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td{
+        text-align: left;
+      }
+      .ui-layout-north {
+        z-index: 20 !important;
+        overflow: visible !important;;
+      }
+
+      .ui-layout-north .ui-layout-unit-content {
+        overflow: visible !important;
+        z-index: 20 !important;
+      }
+
+      .basicList td {
+        border-style: hidden !important;
+      }
+
+      .ui-widget,.ui-widget .ui-widget {
+        font-size: 94% !important;
+      }
+      .ui-messages{
+        z-index: 343443;
+      }
+      .ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield{
+        width: 90%;
+      }
+      .ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td{
+        white-space: normal;
+      }
+      .ui-accordion .ui-accordion-header, .ui-accordion .ui-accordion-content{
+        text-align: left;
+      }
+    </style>
+  </h:head>
+  <h:body>
+    <p:layout fullPage="true">
+      <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+        <p:messages autoUpdate="true" closable="true" />
+        <ui:insert name="body"></ui:insert>
+      </p:layoutUnit>
+      <p:layoutUnit id="top" position="north" size="45">
+
+        <h:form id="headerMenuForm">
+          <p:megaMenu  autoDisplay="false">
+            <p:menuitem value="Home" url="/"/>
+            <p:submenu label="Inventory" >
+              <p:column>
+                <p:submenu>
+                  <p:menuitem ajax="false" value="Products" action="#{productController.prepareList()}"/>
+                  <p:menuitem value="Items" url="new_item.xhtml"/>
+                  <p:menuitem value="Clients" url="client.xhtml"/>
+                  <p:menuitem value="Suppliers" url="supplier.xhtml"/>
+                  <p:menuitem ajax="false" value="Stock-in View" action="#{batchController.prepareList()}"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Transactions">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Point of Sale" url="sales.xhtml"/>
+                  <p:menuitem value="Account Receivable" onclick="rec.show();"/>
+                  <p:menuitem value="Internal Requisition" url="requisition.xhtml"/>
+                  <p:menuitem value="Purchase Order" url="purchase_order.xhtml"/>
+                  <p:menuitem value="Credit Note" url="credit_note.xhtml"/>
+                  <p:menuitem value="Return Goods" url="returned.xhtml"/>
+                  <p:menuitem value="Petty Cash" onclick="petty.show();"/>
+                  <p:menuitem value="Receipts" url="receipt.xhtml"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Banking">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Banking Register" url="banking_register.xhtml"/>
+                  <p:menuitem value="Cheque Reversal" url="cheque.xhtml"/>
+                  <p:menuitem value="Post Cheque" onclick="chq.show();"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Payments">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Account Payable" onclick="billA.show();"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Reports">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Sales"/>
+                  <p:menuitem value="Expenses/Inventories"/>
+                  <p:menuitem value="Bank Transactions"/>
+                  <p:menuitem value="Customers"/>
+                  <p:menuitem value="Suppliers"/>
+                  <p:menuitem value="Cashiers"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Field Sales">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Dispatch" url="sale.xhtml"/>
+                  <p:menuitem value="Collect Sales" url="collect.xhtml"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Accounting">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Balance Sheet"/>
+                  <p:menuitem value="Profit And Loss Account"/>
+                  <p:menuitem value="Trial Balance"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+            <p:submenu label="Tools">
+              <p:column>
+                <p:submenu>
+                  <p:menuitem value="Settings" style="float: right" url="settings.xhtml"/>
+                </p:submenu>
+              </p:column>
+            </p:submenu>
+          </p:megaMenu>
+          <p:commandButton id="set" value="Settings" style="float: right; margin-top: -36px; margin-right: 4px;"
+                           rendered="false"/>
+          <p:slideMenu overlay="true" trigger="set" my="left top" at="left bottom" style="width: 180px;"
+                       rendered="false">
+            <p:submenu label="System">
+              <p:menuitem value="Set VAT"/>
+              <p:menuitem value="Set System Profile"/>
+              <p:menuitem value="Set Personla Profile"/>
+            </p:submenu>
+            <p:submenu label="Company">
+            </p:submenu>
+            <p:submenu label="Personal">
+            </p:submenu>
+            <p:submenu label="Log Out">
+            </p:submenu>
+            <p:submenu label="Send Memo">
+              <p:menuitem value="Send Memo" onclick="memo.show();"/>
+            </p:submenu>
+          </p:slideMenu>
+        </h:form>
+      </p:layoutUnit>
+      <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+        <h:outputText value=" &copy; Intech Logistics 2013"/>
+      </p:layoutUnit>
+      <p:layoutUnit id="left" position="west" size="230" resizable="true"
+                    closable="true" collapsible="true"
+                    minSize="200" style="">
+        <p:panel header="Dashboard" footer="" closable="false">
+          <p:panel>
+            <p:graphicImage value="img.jpg"/>
+          </p:panel>
+          <br/><br/>
+          <h:panelGrid columns="2" >
+            <h:outputText value="Name:" style="text-align: right;"/>
+            <h:outputText value="Njee Maina"/>
+            <h:outputText value="Position:"/>
+            <h:outputText value="Admin"/>
+            <h:outputText value="Log In Time:"/>
+            <h:outputText value="12:36"/>
+          </h:panelGrid>
+        </p:panel>
+      </p:layoutUnit>
+    </p:layout>
+    <h:form>
+      <p:dialog header="Enter Bill" id="bil" widgetVar="bill" height="305" width="590">
+        <p:panel>
+          <p:selectOneRadio id="codeRadio2" >
+            <f:selectItem itemLabel="Cash" itemValue="1"/>
+            <f:selectItem itemLabel="Orders" itemValue="2"/>
+          </p:selectOneRadio>
+          <p:selectManyCheckbox style="float: right; margin-top: -25px;">
+            <f:selectItem itemLabel="Bill Received" itemValue="1"/>
+          </p:selectManyCheckbox>
+        </p:panel>
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Date" style="width: 80px; text-align: right"/></td>
+              <td><p:calendar/></td>
+
+              <td><h:outputText value="Bill No." style="width: 80px;"/></td>
+              <td><p:inputText/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Supplier"/></td>
+              <td colspan="3"><p:inputText style="width: 345px;"/></td>
+            </tr>
+
+            <tr>
+              <td><h:outputText value="Date Due"/></td>
+              <td colspan="2"><p:calendar /></td>
+              <td >
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Amt Inclusive of VAT" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Amount Due"/></td>
+              <td><p:inputText /></td>
+              <td><h:outputText value="VAT %"/></td>
+              <td><p:inputText/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Supplier"/></td>
+              <td colspan="3"><p:inputText style="width: 345px;"/></td>
+            </tr>
+          </table>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Save"/>
+        <p:commandButton value="Close"/>
+      </p:dialog>
+      <p:dialog header="Settle Account Payable" id="ba" widgetVar="billA" >
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Bill No." style="width: 80px;"/></td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Payment Date" style="width: 80px; text-align: right"/></td>
+              <td><p:calendar/></td>
+            </tr>
+          </table>
+        </p:panel>
+        <p:panel>
+          <table style="">
+            <tr>
+              <td><h:outputText value="Supplier"/></td>
+              <td colspan="3"><p:inputText style="width: 345px;"/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Date Due"/></td>
+              <td><p:calendar /></td>
+              <td >
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Amt Inclusive of VAT" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Amount Due"/></td>
+              <td><p:inputText /></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Payment Account"/></td>
+              <td colspan="3"><p:inputText style="width: 345px;"/></td>
+            </tr>
+            <tr>
+              <td >
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Cheque No." itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+              <td><p:inputText/></td>
+              <td >
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Save"/>
+        <p:commandButton value="Close"/>
+      </p:dialog>
+      <p:dialog header="Settle Account Payable" id="tr" widgetVar="trans" height="305" width="520">
+        <h:outputText value="Select Transaction" style="text-align: center; font-size: 20px;"/>
+        <br/>
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Transaction"/></td>
+              <td>
+                <p:selectOneMenu value="Send Memo to Everyone" editable="true"
+                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="Send Memo to Everyone" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <p:commandButton value="OK"/>
+        <p:commandButton value="Cancel"/>
+      </p:dialog>
+      <p:dialog header="Personal Memo" id="pm" widgetVar="memo" >
+        <h:outputText value="" style="text-align: center; font-size: 20px;"/>
+        <br/>
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="From:"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:150px; font-size:100%; margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="One" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+
+                </p:selectOneMenu>
+              </td>
+              <td><h:outputText value="To:"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:150px; font-size:100%; margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="One" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <p:panel header="Memo">
+          <p:inputTextarea cols="45" rows="10"/>
+        </p:panel>
+        <p:commandButton value="Send"/>
+        <p:commandButton value="Cancel"/>
+      </p:dialog>
+      <p:dialog header="Petty Expenses" id="pe" widgetVar="petty">
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Payee"/></td>
+              <td><p:inputText style="width: 190px;"/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Account Of"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="One" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Amount"/></td>
+              <td><p:inputText style="width: 190px;"/></td>
+            </tr>
+            <tr>
+              <td>
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Cash" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+              <td align="right">
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <h:outputText value="Remarks"/>
+          <br/>
+          <p:inputTextarea cols="33" rows="4"/>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Send"/>
+        <p:commandButton value="Abadon"/>
+      </p:dialog>
+      <p:dialog header="Transaction Selection" id="ts" widgetVar="sel">
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Transaction"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="Post Bills" itemValue="" />
+                  <f:selectItem itemLabel="Pay Bils" itemValue="" />
+                  <f:selectItem itemLabel="Petty Expenses" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Ok"/>
+        <p:commandButton value="Cancel"/>
+      </p:dialog>
+      <p:dialog header="Receive Payments" id="rp" widgetVar="rec">
+        <p:panel>
+          <table style="">
+            <tr>
+              <td><h:outputText value="Payment Mode"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:150px;  margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="Cash" itemValue="" />
+                  <f:selectItem itemLabel="Cheque" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+              <td><h:outputText value="Date"/></td>
+              <td><p:calendar/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Cheque Date"/></td>
+              <td><p:calendar/></td>
+              <td><h:outputText value="Cheque No."/></td>
+              <td><p:inputText/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Date Due"/></td>
+              <td><p:calendar/></td>
+              <td><h:outputText value="Amount"/></td>
+              <td><p:inputText/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Bank"/></td>
+              <td>
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:150px;  margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="One" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+                  <f:selectItem itemLabel="Three" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+              <td><h:outputText value="Branch"/></td>
+              <td><p:inputText/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Deposit To"/></td>
+              <td colspan="3">
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:150px;  margin:0px 0px 0px 0px">
+                  <f:selectItem itemLabel="One" itemValue="" />
+                  <f:selectItem itemLabel="Two" itemValue="" />
+                  <f:selectItem itemLabel="Three" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td colspan="2">
+                <p:selectManyCheckbox>
+                  <f:selectItem itemLabel="Print Receipt" itemValue="1"/>
+                </p:selectManyCheckbox>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Save"/>
+        <p:commandButton value="Close"/>
+      </p:dialog>
+      <p:dialog id="ch" widgetVar="chq" header="Cheques">
+        <p:panel>
+          <table>
+            <tr>
+              <td><h:outputText value="Cheque No."/> </td>
+              <td><p:inputText/></td>
+              <td><h:outputText value="Bank" /> </td>
+              <td><p:calendar/></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Drawer" /> </td>
+              <td><p:inputText /></td>
+              <td><h:outputText value="Branch"/> </td>
+              <td><p:inputText /></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Cheque Date" /> </td>
+              <td><p:calendar /></td>
+              <td><h:outputText value="Amount" /> </td>
+              <td><p:inputText /></td>
+            </tr>
+            <tr>
+              <td><h:outputText value="Supplier" /> </td>
+              <td colspan="3">
+                <p:selectOneMenu value="" editable="true"
+                                 style="width:360px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
+                  <f:selectItem itemLabel="Cement" itemValue="" />
+                  <f:selectItem itemLabel="Ballast" itemValue="" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+          </table>
+        </p:panel>
+        <br/>
+        <p:commandButton value="OK" onclick="chq.hide();"/>
+        <p:commandButton value="Cancel"/>
+      </p:dialog>
+    </h:form>
+  </h:body>
+</html>

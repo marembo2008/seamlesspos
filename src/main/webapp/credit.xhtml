@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Credit Note Issue</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:panel header="Receipt Detail">
+                        <p:panel>
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Receipt No."/></td>
+                                    <td><p:inputText/></td>
+                                    <td><p:commandButton value="Filter"/></td>
+                                </tr>
+                            </table>
+                        </p:panel>
+                        <p:panel header="Item Detail">
+                            <table>
+                                <tr>
+                                    <td><h:outputText value="Customer: Cash Customer"/></td>
+                                    
+                                    <td><h:outputText value="Amount of"/></td>
+                                    <td>
+                                        <p:selectOneMenu value="" editable="true"
+                                                         style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                                            <f:selectItem itemLabel="One" itemValue="" />
+                                            <f:selectItem itemLabel="Two" itemValue="" />
+
+                                        </p:selectOneMenu>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><h:outputText value="Product"/></td>
+                                    <td><h:outputText value="Item"/></td>
+                                    <td><h:outputText value="Item Code"/></td>
+                                </tr>
+                                <tr>
+                                    <td><p:inputText/></td>
+                                    <td><p:inputText style="width: 200px;"/></td>
+                                    <td><p:inputText/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><h:outputText value="Price"/></td>
+                                    <td><h:outputText value="Quantity(Enter Qty Removed)"/></td>
+                                    <td><h:outputText value="Total Price"/></td>
+                                </tr>
+                                <tr>
+                                    <td><p:inputText/></td>
+                                    <td><p:inputText style="width: 200px;"/></td>
+                                    <td><p:inputText/></td>
+                                </tr>
+                            </table>
+                        </p:panel>
+                        <br/>
+                        <p:commandButton value="Search Receipt"/>
+                        <p:commandButton value="Add To Credit"/>
+                        <p:commandButton value="Print"/>
+                        <p:commandButton value="Close"/>
+                    </p:panel>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Sales</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+
+                    <p:panel header="Details">
+                        <f:facet name="header">
+                            <p:selectOneMenu id="sal" value="" editable="true"
+                                             style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
+                                <f:selectItem itemLabel="Mwaniki Joan Wanjiru" itemValue="" />
+                                <f:selectItem itemLabel="Wanjohi Daniel Muriuki" itemValue="" />
+
+                            </p:selectOneMenu>
+                            <p:watermark for="sal" value="Search Sales Person"/>
+                            <p:commandButton value="Cancel" style="float: right;"/>
+                            <p:commandButton value="Collect" style="float: right;" onclick="chqs.show();"/>
+                            <p:inputText id="dispatch" style="float:left;"/>
+                            <p:watermark for="dispatch" value="Enter Dispatch No."/>
+                        </f:facet>
+                        <table>
+                            <tr>
+                                <td><h:outputText value="Name:"/></td>
+                                <td><h:outputText value="Mwaniki Joan Wanjiru"/></td>
+                                <td><h:outputText value="Emp No:"/></td>
+                                <td><h:outputText value="Region:"/></td>
+                                <td><h:outputText value="Central Rift"/></td>
+                            </tr>
+                        </table>
+
+
+                    </p:panel>
+
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="false"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+
+                        <f:facet name="footer">
+                            <h:outputText value="Total"/>
+                        </f:facet>
+                        <p:column style="width:4%">
+                            <p:rowToggler />
+                        </p:column>
+                        <p:column id="batch" headerText="#" style="width:4%" >
+                            <h:outputText value="12" />
+
+                        </p:column>
+                        <p:column id="name" headerText="Item Code" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="no" headerText="Description" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Quantity" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Unit Price" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Disc" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Tax" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Net" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="sold" headerText="Sold" >
+                            <p:inputText style="width: 50px; text-align: center;"/>
+
+                        </p:column>
+                        <p:column id="cas" headerText="Cash" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="diff" headerText="Diff" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                    </p:dataTable>
+
+
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logisticss 2013"/>
+
+                </p:layoutUnit>
+
+                
+
+            </p:layout>
+            <p:dialog id="che" widgetVar="chqs" header="Route Sales Postings ">
+                <p:panel>
+                    <table>
+                        <tr>
+                            <td><h:outputText value=" Total"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Diff:"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value=" Dispatched"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Cash:"/></td>
+                            <td><p:inputText/></td>
+                            <td><p:commandButton value="Credit" onclick="cr.show();"/></td>
+                        </tr>
+
+                    </table>
+                </p:panel>
+                <p:panel header="Cheques">
+                    <table>
+                        <tr>
+                            <td><h:outputText value=" Cheque No"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Drawer"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Cheque Dated"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Amount"/></td>
+                            <td><p:inputText/></td>
+                        </tr>
+                        <tr>
+                            <td><h:outputText value=" Bank"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Branch"/></td>
+                            <td><p:inputText/></td>
+                            <td><h:outputText value="Supplier"/></td>
+                            <td><p:inputText/></td>
+                            <td colspan="2" align="right"><p:commandButton value="Add" style="width: 150px;"/></td>
+
+                        </tr>
+                    </table>
+                </p:panel>
+                <p:panel>
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="false"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+
+                        <f:facet name="footer">
+                            <h:outputText value="Sub Total"/>
+                            <p:commandButton value="Post" style="float: right;"/>
+                        </f:facet>
+                        <p:column style="width:4%">
+                            <p:rowToggler />
+                        </p:column>
+                        <p:column id="batch" headerText="Cheque No"  >
+                            <h:outputText value="12" />
+
+                        </p:column>
+                        <p:column id="name" headerText="Drawer" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="no" headerText="Bank" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Branch" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Cheque Dated" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Amount" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Supplier" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+
+                    </p:dataTable>
+                </p:panel>
+
+            </p:dialog>
+
+            <p:dialog id="cre" widgetVar="cr" header="Credit" width="500">
+                <p:panel>
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{visitorController.visitors}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="false"
+                                 rows="10"
+                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+                        <f:facet name="footer">
+                            <h:outputText value="Sub Total"/>
+                            <p:commandButton value="Post" style="float: right;"/>
+                        </f:facet>
+
+                        <f:facet name="header">
+                            <p:selectOneMenu id="sup" value="" editable="true"
+                                             style="width:200px; font-size:100%; margin:0px 0px 0px 0px; float: left;">
+                                <f:selectItem itemLabel="Mwaniki Joan Wanjiru" itemValue="" />
+                                <f:selectItem itemLabel="Wanjohi Daniel Muriuki" itemValue="" />
+
+                            </p:selectOneMenu>
+                            <p:watermark value="Debtor" for="sup"/>
+                            <p:inputText id="amt" style="float: left;"/>
+                            <p:watermark value="Amount" for="amt"/>
+                            <p:commandButton value="Add" style="float: right;"/>
+                        </f:facet>
+
+                        <p:column style="width:4%">
+                            <p:rowToggler />
+                        </p:column>
+                        <p:column id="batch" headerText="Debtor No"  >
+                            <h:outputText value="12" />
+
+                        </p:column>
+                        <p:column id="name" headerText="Name" >
+                            <h:outputText value="" />
+
+                        </p:column>
+                        <p:column id="no" headerText="Amount" >
+                            <h:outputText value="" />
+
+                        </p:column>
+
+
+
+
+                    </p:dataTable>
+                </p:panel>
+
+            </p:dialog>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

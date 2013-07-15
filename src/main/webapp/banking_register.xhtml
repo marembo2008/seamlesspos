@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Banking</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+
+                    <p:panel>
+                        <p:dataTable id="dataTable" var="v"
+                                     value="#{bankBean.carsSmall}"
+
+                                     emptyMessage="No Student found"
+                                     paginator="false"
+                                     rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                            <f:facet name="header">
+
+                                <p:outputPanel>
+
+
+                                    <p:inputText id="cSaleNo" style="float: left; height: 19px;"/>
+                                    <p:commandButton value="Search" style="float: left;"/>
+                                    <p:watermark value="Enter Bank Slip No." for="cSaleNo"/>
+                                    
+                                     <p:selectOneButton value="" style="float: right;">
+                                    <f:selectItem itemLabel="All" itemValue="1"/>
+                                    <f:selectItem itemLabel="Cash" itemValue="2"/>
+                                    <f:selectItem itemLabel="Cheque" itemValue="2"/>
+                                </p:selectOneButton>
+
+
+                                </p:outputPanel>
+                            </f:facet>
+
+
+
+                            <p:column style="width:4%">
+                                <p:rowToggler />
+                            </p:column>
+
+                            <p:column id="no" headerText="Slip No" >
+                                <h:outputText value="#{v.year * 98876}" />
+
+                            </p:column>
+
+                            <p:column id="batch" headerText="Bank"  >
+                                <h:outputText value="#{v.manufacturer}" />
+
+                            </p:column>
+                            <p:column id="name" headerText="Branch" >
+                                <h:outputText value="#{v.color}" />
+
+                            </p:column>
+                            <p:column id="uPrice" headerText="Account No" >
+                                <h:outputText value="#{v.year *324745}" />
+
+                            </p:column>
+
+                            <p:column id="Qty" headerText="Drawer" >
+                                <h:outputText value="Amaco Merchants LTD" />
+
+                            </p:column>
+
+                            <p:column id="no" headerText="Date" >
+                                <h:outputText value="Wednesday, June 19 2013" />
+
+                            </p:column>
+                            <p:column id="no" headerText="Amount" footerText="456,210.00" >
+                                <h:outputText value="#{v.year * 4099}" />
+                               
+                            </p:column>
+                          
+                            <p:column id="no" headerText="Deposited By" >
+                                <h:outputText value="S. M Wanjigi" />
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                        <br/>
+
+                    </p:panel>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

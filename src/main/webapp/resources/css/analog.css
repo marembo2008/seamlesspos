@@ -1,0 +1,54 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.analog {
+	position: relative;
+	width: 70px;
+  margin: auto;
+	background: url('/seamlesspos/resources/images/clockface.jpg');
+  background-size: 100% 100%;
+	list-style: none;
+}
+
+.analog,.analog .hour,.analog .min,.analog .sec {
+	height: 70px;
+}
+
+.analog .hour,.analog .min,.analog .sec {
+	position: absolute;
+	width: 8px;
+	top: 0;
+	left: 70.5px;
+  padding: 0;
+}
+
+.analog .sec {
+	background: url(/seamlesspos/resources/images/sechand.png);
+	z-index: 3;
+}
+
+.analog .min {
+	background: url(/seamlesspos/resources/images/minhand.png);
+	z-index: 2;
+}
+
+.analog .hour {
+	background: url(/seamlesspos/resources/images/hourhand.png);
+	z-index: 1;
+}
+
+.title {
+	font-size: 11px;
+	font-weight: bold;
+	color: #333;
+}
+
+.analog .meridiem {
+	margin-top: 90px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #333333;
+  display: inline-block;
+}

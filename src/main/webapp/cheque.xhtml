@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Reverse Cheque</title>
+
+        <style type="text/css">
+            .ui-layout-north {
+                z-index: 20 !important;
+                overflow: visible !important;;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: visible !important;
+            }
+
+            .basicList td {
+                border-style: hidden !important;
+            }
+
+            .ui-widget,.ui-widget .ui-widget {
+                font-size: 94% !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form>
+
+            <p:layout fullPage="true">
+
+
+                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
+                    <p:dataTable id="dataTable" var="v"
+                                 value="#{chequeBean.carsSmall}"
+
+                                 emptyMessage="No Student found"
+                                 paginator="true"
+                                 rows="8"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+
+
+                        <f:facet name="header">
+
+                            <p:outputPanel>
+                                <p:selectOneMenu value="" editable="true"
+                                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px; float: left;">
+                                    <f:selectItem itemLabel="545564564" itemValue="" />
+                                    <f:selectItem itemLabel="564565622" itemValue="" />
+                                    <f:selectItem itemLabel="973345865" itemValue="" />
+                                    <f:selectItem itemLabel="774411253" itemValue="" />
+
+
+                                </p:selectOneMenu>
+                                <p:commandButton value=">>" style="float: left;"/>
+
+                                <p:selectOneButton value="" style="float: right;">
+                                    <f:selectItem itemLabel="Incoming" itemValue="1"/>
+                                    <f:selectItem itemLabel="Outgoing" itemValue="2"/>
+                                </p:selectOneButton>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+
+                        <p:column style="width:4%">
+                            <p:rowToggler />
+                        </p:column>
+
+                        <p:column id="batch" headerText="No." style="width:10%">
+                            <h:outputText value="#{v.color}" />
+
+                        </p:column>
+                        <p:column id="name" headerText="Bank" >
+                            <h:outputText value="#{v.manufacturer}" />
+
+                        </p:column>
+                        <p:column id="no" headerText="Amount" >
+                            <h:outputText value="#{v.year * 23}.00" />
+
+                        </p:column>
+
+                        <p:column id="no" headerText="Date" >
+                            <h:outputText value="Wednesday, June 19 2013" />
+
+                        </p:column>
+
+
+                        <p:column style="width:10%">
+                            <p:inputTextarea cols="20" rows="1"/>
+
+                        </p:column>
+
+                        <p:column style="width:10%">
+                            <p:commandButton value="Reverse"/>
+
+                        </p:column>
+                    </p:dataTable>
+
+                </p:layoutUnit>
+
+
+
+
+                <p:layoutUnit id="top" position="north" size="80">
+                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
+
+
+                </p:layoutUnit>
+
+
+                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
+                    <h:outputText value=" &copy; Intech Logistics 2013"/>
+
+                </p:layoutUnit>
+
+                <p:layoutUnit id="left" position="west" size="180" resizable="true"
+                              closable="true" collapsible="true" 
+                              minSize="200" style="">
+
+                </p:layoutUnit>
+            </p:layout>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

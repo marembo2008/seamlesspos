@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">New Product</ui:define>
+    <ui:define name="body">
+      <p:dataTable id="clientViewPanel" var="s"
+                   emptyMessage="You have no client yet. Add clients using the left panel"
+                   value="#{clientController.clients}"
+                   selectionMode="single">
+        <f:facet name="header">
+          <p:accordionPanel id="newClientPanel" activeIndex="#{clientController.activeIndex}">
+            <p:tab title="Client Information">
+              <h:form id="newClientForm">
+                <p:panel header="Basic Details">
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <h:outputLabel value="Code: " for="client_code"/>
+                    <h:outputText id="client_code" value="#{clientController.client.id}" style="width: 90%"/>
+                    <p:outputLabel value="Name: " for="client_name"/>
+                    <p:inputText id="client_name" value="#{clientController.client.name}" style="width: 90%"/>
+                  </p:panelGrid>
+                </p:panel>
+                <p:panel header="Address Details">
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Postal Address: " for="postal_address"/>
+                    <p:inputTextarea id="postal_address" value="#{clientController.client.address.postalAddress}"  style="width: 90%"/>
+                    <p:outputLabel value="City: " for="city"/>
+                    <p:inputText id="city" value="#{clientController.client.address.city}" style="width: 90%"/>
+                    <p:outputLabel value="Telephone Number: " for="telephone_number"/>
+                    <p:inputText id="telephone_number" value="#{clientController.client.address.telephoneNumber}" style="width: 90%"/>
+                    <p:outputLabel value="Email: " for="email"/>
+                    <p:inputText id="email" value="#{clientController.client.address.email}" style="width: 90%"/>
+                  </p:panelGrid>
+                  <p:separator style="width: 100%; height: 2px"/>
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Opening Balance: " for="opening_balance"/>
+                    <p:inputText id="opening_balance" value="#{clientController.client.openingBalance}" style="width: 90%"/>
+                    <p:outputLabel value="Credit Limit: " for="creditLimit"/>
+                    <p:inputText id="creditLimit" value="#{clientController.client.creditLimit}" style="width: 90%"/>
+                  </p:panelGrid>
+                </p:panel>
+                <p:panel header="Options">
+                  <p:commandButton value="Save" actionListener="#{clientController.create()}"
+                                   update="@form :clientViewPanel"
+                                   rendered="#{clientController.newClient}"/>
+                  <p:commandButton value="Update" actionListener="#{clientController.update()}"
+                                   update="@form :clientViewPanel"
+                                   rendered="#{not clientController.newClient}"/>
+                  <p:commandButton value="Cancel" partialSubmit="true" process="@this" actionListener="#{clientController.prepareCreate()}"/>
+                </p:panel>
+              </h:form>
+            </p:tab>
+          </p:accordionPanel>
+        </f:facet>
+        <p:ajax event="rowSelect" listener="#{clientController.clientSelected}" update=":clientViewPanel:newClientPanel"/>
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Client Code" >
+          <h:outputText value="#{s.id}" />
+        </p:column>
+        <p:column headerText="Name" >
+          <h:outputText value="#{s.name}" />
+        </p:column>
+        <p:column headerText="Address" >
+          <h:outputText value="#{s.address.postalAddress}" />
+        </p:column>
+        <p:column headerText="City" >
+          <h:outputText value="#{s.address.city}" />
+        </p:column>
+        <p:column headerText="Credit Limit">
+          <h:outputText value="#{s.creditLimit}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:rowExpansion>
+          <p:panel header="#{s.name} Address Information">
+            <p:panelGrid columns="2" style="width: 100%">
+              <h:outputLabel value="Postal Address: " for="postal_address"/>
+              <h:outputText id="postal_address" value="#{s.address.postalAddress}"  style="width: 90%"/>
+              <h:outputLabel value="City: " for="city"/>
+              <h:outputText id="city" value="#{s.address.city}" style="width: 90%"/>
+              <h:outputLabel value="Telephone Number: " for="telephone_number"/>
+              <h:outputText id="telephone_number" value="#{s.address.telephoneNumber}" style="width: 90%"/>
+              <h:outputLabel value="Email: " for="email"/>
+              <h:outputText id="email" value="#{s.address.email}" style="width: 90%"/>
+            </p:panelGrid>
+          </p:panel>
+        </p:rowExpansion>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>
+

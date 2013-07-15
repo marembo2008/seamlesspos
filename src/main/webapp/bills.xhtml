@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="seamless_template.xhtml">
+    <ui:define name="title">Seamless POS</ui:define>
+    <ui:define name="body">
+      <style type="text/css">
+        .ui-datatable .ui-datatable-header{
+          text-align: left;
+        }
+      </style>
+      <p:panel id="storeViewPanel">
+        <f:facet name="header">
+          <h:form>
+            <p:accordionPanel activeIndex="-1" >
+              <p:tab title="Add Store">
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Name: " for="store_name"/>
+                  <p:inputText id="store_name" value="#{storeController.store.name}" required="true" requiredMessage="You must enter store name"/>
+                  <p:outputLabel value="Location: " for="store_location"/>
+                  <p:inputText id="store_location" value="#{storeController.store.location}"/>
+                </p:panelGrid>
+                <p:commandButton value="Add Store" actionListener="#{storeController.create()}"
+                                 update=":storeViewTable @form"  />
+              </p:tab>
+            </p:accordionPanel>
+          </h:form>
+        </f:facet>
+        <p:dataTable id="storeViewTable" var="s"
+                     value="#{storeController.stores}"
+                     emptyMessage="You have no stores created yet"
+                     sortBy="#{s.defaultSortKey}">
+          <p:column style="width:4%">
+            <h:form>
+              <p:rowToggler />
+            </h:form>
+          </p:column>
+          <p:column id="no" headerText="Outlet" >
+            <h:outputText value="#{s.name}" />
+          </p:column>
+          <p:column id="batch" headerText="Location"  >
+            <h:outputText value="#{s.location}" />
+          </p:column>
+          <p:column id="name" headerText="Sales" style="text-align: right;">
+            <h:outputText value="#{storeController.getStoreSales(s)}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:column id="uPrice" headerText="Purchases" style="text-align: right;">
+            <h:outputText value="#{storeController.getStorePurchases(s)}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:column id="Qty" headerText="Net Worth" style="text-align: right;">
+            <h:outputText value="#{storeController.getStoreNetworth(s)}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:summaryRow>
+            <p:column colspan="3" style="text-align: right">
+              Summary:
+            </p:column>
+            <p:column style="text-align: right">
+              <h:outputText value="#{storeController.getTotalStoreSales()}" converter="bigDecimalConverter"/>
+            </p:column>
+            <p:column style="text-align: right">
+              <h:outputText value="#{storeController.getTotalStorePurchases()}" converter="bigDecimalConverter"/>
+            </p:column>
+            <p:column style="text-align: right">
+              <h:outputText value="#{storeController.getTotalStoreNetworth()}" converter="bigDecimalConverter"/>
+            </p:column>
+          </p:summaryRow>
+        </p:dataTable>
+      </p:panel>
+      <p:panel rendered="false">
+        <h:panelGrid columns="2">
+          <p:dataTable id="dataTable2" var="v"
+                       value="#{tableBean.carsSmall}"
+                       emptyMessage="No Student found"
+                       paginator="false"
+                       rows="5"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
+            <f:facet name="header">
+              <p:outputPanel>
+                <h:outputText value="Employees"/>
+                <p:selectOneMenu id="outlet" value="" editable="true"
+                                 style="width:150px; font-size:100%; margin:0px 0px 0px 0px; float: left;">
+                  <f:selectItem itemLabel="Makongeni" itemValue="" />
+                  <f:selectItem itemLabel="Stage" itemValue="" />
+                  <f:selectItem itemLabel="Town" itemValue="" />
+                </p:selectOneMenu>
+                <p:watermark value="Select Outlet" for="outlet"/>
+              </p:outputPanel>
+            </f:facet>
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column id="no" headerText="Name" width="200">
+              <h:outputText value="#{v.color}" />
+            </p:column>
+            <p:column id="batch" headerText="Outlet"  width="150">
+              <h:outputText value="#{v.manufacturer}" />
+            </p:column>
+            <p:column id="name" headerText="Time In"  width="150">
+              <h:outputText value="11:06 PM" />
+            </p:column>
+          </p:dataTable>
+          <p:dataTable id="dataTable3" var="v"
+                       value="#{visitorController.visitors}"
+                       emptyMessage="No Student found"
+                       paginator="false"
+                       rows="5"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" style="float: right
+                       ">
+            <f:facet name="header">
+              <p:outputPanel>
+                <h:outputText value="Activity Logs"/>
+                <p:selectOneMenu id="outlet" value="" editable="true"
+                                 style="width:150px; font-size:100%; margin:0px 0px 0px 0px; float: left;">
+                  <f:selectItem itemLabel="Makongeni" itemValue="" />
+                  <f:selectItem itemLabel="Stage" itemValue="" />
+                  <f:selectItem itemLabel="Town" itemValue="" />
+                </p:selectOneMenu>
+                <p:watermark value="Select Outlet" for="outlet"/>
+                <p:calendar id="dat" style="float: right;"/>
+                <p:watermark value="Filter By Date" for="dat"/>
+              </p:outputPanel>
+            </f:facet>
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column id="no" headerText="Time">
+              <h:outputText value="" />
+            </p:column>
+            <p:column id="batch" headerText="Activity" >
+              <h:outputText value="" />
+            </p:column>
+            <p:column id="name" headerText="Outlet" >
+              <h:outputText value="" />
+            </p:column>
+          </p:dataTable>
+        </h:panelGrid>
+      </p:panel>
+    </ui:define>
+  </ui:composition>
+</html>
+
