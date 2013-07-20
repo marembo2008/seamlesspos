@@ -10,13 +10,14 @@ import java.util.Calendar;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * An everyday activity logs for the employees
@@ -34,7 +35,8 @@ public class EmployeeActivity implements Serializable {
   private Employee employee;
   @Temporal(javax.persistence.TemporalType.TIMESTAMP)
   private Calendar timeIn;
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL)
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<ActivityLog> activityLogs;
 
   public Long getActivityId() {

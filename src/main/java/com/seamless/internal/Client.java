@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -24,8 +23,6 @@ public class Client extends BusinessPartner implements Serializable {
   private static final long serialVersionUID = 32252920781L;
   private BigDecimal creditLimit;
   private BigDecimal openingBalance;
-  @OneToOne
-  private Employee salesman;
 
   public void setOpeningBalance(BigDecimal openingBalance) {
     this.openingBalance = openingBalance;
@@ -41,13 +38,5 @@ public class Client extends BusinessPartner implements Serializable {
 
   public void setCreditLimit(BigDecimal creditLimit) {
     this.creditLimit = creditLimit;
-  }
-
-  public Employee getSalesman() {
-    return salesman;
-  }
-
-  public void setSalesman(Employee salesman) {
-    this.salesman = salesman;
   }
 }

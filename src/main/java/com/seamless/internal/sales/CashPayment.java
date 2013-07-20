@@ -7,7 +7,6 @@ package com.seamless.internal.sales;
 import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Client;
 import com.seamless.internal.sales.util.PaymentOption;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Entity;
 
@@ -16,7 +15,7 @@ import javax.persistence.Entity;
  * @author marembo
  */
 @Entity
-public class CashPayment extends Payment implements Serializable {
+public class CashPayment extends Payment {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(CashPayment.class);
 

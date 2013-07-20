@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
  * @author marembo
  */
 @Entity
-public class CreditPayment extends Payment implements Serializable {
+public class CreditPayment extends Payment {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(CreditPayment.class);
   @Temporal(javax.persistence.TemporalType.DATE)

@@ -4,7 +4,8 @@
  */
 package com.seamless.internal.facade;
 
-import com.seamless.internal.BusinessPartnerInfo;
+import com.seamless.internal.Vehicle;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +15,8 @@ import javax.persistence.PersistenceContext;
  * @author marembo
  */
 @Stateless
-public class BusinessPartnerInfoFacade extends AbstractFacade<BusinessPartnerInfo> {
+public class VehicleFacade extends AbstractFacade<Vehicle> {
+
   @PersistenceContext(unitName = "com.seamless_seamlesspos_war_1.0-SNAPSHOTPU")
   private EntityManager em;
 
@@ -23,8 +25,14 @@ public class BusinessPartnerInfoFacade extends AbstractFacade<BusinessPartnerInf
     return em;
   }
 
-  public BusinessPartnerInfoFacade() {
-    super(BusinessPartnerInfo.class);
+  public VehicleFacade() {
+    super(Vehicle.class);
   }
 
+  public List<Vehicle> searchVehicles(String query) {
+    return getEntityManager()
+            .createNamedQuery("VEHICLE.SEARCH_VEHICLE")
+            .setParameter("regNumber", "%" + query + "%")
+            .getResultList();
+  }
 }

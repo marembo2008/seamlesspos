@@ -10,8 +10,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -21,7 +22,8 @@ import javax.persistence.OneToMany;
 public class MixedItem extends Item implements Serializable {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(MixedItem.class);
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL)
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<Item> items;
 
   public List<Item> getItems() {

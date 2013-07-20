@@ -40,7 +40,7 @@ public class SaleFacade extends AbstractFacade<Sale> {
   }
 
   public Sale lastSale() {
-    String sql = "SELECT * FROM SALE ORDER BY SALEDATE DESC, RECEIPTNUMBER DESC";
+    String sql = "SELECT * FROM Sale ORDER BY SALEDATE DESC, RECEIPTNUMBER DESC";
     try {
       return (Sale) getEntityManager()
               .createNativeQuery(sql, Sale.class)

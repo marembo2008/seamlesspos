@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:accordionPanel activeIndex="-1">
+        <p:tab title="Vehicle">
+          <h:form>
+            <p:panelGrid columns="2" style="width: 100%">
+              <p:outputLabel value="Vehicle Registration Number" for="regNumber"/>
+              <p:inputText id="regNumber" value="#{vehicleController.vehicle.registrationNumber}" required="true"
+                           requiredMessage="You must enter the registration number of the vehicle"/>
+            </p:panelGrid>
+            <p:separator/>
+            <p:commandButton value="Save" actionListener="#{vehicleController.saveVehicle()}"
+                             update=":vehicleTable @form"/>
+          </h:form>
+        </p:tab>
+      </p:accordionPanel>
+      <p:separator style="margin: 20px 0px"/>
+      <p:dataTable id="vehicleTable" value="#{vehicleController.vehicles}" var="v"
+                   emptyMessage="There are no vehicle records yet">
+        <p:column style="width: 30px">
+          <p:rowToggler/>
+        </p:column>
+        <p:column headerText="Vehicle Registration Number">
+          <h:outputText value="#{v}"/>
+        </p:column>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>

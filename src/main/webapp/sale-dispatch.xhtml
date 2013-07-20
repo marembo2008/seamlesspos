@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+
+      <p:panel id="saleDispatchPanel" style="margin-bottom: 10px">
+        <f:facet name="header">
+          <h:outputText value="Sale Dispatch Information" style="font-size: 17px; font-weight: bold"/>
+          <p:separator/>
+          <h:panelGroup layout="block"
+                        style="width: 99%; height:  29px; padding-top: 10px; border-radius: 5px; background: #ada; text-align: left; padding-left: 10px">
+            <h:outputText value="Sale Dispatch Id:" style="margin-right: 60px;"/>
+            <h:outputText value="#{saleDispatchController.dispatch.id}"/>
+          </h:panelGroup>
+          <p:separator style="margin-bottom: 10px"/>
+          <h:form>
+            <p:watermark value="Search Sales Person (Name or Employee Number)" for="dispatchEmployee"/>
+            <p:watermark value="Search Dispatch Vehicle" for="dispatchVehicle"/>
+            <p:panelGrid columns="2" style="width: 100%">
+              <h:outputLabel value="Sales Enployee" for="dispatchEmployee"/>
+              <p:autoComplete id="dispatchEmployee" value="#{saleDispatchController.dispatch.dispatchEmployee}"
+                              completeMethod="#{employeeController.searchEmployees}"
+                              dropdown="true" var="e" itemValue="#{e}" itemLabel="#{e.name}"
+                              converter="employeeConverter" required="true"
+                              minQueryLength="1" forceSelection="true" queryDelay="100"
+                              rendered="#{saleDispatchController.editBasicInfo}"/>
+              <h:outputText value="#{saleDispatchController.dispatch.dispatchEmployee}"
+                            rendered="#{not saleDispatchController.editBasicInfo}"/>
+              <h:outputLabel value="Dispatch Vehicle" for="dispatchVehicle"/>
+              <p:autoComplete id="dispatchVehicle" value="#{saleDispatchController.dispatch.dispatchVehicle}"
+                              completeMethod="#{vehicleController.searchVehilces}"
+                              dropdown="true" var="v" itemValue="#{v}" itemLabel="#{v.registrationNumber}"
+                              converter="vehicleConverter" required="true"
+                              minQueryLength="1" forceSelection="true" queryDelay="100"
+                              rendered="#{saleDispatchController.editBasicInfo}"/>
+              <h:outputText value="#{saleDispatchController.dispatch.dispatchVehicle}"
+                            rendered="#{not saleDispatchController.editBasicInfo}"/>
+              <h:outputLabel value="Dispatch Date" for="dispatchDate"/>
+              <p:calendar id="dispatchDate" value="#{saleDispatchController.dispatch.saleDispatchDate}"
+                          pattern="yyyy-mm-dd" converter="dateConverter" required="true"
+                          rendered="#{saleDispatchController.editBasicInfo}"/>
+              <h:outputText value="#{saleDispatchController.dispatch.saleDispatchDate}"
+                            rendered="#{not saleDispatchController.editBasicInfo}"
+                            converter="dateConverter"/>
+              <p:commandButton value="Accept" actionListener="#{saleDispatchController.acceptBasicInfo()}"
+                               partialSubmit="true" process="@form"
+                               update="@form" rendered="#{saleDispatchController.editBasicInfo}"/>
+              <p:commandButton value="Edit" icon="ui-icon-plusthick" actionListener="#{saleDispatchController.doEditBasicInfo()}"
+                               partialSubmit="true" process="@form"
+                               update="@form" rendered="#{not saleDispatchController.editBasicInfo}"/>
+              <h:outputText/>
+            </p:panelGrid>
+          </h:form>
+        </f:facet>
+        <p:separator style="margin: 10px 0px"/>
+        <p:dataTable id="saleDispatchTable"
+                     value="#{saleDispatchController.dispatchOrders}"
+                     var="d" sortBy="#{saleDispatchController.totalOrderPrice}">
+          <f:facet name="header">
+            <h:form>
+              <p:watermark value="Dispatch Item" for="item"/>
+              <p:panelGrid columns="1" style="width: 100%">
+                <p:outputLabel id="dispatchItemLable" value="Dispatch Item: {#{saleDispatchController.itemsAvailable}}" for="item"/>
+                <h:panelGroup layout="block" style="width: 100%">
+                  <p:autoComplete id="item" value="#{saleDispatchController.currentSelectDispatchOrder.item}"
+                                  completeMethod="#{saleDispatchController.searchItems}"
+                                  var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                  converter="itemConverter"
+                                  required="true"
+                                  minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+                    <p:ajax event="itemSelect" update="dispatchItemLable sellingPriceOption"/>
+                  </p:autoComplete>
+                  <br/>
+                  <p:separator/>
+                  <h:outputText value="Selling Price" style="font-size: 12px; font-weight: bold"/>
+                  <br/>
+                  <p:selectOneRadio id="sellingPriceOption" value="#{saleDispatchController.currentSelectDispatchOrder.sellingPrice}">
+                    <f:selectItems value="#{saleDispatchController.salePriceOptions}"/>
+                  </p:selectOneRadio>
+                </h:panelGroup>
+                <p:outputLabel value="Dispatch Quantity" for="dispatchQuantity"/>
+                <p:inputText id="dispatchQuantity" value="#{saleDispatchController.currentSelectDispatchOrder.quantity}"
+                             required="true" validator="#{saleDispatchController.checkDispatchedQuantity}"/>
+                <p:commandButton value="Add" actionListener="#{saleDispatchController.addItemDispatch()}"
+                                 update= ":saleDispatchTable @form"/>
+
+              </p:panelGrid>
+            </h:form>
+          </f:facet>
+          <f:facet name="footer">
+            <h:form>
+              <h:panelGroup id="testPanel" layout="block" style="width: 100%; text-align: right">
+                <p:commandButton value="Cancel"
+                                 actionListener="#{saleDispatchController.cancel()}"
+                                 update=":saleDispatchPanel"/>
+                <p:commandButton value="Dispatch"
+                                 actionListener="#{saleDispatchController.dispatchSales()}"
+                                 update=":saleDispatchPanel"/>
+                <h:commandButton value="Print" styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                 type="button" style="height: 32px; width: 80px">
+                  <p:printer target=":saleDispatchPanel"/>
+                </h:commandButton>
+              </h:panelGroup>
+            </h:form>
+          </f:facet>
+          <p:column id="batch" headerText="#" style="width:10%" >
+            <h:outputText value="#{d.item.itemCode}" />
+          </p:column>
+          <p:column  headerText="Description" >
+            <h:outputText value="#{d.item.name}" />
+          </p:column>
+          <p:column  headerText="Dispatched Quantity" >
+            <h:outputText value="#{d.quantity}" />
+          </p:column>
+          <p:column  headerText="Unit Price" >
+            <h:outputText value="#{d.item.price1}" />
+          </p:column>
+          <p:column  headerText="Tax" >
+            <h:outputText value="#{d.tax}" />
+          </p:column>
+          <p:column  headerText="Net Selling Price" style="text-align: right">
+            <h:outputText value="#{d.netPrice}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:summaryRow>
+            <p:column style="text-align: right" colspan="5">
+              <h:outputText value="Total Dispatch Order"/>
+            </p:column>
+            <p:column style="text-align: right">
+              <h:outputText value="#{saleDispatchController.getTotalOrderPrice()}"
+                            converter="bigDecimalConverter"/>
+            </p:column>
+          </p:summaryRow>
+        </p:dataTable>
+      </p:panel>
+    </ui:define>
+  </ui:composition>
+</html>
+

@@ -7,7 +7,6 @@ package com.seamless.internal.sales;
 import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Client;
 import com.seamless.internal.sales.util.PaymentOption;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ import javax.persistence.Temporal;
  * @author marembo
  */
 @Entity
-public class ChequePayment extends Payment implements Serializable {
+public class ChequePayment extends Payment {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(ChequePayment.class);
   private String chequeNumber;

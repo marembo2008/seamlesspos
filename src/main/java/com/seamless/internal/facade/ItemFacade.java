@@ -5,8 +5,7 @@
 package com.seamless.internal.facade;
 
 import com.seamless.internal.Item;
-import com.seamless.internal.Store;
-import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,6 +38,20 @@ public class ItemFacade extends AbstractFacade<Item> {
   public List<Item> searchItems(String query) {
     return getEntityManager()
             .createNamedQuery("item.search_items_by_name")
+            .setParameter("name", "%" + query + "%")
+            .getResultList();
+  }
+
+  public List<Item> searchItems(String query, Collection<Item> itemsToIgnore) {
+    String sql = "SELECT i FROM Item i WHERE i.name LIKE :name ";
+    if (itemsToIgnore != null && !itemsToIgnore.isEmpty()) {
+      for (Item i : itemsToIgnore) {
+        sql += " AND i.itemId != " + i.getItemId();
+      }
+    }
+    System.err.println(sql);
+    return getEntityManager()
+            .createQuery(sql)
             .setParameter("name", "%" + query + "%")
             .getResultList();
   }

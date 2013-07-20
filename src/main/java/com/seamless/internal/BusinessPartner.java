@@ -21,7 +21,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class BusinessPartner implements Serializable {
+public abstract class BusinessPartner implements Serializable {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(BusinessPartner.class);
   @Id

@@ -25,6 +25,7 @@ public class Address implements Serializable {
   private String city;
   private String telephoneNumber;
   private String email;
+  private String website;
 
   public Long getAddressId() {
     return addressId;
@@ -32,6 +33,14 @@ public class Address implements Serializable {
 
   public void setAddressId(Long addressId) {
     this.addressId = addressId;
+  }
+
+  public void setWebsite(String website) {
+    this.website = website;
+  }
+
+  public String getWebsite() {
+    return website;
   }
 
   public String getPostalAddress() {

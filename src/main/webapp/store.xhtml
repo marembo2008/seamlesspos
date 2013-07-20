@@ -20,9 +20,21 @@
               <p:tab title="Add Store">
                 <p:panelGrid columns="2" style="width: 100%">
                   <p:outputLabel value="Name: " for="store_name"/>
-                  <p:inputText id="store_name" value="#{storeController.store.name}" required="true" requiredMessage="You must enter store name"/>
+                  <p:inputText id="store_name" value="#{storeController.store.name}"
+                               required="true" requiredMessage="You must enter store name"/>
                   <p:outputLabel value="Location: " for="store_location"/>
                   <p:inputText id="store_location" value="#{storeController.store.location}"/>
+                  <p:outputLabel value="Postal Address:" for="postalAddress"/>
+                  <p:inputText id="postalAddress" required="true" requiredMessage="You must enter the store address"
+                               value="#{storeController.store.storeAddress.postalAddress}"/>
+                  <p:outputLabel value="City:" for="store_city"/>
+                  <p:inputText id="store_city" value="#{storeController.store.storeAddress.city}"/>
+                  <p:outputLabel value="Telephone Number:" for="telephoneNumber"/>
+                  <p:inputText id="telephoneNumber" value="#{storeController.store.storeAddress.telephoneNumber}"/>
+                  <p:outputLabel value="Email:" for="store_email"/>
+                  <p:inputText id="store_email" value="#{storeController.store.storeAddress.email}"/>
+                  <p:outputLabel value="Website:" for="store_website"/>
+                  <p:inputText id="store_website" value="#{storeController.store.storeAddress.website}"/>
                 </p:panelGrid>
                 <p:commandButton value="Add Store" actionListener="#{storeController.create()}"
                                  update=":storeViewTable @form"  />
@@ -35,9 +47,7 @@
                      emptyMessage="You have no stores created yet"
                      sortBy="#{s.defaultSortKey}">
           <p:column style="width:4%">
-            <h:form>
-              <p:rowToggler />
-            </h:form>
+            <p:rowToggler />
           </p:column>
           <p:column id="no" headerText="Outlet" >
             <h:outputText value="#{s.name}" />
@@ -54,6 +64,21 @@
           <p:column id="Qty" headerText="Net Worth" style="text-align: right;">
             <h:outputText value="#{storeController.getStoreNetworth(s)}" converter="bigDecimalConverter"/>
           </p:column>
+          <p:rowExpansion>
+            <p:panelGrid columns="2" style="width: 100%">
+              <h:outputLabel value="Postal Address:" for="postalAddress"/>
+              <h:outputText id="postalAddress"
+                            value="#{s.storeAddress.postalAddress}"/>
+              <h:outputLabel value="City:" for="store_city"/>
+              <h:outputText id="store_city" value="#{s.storeAddress.city}"/>
+              <h:outputLabel value="Telephone Number:" for="telephoneNumber"/>
+              <h:outputText id="telephoneNumber" value="#{s.storeAddress.telephoneNumber}"/>
+              <h:outputLabel value="Email:" for="store_email"/>
+              <h:outputText id="store_email" value="#{s.storeAddress.email}"/>
+              <h:outputLabel value="Website:" for="store_website"/>
+              <h:outputText id="store_website" value="#{s.storeAddress.website}"/>
+            </p:panelGrid>
+          </p:rowExpansion>
           <p:summaryRow>
             <p:column colspan="3" style="text-align: right">
               Summary:

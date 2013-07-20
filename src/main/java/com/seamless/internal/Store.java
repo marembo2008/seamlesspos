@@ -5,12 +5,14 @@
 package com.seamless.internal;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 /**
@@ -29,8 +31,14 @@ public class Store implements Serializable {
   private Long storeId;
   private String name;
   private String location;
+  @OneToOne(cascade = CascadeType.ALL)
+  private Address storeAddress;
   @Transient
   private int defaultSortKey = 0;
+
+  public Store() {
+    storeAddress = new Address();
+  }
 
   public Long getStoreId() {
     return storeId;
@@ -42,6 +50,14 @@ public class Store implements Serializable {
 
   public void setStoreId(Long storeId) {
     this.storeId = storeId;
+  }
+
+  public void setStoreAddress(Address storeAddress) {
+    this.storeAddress = storeAddress;
+  }
+
+  public Address getStoreAddress() {
+    return storeAddress;
   }
 
   public String getName() {

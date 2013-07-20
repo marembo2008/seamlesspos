@@ -3,204 +3,120 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Employees</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-                    <p:panel header="Employee's Details">
-                        <table>
-                            <tr>
-                                <td><h:outputText value="Staff No:"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Surname:"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Title"/></td>
-                                <td><p:inputText/></td>
-                                
-                                
-                            </tr>
-                            <tr>
-                                <td><h:outputText value="ID No:"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Full Name"/></td>
-                                <td><p:inputText/></td>
-                                
-                                <td><h:outputText value="Hire Date:"/></td>
-                                <td><p:inputText/></td>
-                                
-                                
-                            </tr>
-                            
-                            <tr>
-                                <td><h:outputText value="Sales Comm %"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Username"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Gender"/></td>
-                                <td><p:inputText/></td>
-                                
-                                
-                            </tr>
-                            <tr>
-                                <td><h:outputText value="Basic Salary"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Password"/></td>
-                                <td><p:inputText/></td>
-                                
-                                <td><h:outputText value="Department"/></td>
-                                <td><p:inputText/></td>
-                               
-                            </tr>
-                            <tr>
-                                <td><h:outputText value="Cash At Hand"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Address"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Sales Mode"/></td>
-                                <td><p:inputText/></td>
-                                
-                            </tr>
-                            <tr>
-                                <td><h:outputText value="Bank Acc No."/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="City"/></td>
-                                <td><p:inputText/></td>
-                                <td><h:outputText value="Comm Earned"/></td>
-                                <td><p:inputText/></td>
-                                
-                                
-                            </tr>
-                            <tr>
-                                <td colspan="2"><h:outputText value="Last Salary Increase Date"/></td>
-                                <td><p:calendar/></td>
-                                
-                                 
-                            </tr>
-                            <tr>
-                                <td><h:outputText value="Added Info."/></td>
-                                <td><p:calendar/></td>
-                            </tr>
-                        </table>
-                    </p:panel>
-                    <p:panel header="User Privilleges Access Level">
-                        <p:commandButton value="Set Access Privelleges"/>
-                    </p:panel>
-                    <p:commandButton value="Add New"/>
-                    <p:commandButton value="Delete"/>
-                    <p:commandButton value="Close"/>
-                    <p:panel header="Details">
-                        <p:dataTable id="dataTableAccounts" var="v"
-                                     value="#{visitorController.visitors}"
-
-                                     emptyMessage="No Student found"
-                                     paginator="false"
-                                     rows="10"
-                                     paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
-                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-
-
-                            <p:column style="width:4%">
-                                <p:rowToggler />
-                            </p:column>
-
-                            <p:column id="eid" headerText="Emp Id" >
-                                <h:outputText value="" />
-
-                            </p:column>
-                            <p:column id="fname" headerText="First Name" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="lName" headerText="Last Name" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="dept" headerText="Department" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="sal" headerText="Basic Salary" >
-                                <h:outputText value="" />
-
-                            </p:column>
-                            
-                            <p:column id="com" headerText="%" >
-                                <h:outputText value="" />
-
-                            </p:column>
-                            
-                            <p:column id="sale" headerText="Sales" >
-                                <h:outputText value="" />
-
-                            </p:column>
-                            
-                            <p:column id="cash" headerText="Cash" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-
-                        </p:dataTable>
-                    </p:panel>
-                    
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logistics 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:accordionPanel id="employeePanel" activeIndex="-1">
+        <p:tab title="Employee Details">
+          <h:form>
+            <p:panelGrid columns="2" style="width: 100%">
+              <p:outputLabel value="Employee Number" for="employeeNumber"/>
+              <p:inputText id="employeeNumber" value="#{employeeController.currentEmployee.employeeNumber}"
+                           required="true"/>
+              <p:outputLabel value="Surname" for="surname"/>
+              <p:inputText id="surname" value="#{employeeController.currentEmployee.surname}" required="true"/>
+              <p:outputLabel value="Other Names" for="otherNames"/>
+              <p:inputText id="otherNames" value="#{employeeController.currentEmployee.otherNames}" required="true"/>
+              <p:outputLabel value="Title" for="title"/>
+              <p:inputText id="title" value="#{employeeController.currentEmployee.title}" />
+              <p:outputLabel value="Id" for="id"/>
+              <p:inputText id="id" value="#{employeeController.currentEmployee.id}" required="true"/>
+              <p:outputLabel value="Hire Date" for="hireDate"/>
+              <p:calendar id="hireDate" value="#{employeeController.currentEmployee.hiredDate}"
+                          required="true" pattern="yyyy-mm-dd" converter="dateConverter"/>
+              <p:outputLabel value="Gender" for="gender"/>
+              <p:selectOneMenu id="gender" value="#{employeeController.currentEmployee.gender}" required="true">
+                <f:selectItems value="#{employeeController.genderOption}"/>
+              </p:selectOneMenu>
+              <p:outputLabel value="Sales Commission %" for="salesCommission"/>
+              <p:inputText id="salesCommission" value="#{employeeController.currentEmployee.salesCommission}"/>
+              <p:outputLabel value="Basic Salary" for="basicSalary"/>
+              <p:inputText id="basicSalary" value="#{employeeController.currentEmployee.basicSalary}" required="true"/>
+              <p:outputLabel value="Department" for="department"/>
+              <p:inputText id="department" value="#{employeeController.currentEmployee.department}" required="true"/>
+            </p:panelGrid>
+            <p:separator/>
+            <p:accordionPanel activeIndex="0" multiple="true">
+              <p:tab title="Account Credentials">
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Username" for="username"/>
+                  <p:inputText id="username" value="#{employeeController.currentEmployee.username}"
+                               required="true"/>
+                  <p:outputLabel value="Password" for="password"/>
+                  <p:password id="password" value="#{employeeController.currentEmployee.password}"
+                              required="true"/>
+                </p:panelGrid>
+              </p:tab>
+              <p:tab title="Address Information">
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Postal Address:" for="postalAddress"/>
+                  <p:inputText id="postalAddress" required="true" requiredMessage="You must enter the store address"
+                               value="#{employeeController.currentEmployee.address.postalAddress}"/>
+                  <p:outputLabel value="City:" for="store_city"/>
+                  <p:inputText id="store_city" value="#{employeeController.currentEmployee.address.city}"/>
+                  <p:outputLabel value="Telephone Number:" for="telephoneNumber"/>
+                  <p:inputText id="telephoneNumber" value="#{employeeController.currentEmployee.address.telephoneNumber}"/>
+                  <p:outputLabel value="Email:" for="store_email"/>
+                  <p:inputText id="store_email" value="#{employeeController.currentEmployee.address.email}"/>
+                  <p:outputLabel value="Website:" for="store_website"/>
+                  <p:inputText id="store_website" value="#{employeeController.currentEmployee.address.website}"/>
+                </p:panelGrid>
+              </p:tab>
+              <p:tab title="Bank Information">
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Bank Name" for="bankName"/>
+                  <p:inputText id="bankName" value="#{employeeController.currentEmployee.accountInformation.bankName}"
+                               required="true"/>
+                  <p:outputLabel value="Bank Branch" for="bankBranch"/>
+                  <p:inputText id="bankBranch" value="#{employeeController.currentEmployee.accountInformation.branchCode}"
+                               required="true"/>
+                  <p:outputLabel value="Account Number" for="accountNumber"/>
+                  <p:inputText id="accountNumber" value="#{employeeController.currentEmployee.accountInformation.accountNumber}"
+                               required="true"/>
+                  <p:outputLabel value="Account Name" for="accountName"/>
+                  <p:inputText id="accountName" value="#{employeeController.currentEmployee.accountInformation.accountName}"
+                               required="true"/>
+                </p:panelGrid>
+              </p:tab>
+            </p:accordionPanel>
+            <p:separator style="margin: 10px 0px"/>
+            <p:commandButton value="Save"
+                             actionListener="#{employeeController.addEmployee()}"
+                             update=":employeeTable"/>
+          </h:form>
+        </p:tab>
+      </p:accordionPanel>
+      <p:panel header="Employee Details">
+        <p:dataTable id="employeeTable"
+                     value="#{employeeController.employees}"
+                     var="e"
+                     selectionMode="single"
+                     emptyMessage="No Employees found">
+          <p:column style="width:4%">
+            <p:rowToggler />
+          </p:column>
+          <p:column id="eid" headerText="Employee Number" >
+            <h:outputText value="#{e.employeeNumber}" />
+          </p:column>
+          <p:column id="fname" headerText="Surname" >
+            <h:outputText value="#{e.surname}" />
+          </p:column>
+          <p:column id="lName" headerText="Other Names" >
+            <h:outputText value="#{e.otherNames}" />
+          </p:column>
+          <p:column id="dept" headerText="Department" >
+            <h:outputText value="#{e.department}" />
+          </p:column>
+          <p:column id="sal" headerText="Basic Salary" >
+            <h:outputText value="#{e.basicSalary}" />
+          </p:column>
+          <p:column id="com" headerText="Commission %" >
+            <h:outputText value="#{e.salesCommission}%" />
+          </p:column>
+        </p:dataTable>
+      </p:panel>
+    </ui:define>
+  </ui:composition>
 </html>
 

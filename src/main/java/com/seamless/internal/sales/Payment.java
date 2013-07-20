@@ -28,13 +28,12 @@ public abstract class Payment implements Serializable {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(Payment.class);
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.TABLE)
   private Long paymentId;
   @Column(nullable = false)
   private BigDecimal paymentAmount;
   @OneToOne
   private Client client;
-  @Column(nullable = false)
   private PaymentOption paymentOption;
 
   public Payment() {
