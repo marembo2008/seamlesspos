@@ -99,6 +99,10 @@ public class SalesController implements Serializable {
     return saleItems;
   }
 
+  public int getDefaultSortOrderForSummaryRow() {
+    return 2424242;
+  }
+
   public SelectItem[] getSalePriceOptions() {
     SelectItem[] options = new SelectItem[0];
     if (getSaleItem() != null && getSaleItem().getItem() != null) {
@@ -401,6 +405,10 @@ public class SalesController implements Serializable {
   public void recallHeldSales(SelectEvent se) {
     this.sale = (Sale) se.getObject();
     this.saleItems = new SaleItemDataModel();
+  }
+
+  public List<Sale> getSales() {
+    return saleFacade.findAll();
   }
 
   Sale find(String id) {

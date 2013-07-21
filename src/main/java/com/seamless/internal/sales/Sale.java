@@ -79,6 +79,10 @@ public class Sale implements Serializable {
     receiptId_ = receiptId.toString();
   }
 
+  public String getReceiptId_() {
+    return receiptId_;
+  }
+
   public int getOrderedQuantity(Item i) {
     int orderQuantity = 0;
     for (SaleItem si : getSaleItems()) {

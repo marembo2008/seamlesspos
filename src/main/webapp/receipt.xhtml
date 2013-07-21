@@ -3,166 +3,83 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Sales</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-                    <p:panel>
-                        <p:dataTable id="dataTable" var="v"
-                                     value="#{itemBean.carsSmall}"
-
-                                     emptyMessage="No Item found"
-                                     paginator="false"
-                                     rows="10"
-                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-                            <f:facet name="header">
-
-                                <p:outputPanel>
-
-
-                                    <p:inputText id="cSaleNo" style="float: left; height: 19px;"/>
-                                    <p:commandButton value="Search" style="float: left;"/>
-                                    <p:watermark value="Enter Receipt No." for="cSaleNo"/>
-                                    <p:calendar id="dat" style="float: right"/>
-                                    <p:watermark value="Search By Date" for="dat"/>
-
-                                    <p:selectOneButton value="">
-                                        <f:selectItem itemLabel="Quick" itemValue="1"/>
-                                        <f:selectItem itemLabel="Normal" itemValue="2"/>
-
-                                    </p:selectOneButton>
-
-
-                                </p:outputPanel>
-                            </f:facet>
-
-
-
-                            <p:column style="width:4%">
-                                <p:rowToggler />
-                            </p:column>
-
-                            <p:column id="no" headerText="Receipt No." >
-                                <h:outputText value="#{v.year * 217451}" />
-
-                            </p:column>
-
-                            <p:column id="batch" headerText="No of Items"  >
-                                <h:outputText value="#{v.year * 2}" />
-
-                            </p:column>
-                            <p:column id="name" headerText="Amount" >
-                                <h:outputText value="#{v.year * 8}" />
-
-                            </p:column>
-
-                            <p:rowExpansion>
-                                <p:panel>
-                                    <p:dataTable id="dataTable2" var="v"
-                                                 value="#{itemBean.carsSmall}"
-
-                                                 emptyMessage="No Student found"
-                                                 paginator="false"
-                                                 rows="10"
-                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-                                        <f:facet name="footer">
-                                            <p:commandButton value="Re-Print"/>
-                                        </f:facet>
-                                        <p:column id="no" headerText="Item" >
-                                            <h:outputText value="#{v.color}" />
-
-                                        </p:column>
-
-                                        <p:column id="batch" headerText="Qty"  >
-                                            <h:outputText value="#{v.year * 56}" />
-
-                                        </p:column>
-                                        <p:column id="name" headerText="Amount" >
-                                            <h:outputText value="#{v.year * 2334}" />
-
-                                        </p:column>
-                                        <p:column id="uPrice" headerText="Tax" >
-                                            <h:outputText value="#{v.year * 223}" />
-
-                                        </p:column>
-
-                                        <p:column id="Qty" headerText="Net" >
-                                            <h:outputText value="#{v.year * 7763}" />
-
-                                        </p:column>
-
-                                    </p:dataTable>
-                                </p:panel>
-                            </p:rowExpansion>
-
-                        </p:dataTable>
-
-                        <br/>
-
-                        <p:commandButton value="Re-Print"/>
-                        <p:commandButton value="Cancel"/>
-                    </p:panel>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logisticss 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <h:form>
+        <p:panel id="salesReceiptPanel">
+          <p:dataTable id="saleReceiptTable"
+                       value="#{salesController.sales}" var="s"
+                       emptyMessage="You have no sales yet"
+                       widgetVar="saleReceiptTableVar">
+            <f:facet name="header">
+              <p:outputPanel style="width: 100%;">
+                <h:outputText value="Search Receipt"/>
+                <p:watermark value="Enter Receipt No." for="globalFilter"/>
+                <p:inputText id="globalFilter" style="width: 50%; margin-left: 20px"
+                             onkeyup="saleReceiptTableVar.filert();"/>
+              </p:outputPanel>
+            </f:facet>
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column headerText="Receipt Date" >
+              <h:outputText value="#{s.receiptId.saleDate}" converter="dateConverter" />
+            </p:column>
+            <p:column headerText="Receipt No.">
+              <h:outputText value="#{s.receiptId}" />
+            </p:column>
+            <p:column id="batch" headerText="No of Items"  >
+              <h:outputText value="#{s.saleItems.size()}" />
+            </p:column>
+            <p:column id="name" headerText="Total Amount" >
+              <h:outputText value="#{s.totalSale}" />
+            </p:column>
+            <p:rowExpansion>
+              <p:panel header="Sale Items">
+                <p:dataTable id="saleItemTable" var="i"
+                             value="#{s.saleItems}"
+                             sortBy="#{salesController.defaultSortOrderForSummaryRow}"
+                             emptyMessage="This sale has no sale items">
+                  <p:column id="no" headerText="Item" >
+                    <h:outputText value="#{i.item.name}" />
+                  </p:column>
+                  <p:column id="batch" headerText="Qty"  >
+                    <h:outputText value="#{i.orderedQuantity}" />
+                  </p:column>
+                  <p:column id="name" headerText="Unit Sale" >
+                    <h:outputText value="#{i.salePrice}" />
+                  </p:column>
+                  <p:column headerText="Tax" >
+                    <h:outputText value="#{i.tax}" />
+                  </p:column>
+                  <p:column headerText="Discount" >
+                    <h:outputText value="#{i.discount}" />
+                  </p:column>
+                  <p:column id="Qty" headerText="Net Total Sale" >
+                    <h:outputText value="#{i.totalSale}" />
+                  </p:column>
+                  <p:summaryRow>
+                    <p:column colspan="5" style="text-align: right;">
+                      <h:outputText value="Total:"/>
+                    </p:column>
+                    <p:column>
+                      <h:outputText value="#{s.totalSale}"/>
+                    </p:column>
+                  </p:summaryRow>
+                </p:dataTable>
+              </p:panel>
+            </p:rowExpansion>
+          </p:dataTable>
+          <br/>
+          <h:commandButton value="Print" type="button" style="width: 60px; height: 31px"
+                           styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+            <p:printer target="salesReceiptPanel" />
+          </h:commandButton>
+        </p:panel>
+      </h:form>
+    </ui:define>
+  </ui:composition>
 </html>
 
