@@ -3,150 +3,74 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Requisition</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:panel header="Transfer Details">
         <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-
-
-                    <p:panel header="Details">
-                        
-                        <table>
-                            
-                            <tr>
-                                <td>
-                                    <p:selectOneMenu id="itm" value="" editable="true"
-                                                     style="width:160px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
-                                        <f:selectItem itemLabel="Cement" itemValue="" />
-                                        <f:selectItem itemLabel="Ballast" itemValue="" />
-                                    </p:selectOneMenu>
-                                </td>
-                                <p:watermark value="Item" for="itm"/>
-                                <p:watermark value="From" for="fr"/>
-                                <p:watermark value="To" for="to"/>
-                                
-                                
-                                <td>
-                                    <p:selectOneMenu id="fr" value="" editable="true"
-                                                     style="width:160px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
-                                        <f:selectItem itemLabel="Makongeni" itemValue="" />
-                                        <f:selectItem itemLabel="Town" itemValue="" />
-                                        <f:selectItem itemLabel="Stage" itemValue="" />
-                                    </p:selectOneMenu>
-                                </td>
-
-                                
-
-                                <td>
-                                    <p:selectOneMenu id="to" value="" editable="true"
-                                                     style="width:160px; font-size:100%; margin:0px 0px 0px 0px" onchange="ext.show();">
-                                        <f:selectItem itemLabel="Makongeni" itemValue="" />
-                                        <f:selectItem itemLabel="Town" itemValue="" />
-                                        <f:selectItem itemLabel="Stage" itemValue="" />
-                                    </p:selectOneMenu>
-                                </td>
-                                <td>
-                                    <p:inputText id="qt" style="width: 70px;"/>
-                                    <p:watermark value="Qty" for="qt"/>
-
-                                </td>
-                            </tr>
-                        </table>
-                    </p:panel>
-
-                    <p:dataTable id="dataTableAccounts" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="false"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-
-
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-
-                        <p:column id="nos" headerText="#" style="width:4%">
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column id="no" headerText="Description" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column id="uom" headerText="Unit of Measure" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column id="credit" headerText="Quantity" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                    </p:dataTable>
-                    <br/>
-                    <p:commandButton value="Complete"/>
-                    <p:commandButton value="Exit"/>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logistics 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
+          <p:panelGrid columns="2" style="width: 100%">
+            <p:outputLabel value="Item" for="item"/>
+            <p:autoComplete id="item" value="#{internalAcquisitionController.internalTransfer.transferBatch}"
+                            completeMethod="#{batchController.findBatches}"
+                            var="i" itemLabel="#{i.batchNumber}(#{i.item.name})" itemValue="#{i}"
+                            converter="batchConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+              <p:ajax event="itemSelect" partialSubmit="true" process="@this"
+                      listener="#{internalAcquisitionController.onTransferBatchSelected()}"
+                      update="@form"/>
+            </p:autoComplete>
+            <h:outputText value="Current Batch Available Quantity"
+                          rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch}"/>
+            <h:outputText value="#{internalAcquisitionController.internalTransfer.transferBatch.currentQuantity}"
+                          rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch}"/>
+            <p:outputLabel value="From Store" for="fromStore"/>
+            <p:autoComplete id="fromStore" value="#{internalAcquisitionController.internalTransfer.fromStore}"
+                            completeMethod="#{storeController.searchStore}"
+                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                            required="true"
+                            converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+            <p:outputLabel value="To Store" for="toStore"/>
+            <p:autoComplete id="toStore" value="#{internalAcquisitionController.internalTransfer.toStore}"
+                            completeMethod="#{storeController.searchStore}"
+                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                            required="true"
+                            converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+            <p:outputLabel value="Transfer Quantity" for="transferQuantity"/>
+            <p:inputText id="transferQuantity" value="#{internalAcquisitionController.internalTransfer.newStoreBatch.quantity}"
+                         required="true"/>
+          </p:panelGrid>
+          <p:separator/>
+          <p:commandButton value="Transfer" actionListener="#{internalAcquisitionController.transferItemBatch()}"
+                           update="@form :internalTransferTable"/>
         </h:form>
-
-
-
-    </h:body>
+      </p:panel>
+      <p:dataTable id="internalTransferTable" var="it"
+                   value="#{internalAcquisitionController.internalTransfers}">
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Internal Transfer Id" style="width:4%">
+          <h:outputText value="#{it.id}" />
+        </p:column>
+        <p:column  headerText="Transfer Date" >
+          <h:outputText value="#{it.transferDate}" converter="dateConverter" />
+        </p:column>
+        <p:column  headerText="Transfer Item" >
+          <h:outputText value="#{it.transferBatch.item.name}" />
+        </p:column>
+        <p:column headerText="From store" >
+          <h:outputText value="#{it.fromStore.name}" />
+        </p:column>
+        <p:column headerText="To Store" >
+          <h:outputText value="#{it.toStore.name}" />
+        </p:column>
+        <p:column headerText="Transferred Quantity" >
+          <h:outputText value="#{it.newStoreBatch.quantity}" />
+        </p:column>
+        <p:column headerText="Remaining Quantity" >
+          <h:outputText value="#{it.transferBatch.currentQuantity}" />
+        </p:column>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
 </html>
 

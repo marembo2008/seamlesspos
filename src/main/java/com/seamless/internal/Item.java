@@ -28,6 +28,7 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Entity
 @NamedQueries({
+  @NamedQuery(name = "ITEM.FIND_STORE_ITEM", query = "SELECT i FROM Item i WHERE i.itemStore.storeId = :storeId"),
   @NamedQuery(name = "item.find_available_items",
           query = "select i from Item i where (select count(b) from Batch b JOIN b.item i_ where i_.itemCode = i.itemCode AND b.frozen = :state) > 0"),
   @NamedQuery(name = "item.search_items_by_name", query = "SELECT i FROM Item i WHERE i.name LIKE :name"),

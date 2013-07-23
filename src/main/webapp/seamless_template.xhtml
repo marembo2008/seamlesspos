@@ -345,49 +345,6 @@
         <p:commandButton value="Send"/>
         <p:commandButton value="Cancel"/>
       </p:dialog>
-      <p:dialog header="Petty Expenses" id="pe" widgetVar="petty">
-        <p:panel>
-          <table>
-            <tr>
-              <td><h:outputText value="Payee"/></td>
-              <td><p:inputText style="width: 190px;"/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Account Of"/></td>
-              <td>
-                <p:selectOneMenu value="" editable="true"
-                                 style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
-                  <f:selectItem itemLabel="One" itemValue="" />
-                  <f:selectItem itemLabel="Two" itemValue="" />
-                </p:selectOneMenu>
-              </td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Amount"/></td>
-              <td><p:inputText style="width: 190px;"/></td>
-            </tr>
-            <tr>
-              <td>
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Cash" itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-              <td align="right">
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-            </tr>
-          </table>
-          <br/>
-          <h:outputText value="Remarks"/>
-          <br/>
-          <p:inputTextarea cols="33" rows="4"/>
-        </p:panel>
-        <br/>
-        <p:commandButton value="Send"/>
-        <p:commandButton value="Abadon"/>
-      </p:dialog>
       <p:dialog header="Transaction Selection" id="ts" widgetVar="sel">
         <p:panel>
           <table>
@@ -407,72 +364,6 @@
         <br/>
         <p:commandButton value="Ok"/>
         <p:commandButton value="Cancel"/>
-      </p:dialog>
-      <p:dialog header="Receive Payments" id="rp" widgetVar="rec">
-        <p:panel>
-          <table style="">
-            <tr>
-              <td><h:outputText value="Payment Mode"/></td>
-              <td>
-                <p:selectOneMenu value="" editable="true"
-                                 style="width:150px;  margin:0px 0px 0px 0px">
-                  <f:selectItem itemLabel="Cash" itemValue="" />
-                  <f:selectItem itemLabel="Cheque" itemValue="" />
-                </p:selectOneMenu>
-              </td>
-              <td><h:outputText value="Date"/></td>
-              <td><p:calendar/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Cheque Date"/></td>
-              <td><p:calendar/></td>
-              <td><h:outputText value="Cheque No."/></td>
-              <td><p:inputText/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Date Due"/></td>
-              <td><p:calendar/></td>
-              <td><h:outputText value="Amount"/></td>
-              <td><p:inputText/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Bank"/></td>
-              <td>
-                <p:selectOneMenu value="" editable="true"
-                                 style="width:150px;  margin:0px 0px 0px 0px">
-                  <f:selectItem itemLabel="One" itemValue="" />
-                  <f:selectItem itemLabel="Two" itemValue="" />
-                  <f:selectItem itemLabel="Three" itemValue="" />
-                </p:selectOneMenu>
-              </td>
-              <td><h:outputText value="Branch"/></td>
-              <td><p:inputText/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Deposit To"/></td>
-              <td colspan="3">
-                <p:selectOneMenu value="" editable="true"
-                                 style="width:150px;  margin:0px 0px 0px 0px">
-                  <f:selectItem itemLabel="One" itemValue="" />
-                  <f:selectItem itemLabel="Two" itemValue="" />
-                  <f:selectItem itemLabel="Three" itemValue="" />
-                </p:selectOneMenu>
-              </td>
-            </tr>
-          </table>
-          <table>
-            <tr>
-              <td colspan="2">
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Print Receipt" itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-            </tr>
-          </table>
-        </p:panel>
-        <br/>
-        <p:commandButton value="Save"/>
-        <p:commandButton value="Close"/>
       </p:dialog>
       <p:dialog id="ch" widgetVar="chq" header="Cheques">
         <p:panel>
@@ -512,5 +403,8 @@
         <p:commandButton value="Cancel"/>
       </p:dialog>
     </h:form>
+    <!--Receive payments transaction module-->
+    <ui:include src="/templates/receive-payments.xhtml"/>
+    <ui:include src="/templates/petty-cash.xhtml"/>
   </h:body>
 </html>

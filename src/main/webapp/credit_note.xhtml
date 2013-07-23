@@ -3,137 +3,107 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Credit Note</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-
-                    <p:panel>
-                        <p:dataTable id="dataTable" var="v"
-                                     value="#{visitorController.visitors}"
-
-                                     emptyMessage="No Student found"
-                                     paginator="false"
-                                     rows="10"
-                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-                            <f:facet name="header">
-
-                                <p:outputPanel>
-
-
-                                    <p:inputText id="cSaleNo" style="float: left; height: 19px;"/>
-                                    <p:commandButton value="Search" style="float: left;"/>
-                                    <p:watermark value="Enter Receipt No." for="cSaleNo"/>
-
-
-                                </p:outputPanel>
-                            </f:facet>
-
-
-
-                            <p:column style="width:4%">
-                                <p:rowToggler />
-                            </p:column>
-
-                            <p:column id="no" headerText="Product" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="batch" headerText="Item No."  >
-                                <h:outputText value="12" />
-
-                            </p:column>
-                            <p:column id="name" headerText="Name" >
-                                <h:outputText value="" />
-
-                            </p:column>
-                            <p:column id="uPrice" headerText="Unit Price" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="Qty" headerText="Qty" >
-                                <h:outputText value="" />
-
-                            </p:column>
-
-                            <p:column id="no" headerText="Total Price" footerText="14,500.00">
-                                <h:outputText value="" />
-
-                            </p:column>
-                            <p:column id="no" headerText="Returned" >
-                                <p:inputText/>
-
-                            </p:column>
-
-
-                        </p:dataTable>
-
-                        <br/>
-
-                        <p:commandButton value="Add To Credit"/>
-                        <p:commandButton value="Print"/>
-                        <p:commandButton value="Close"/>
-                    </p:panel>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logistics 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:dataTable id="creditNotesTable" var="cr"
+                   value="#{creditNoteController.creditNotes}">
+        <f:facet name="header">
+          <p:accordionPanel id="newCreditNotePanel" activeIndex="-1">
+            <p:tab title="New Credit Note">
+              <h:form>
+                <p:panelGrid columns="1" style="width: 100%">
+                  <p:outputLabel value="Sale Receipt" for="saleReceipt"/>
+                  <p:autoComplete id="saleReceipt" value="#{creditNoteController.creditNote.sale}"
+                                  converter="saleConverter" var="s" itemLabel="#{s.receiptId}" itemValue="#{s}"
+                                  completeMethod="#{salesController.searchSales}"
+                                  forceSelection="true" queryDelay="100" minQueryLength="2">
+                    <p:ajax event="itemSelect" listener="#{creditNoteController.onSaleReceiptSelected}"
+                            partialSubmit="true" process="@this"
+                            update="saleReturnsTable"/>
+                  </p:autoComplete>
+                  <p:separator/>
+                  <h:outputLabel value="Sale Returns" for="saleReturnsTable"/>
+                  <p:dataTable id="saleReturnsTable" value="#{creditNoteController.saleReturns}" var="sr"
+                               emptyMessage="Please select relevant sale above to return items for this credit note"
+                               rowKey="#{sr.id}" selection="#{creditNoteController.selectedCreditNoteSaleItems}">
+                    <p:column selectionMode="multiple" style="width: 20px"/>
+                    <p:column headerText="Item">
+                      <h:outputText value="#{sr.saleItem.item.name}"/>
+                    </p:column>
+                    <p:column headerText="Sold Quantity">
+                      <h:outputText value="#{sr.saleItem.orderedQuantity}"/>
+                    </p:column>
+                    <p:column headerText="Total Sale Amount">
+                      <h:outputText value="#{sr.saleItem.totalSale}" converter="bigDecimalConverter"/>
+                    </p:column>
+                    <p:column headerText="Returned Quantity">
+                      <p:inputText id="returnedQuantity" value="#{sr.returnedQuantity}"/>
+                    </p:column>
+                  </p:dataTable>
+                </p:panelGrid>
+                <p:separator/>
+                <p:commandButton value="Create Credit Note" actionListener="#{creditNoteController.createCreditNote()}"
+                                 update=":creditNotesTable"/>
+              </h:form>
+            </p:tab>
+          </p:accordionPanel>
+        </f:facet>
+        <p:columnGroup type="header">
+          <p:row>
+            <p:column colspan="2" headerText="Credit Note" sortBy="#{cr.creditNoteNumber}"/>
+            <p:column colspan="5" headerText="Sale Returns"/>
+          </p:row>
+          <p:row>
+            <p:column headerText="Item"/>
+            <p:column headerText="Sold Quantity"/>
+            <p:column headerText="Total Sale Amount"/>
+            <p:column headerText="Returned Quantity"/>
+            <p:column headerText="Sale Return Cost"/>
+          </p:row>
+        </p:columnGroup>
+        <p:subTable value="#{cr.salesReturns}" var="sr">
+          <f:facet name="header">
+            <p:separator style="height: 5px"/>
+            <p:panelGrid columns="2" style="width: 50%">
+              <h:outputText value="Credit Note Number:"/>
+              <h:outputText value="#{cr.creditNoteNumber}"/>
+              <h:outputText value="Issued Date"/>
+              <h:outputText value="#{cr.issuedDate}" converter="dateConverter"/>
+              <h:outputText value="Sales Receipt"/>
+              <h:outputText value="#{cr.sale.receiptId}"/>
+            </p:panelGrid>
+          </f:facet>
+          <p:column>
+            <h:outputText value="#{sr.saleItem.item.name}"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{sr.saleItem.orderedQuantity}"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{sr.saleItem.totalSale}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{sr.returnedQuantity}"/>
+          </p:column>
+          <p:column>
+            <h:outputText value="#{sr.saleReturnAmount}"/>
+          </p:column>
+          <p:columnGroup type="footer">
+            <p:row>
+              <p:column colspan="4" footerText="Credit Note Total" style="text-align: right"/>
+              <p:column footerText="#{cr.totalCreditNoteAmount}"/>
+            </p:row>
+          </p:columnGroup>
+        </p:subTable>
+      </p:dataTable>
+      <p:separator/>
+      <h:commandButton  value="Print" type="button" style="width: 60px; height: 31px"
+                        styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+        <p:printer target="creditNotesTable" />
+      </h:commandButton>
+    </ui:define>
+  </ui:composition>
 </html>
 

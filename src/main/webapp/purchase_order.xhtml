@@ -3,137 +3,89 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Purchase Order</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-                    <p:dataTable id="dataTable" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="true"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-                        <f:facet name="header">
-
-                            <p:outputPanel>
-                                <p:selectCheckboxMenu value="#{formBean.selectedMovies}" label="Add To Order" filter="true"  filterMatchMode="startsWith" panelStyle="width:320px" style="float: left; height: 30px;" onchange="sat.show();" >  
-                                    <f:selectItems value="#{formBean.movies}" />  
-                                </p:selectCheckboxMenu>  
-                                <p:selectOneMenu id="itm" value="" editable="true"
-                                                 style="width:200px;  font-size:100%; margin:0px 0px 0px 0px; float: right;">
-                                    <f:selectItem itemLabel="Hammer" itemValue="" />
-                                    <f:selectItem itemLabel="Laptops" itemValue="" />
-                                    <f:selectItem itemLabel="Omo" itemValue="" />
-                                    
-                                   
-                                </p:selectOneMenu>
-                                <p:watermark value="Filter By Items" for="itm"/>
-                                 <p:commandButton value=">>" style="float: left;"/>
-                                
-                                <p:commandButton value="Delete"/>
-                                <p:commandButton value="Prepare Purchase Order"/>
-                            </p:outputPanel>
-                        </f:facet>
-
-
-
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-                        
-                        <p:column id="batch" headerText="Item No." >
-                            <h:outputText value="12" />
-
-                        </p:column>
-                        <p:column id="name" headerText="Name" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column id="no" headerText="Qty" style="width: 1%; text-align: center;" >
-                            
-                            <p:inputText id="qty" value="" />
-                            <p:watermark value="Enter Order Qty" for="qty"/>
-
-                        </p:column>
-                        <p:column id="sup" headerText="Supplier" style="width: 10%;">
-                            <p:selectOneMenu id="su" value="" editable="true"
-                                                 style="width:200px;  font-size:100%; margin:0px 0px 0px 0px; float: right;">
-                                    <f:selectItem itemLabel="Maguna" itemValue="" />
-                                    <f:selectItem itemLabel="Uniliver" itemValue="" />
-                                    <f:selectItem itemLabel="Mabati Mills" itemValue="" />
-                                    
-                                   
-                                </p:selectOneMenu>
-                        </p:column>
-                        <p:column headerText="Total" footerText="540,000.00" style="10%;">
-                            <h:outputText/>
-                        </p:column>
-                        
-                        
-                      
-                    </p:dataTable>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logistics 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-            <p:dialog widgetVar="sat">
-                <p:commandButton value="sss"/>
-            </p:dialog>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:dataTable id="purchaseOrderTable" var="o"
+                   value="#{purchaseOrderController.purchaseOrders}">
+        <f:facet name="header">
+          <p:accordionPanel activeIndex="0">
+            <p:tab title="Prepare Purchase Order">
+              <h:form>
+                <p:panelGrid columns="2" style="width: 100%">
+                  <p:outputLabel value="Purchase Order Number}" for="purchaseOrderNumber"/>
+                  <h:panelGroup layout="block" style="width: 100%; position:  relative; height: 40px">
+                    <p:inputText id="purchaseOrderNumber" value="#{purchaseOrderController.purchaseOrder.purchaseOrderNumber}"
+                                 style="position: absolute; left: 0px; width: 80%; top: 5px"/>
+                    <p:commandButton value="Generate" actionListener="#{purchaseOrderController.generatePurchaseOrderNumber()}"
+                                     partialSubmit="true" process="@this"
+                                     update="purchaseOrderNumber"
+                                     style="position: absolute; right: 5px; top: 0px"/>
+                  </h:panelGroup>
+                  <p:outputLabel value="Purchase Order Store" for="orderStore"/>
+                  <p:selectOneMenu id="orderStore" value="#{purchaseOrderController.purchaseOrder.store}"
+                                   converter="storeConverter" style="width: 82%">
+                    <f:selectItems value="#{storeController.singleSelectStores}"/>
+                    <p:ajax event="change" partialSubmit="true" process="@this"
+                            listener="#{purchaseOrderController.onStoreSelected()}" update="@form"/>
+                  </p:selectOneMenu>
+                  <h:outputLabel value="Purchase Order Items" for="storeItems"/>
+                  <p:dataTable id="storeItems" value="#{purchaseOrderController.storeItems}" var="i"
+                               emptyMessage="Please select store above to add items" rowKey="#{i.orderItem.itemId}"
+                               selection="#{purchaseOrderController.selectedStoreItems}"
+                               style="width: 82%">
+                    <p:column selectionMode="multiple"
+                              style="width: 15px"/>
+                    <p:column headerText="Item Code">
+                      <h:outputText value="#{i.orderItem.itemCode}"/>
+                    </p:column>
+                    <p:column headerText="Name">
+                      <h:outputText value="#{i.orderItem.name}"/>
+                    </p:column>
+                    <p:column headerText="Ordered Quantity">
+                      <p:inputText value="#{i.orderedQuantity}"/>
+                    </p:column>
+                  </p:dataTable>
+                  <p:outputLabel value="Supplier" for="supplier"/>
+                  <p:autoComplete id="supplier" value="#{purchaseOrderController.purchaseOrder.supplier}"
+                                  completeMethod="#{supplierController.searchSupplier}"
+                                  var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                  converter="supplierConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"
+                                  required="true"
+                                  style="width: 80% !important"/>
+                </p:panelGrid>
+                <p:separator style="margin: 10px 0px"/>
+                <p:commandButton value="Create Purchase Order" actionListener="#{purchaseOrderController.createOrder()}"
+                                 update=":purchaseOrderTable"/>
+              </h:form>
+            </p:tab>
+          </p:accordionPanel>
+        </f:facet>
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Purchase Order Number" >
+          <h:outputText value="#{o.purchaseOrderNumber}" />
+        </p:column>
+        <p:column headerText="Store" >
+          <h:outputText value="#{o.store}" />
+        </p:column>
+        <p:column  headerText="Supplier">
+          <h:outputText value="#{o.supplier}"/>
+        </p:column>
+        <p:rowExpansion>
+          <p:dataTable value="#{o.orderItems}" var="oi">
+            <p:column headerText="Item">
+              <h:outputText value="#{oi.orderItem.name}"/>
+            </p:column>
+            <p:column headerText="Quantity">
+              <h:outputText value="#{oi.orderedQuantity}"/>
+            </p:column>
+          </p:dataTable>
+        </p:rowExpansion>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
 </html>
 

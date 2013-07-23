@@ -3,137 +3,77 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Returned</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-                   
-                        <p:panel>
-                             <p:dataTable id="dataTable" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="false"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-                        <f:facet name="header">
-
-                            <p:outputPanel>
-                              
-                                
-                                <p:inputText id="cSaleNo" style="float: left; height: 20px;"/>
-                                    <p:commandButton value="Search" style="float: left;"/>
-                                    <p:watermark value="Enter Receipt No." for="cSaleNo"/>
-                                    
-                               
-                            </p:outputPanel>
-                        </f:facet>
-
-
-
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-                                 
-                                 <p:column id="no" headerText="Product" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        
-                        <p:column id="batch" headerText="Item No."  >
-                            <h:outputText value="12" />
-
-                        </p:column>
-                        <p:column id="name" headerText="Name" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column id="uPrice" headerText="Unit Price" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        
-                        <p:column id="Qty" headerText="Qty" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                                 
-                                 <p:column id="no" headerText="Total Price" footerText="152,000.00">
-                            <h:outputText value="" />
-
-                        </p:column>
-                                 <p:column id="no" headerText="Returned" >
-                                     <p:inputText/>
-
-                        </p:column>
-
-                      
-                    </p:dataTable>
-
-                       <br/>
-                        
-                        <p:commandButton value="Add To G.Note"/>
-                        <p:commandButton value="Print"/>
-                        <p:commandButton value="Close"/>
-                    </p:panel>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logisticss 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <style type="text/css">
+        .ui-datatable .ui-datatable-footer {
+          text-align: left;
+        }
+      </style>
+      <p:panel id="purchaseReturnPanel">
+        <p:dataTable id="purchaseReturnTable" var="pr"
+                     value="#{purchasesReturnController.purchasesReturns}" >
+          <f:facet name="header">
+            <p:accordionPanel activeIndex="0">
+              <p:tab title="Return Goods">
+                <h:form>
+                  <p:panelGrid columns="2" style="width: 100%">
+                    <p:outputLabel value="Batch Item" for="itemToReturn"/>
+                    <p:autoComplete id="itemToReturn" value="#{purchasesReturnController.purchasesReturn.batch}"
+                                    completeMethod="#{batchController.findBatches}"
+                                    var="i" itemLabel="#{i.batchNumber}(#{i.item.name})" itemValue="#{i}"
+                                    converter="batchConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+                      <p:ajax event="itemSelect" partialSubmit="true" process="@this"
+                              update="@form"/>
+                    </p:autoComplete>
+                    <p:separator rendered="#{not empty purchasesReturnController.purchasesReturn.batch}"/>
+                    <p:separator rendered="#{not empty purchasesReturnController.purchasesReturn.batch}"/>
+                    <h:outputLabel value="Batch Quantity" for="batchQuantity"
+                                   rendered="#{not empty purchasesReturnController.purchasesReturn.batch}"/>
+                    <h:outputText id="batchQuantity" value="#{purchasesReturnController.purchasesReturn.batch.quantity}"
+                                  rendered="#{not empty purchasesReturnController.purchasesReturn.batch}"/>
+                    <p:separator/>
+                    <p:separator/>
+                    <p:outputLabel value="Return Quantity" for="returnQuantity"/>
+                    <p:inputText value="#{purchasesReturnController.purchasesReturn.returnQuantity}" id="returnQuantity"
+                                 validator="#{purchasesReturnController.validateReturnAmount}"/>
+                  </p:panelGrid>
+                  <p:separator/>
+                  <p:commandButton value="Return" actionListener="#{purchasesReturnController.returnGoods()}"
+                                   update=":purchaseReturnTable"/>
+                </h:form>
+              </p:tab>
+            </p:accordionPanel>
+          </f:facet>
+          <p:column  headerText="Batch Number" >
+            <h:outputText value="#{pr.batch.batchNumber}" />
+          </p:column>
+          <p:column id="batch" headerText="Item Code."  >
+            <h:outputText value="#{pr.batch.item.itemCode}" />
+          </p:column>
+          <p:column id="name" headerText="Name" >
+            <h:outputText value="#{pr.batch.item.name}" />
+          </p:column>
+          <p:column id="uPrice" headerText="Unit Price" >
+            <h:outputText value="#{pr.batch.item.costAmount}" />
+          </p:column>
+          <p:column id="Qty" headerText="Batch Quantity" >
+            <h:outputText value="#{pr.batch.quantity}" />
+          </p:column>
+          <p:column  headerText="Return Quantity" >
+            <h:outputText value="#{pr.returnQuantity}" />
+          </p:column>
+          <f:facet name="footer">
+            <h:commandButton value="Print" type="button" style="width: 80px; height: 31px; margin-left: 30px"
+                             styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+              <p:printer target=":purchaseReturnPanel" />
+            </h:commandButton>
+          </f:facet>
+        </p:dataTable>
+      </p:panel>
+    </ui:define>
+  </ui:composition>
 </html>
 

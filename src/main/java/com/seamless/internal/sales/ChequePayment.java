@@ -10,6 +10,8 @@ import com.seamless.internal.sales.util.PaymentOption;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 
 /**
@@ -17,6 +19,12 @@ import javax.persistence.Temporal;
  * @author marembo
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "CHEQUEPAYMENT.FIND_CHEQUE_PAYMENT",
+          query = "SELECT c FROM ChequePayment c WHERE c.chequeNumber = :chequeNumber"),
+  @NamedQuery(name = "CHEQUEPAYMENT.FIND_CHEQUE_PAYMENT_BY_STATE",
+          query = "SELECT c FROM ChequePayment c WHERE c.chequeNumber = :chequeNumber AND c.paymentState = :state")
+})
 public class ChequePayment extends Payment {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(ChequePayment.class);

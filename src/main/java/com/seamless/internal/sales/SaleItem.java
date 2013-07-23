@@ -130,7 +130,7 @@ public class SaleItem implements Serializable {
       total = getSalePrice();
       total = total.multiply(BigDecimal.valueOf(getOrderedQuantity()));
     }
-    return total.add(getTotalTax()).subtract(discount);
+    return total.subtract(getTotalTax()).subtract(discount);
   }
 
   public BigDecimal getSalePrice() {

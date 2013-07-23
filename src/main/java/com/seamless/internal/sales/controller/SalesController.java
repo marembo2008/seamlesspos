@@ -17,6 +17,7 @@ import com.seamless.internal.sales.CashPayment;
 import com.seamless.internal.sales.ChequePayment;
 import com.seamless.internal.sales.CreditPayment;
 import com.seamless.internal.sales.ItemOrder;
+import com.seamless.internal.sales.Payment;
 import com.seamless.internal.sales.Sale;
 import com.seamless.internal.sales.SaleItem;
 import com.seamless.internal.sales.facade.SaleFacade;
@@ -29,6 +30,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
 import javax.ejb.EJB;
@@ -85,11 +87,21 @@ public class SalesController implements Serializable {
   private Sale sale;
   private PaymentOption paymentOption;
   private DataModel<SaleItem> saleItems;
+  private Sale receiptSale; //the sale whose payment is being currently received
+  private boolean printReceipt;
 
   /**
    * Creates a new instance of SalesController
    */
   public SalesController() {
+  }
+
+  public void setPrintReceipt(boolean printReceipt) {
+    this.printReceipt = printReceipt;
+  }
+
+  public boolean isPrintReceipt() {
+    return printReceipt;
   }
 
   public DataModel<SaleItem> getSaleItems() {
@@ -227,6 +239,45 @@ public class SalesController implements Serializable {
       case CHEQUE:
         getSale().setPayment(new ChequePayment(getSale().getTotalSale(), getSale().getCustomer()));
         break;
+    }
+  }
+
+  public void setReceiptSale(Sale receiptSale) {
+    this.receiptSale = receiptSale;
+  }
+
+  public Sale getReceiptSale() {
+    return receiptSale;
+  }
+
+  public Payment.PaymentState[] getPaymentStates() {
+    return Payment.PaymentState.values();
+  }
+
+  public boolean isValidSale() {
+    return receiptSale != null && !saleFacade.searchSales(receiptSale.getReceiptId_()).isEmpty();
+  }
+
+  public void onSaleSelected(SelectEvent se) {
+    receiptSale = (Sale) se.getObject();
+    this.paymentOption = receiptSale.getPayment().getPaymentOption();
+    this.receiptSale.getPayment().setPaymentDate(Calendar.getInstance());
+  }
+
+  public void cancelReceivePayment() {
+    this.receiptSale = null;
+  }
+
+  public void receivePayment() {
+    try {
+      this.receiptSale.setStatus(SaleStatus.SOLD);
+      this.receiptSale.getPayment().setPaymentState(Payment.PaymentState.PAID);
+      saleFacade.edit(receiptSale);
+      JsfUtil.addSuccessMessage("Successfully Received Payment for Receipt: " + receiptSale.getReceiptId_());
+      receiptSale = null;
+    } catch (Exception ex) {
+      JFlemaxController.logError(ex);
+      JsfUtil.addErrorMessage("Error Receiving Payment for Receipt: " + receiptSale.getReceiptId_());
     }
   }
 

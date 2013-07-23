@@ -5,6 +5,7 @@
 package com.seamless.internal.controller;
 
 import com.anosym.jflemax.validation.controller.JFlemaxController;
+import com.anosym.utilities.Utility;
 import com.seamless.internal.Store;
 import com.seamless.internal.controller.util.JsfUtil;
 import com.seamless.internal.facade.BatchFacade;
@@ -147,7 +148,7 @@ public class StoreController implements Serializable {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
       System.out.println("Store Id: " + value);
-      if (value == null) {
+      if (Utility.isNullOrEmpty(value)) {
         return null;
       }
       StoreController controller = JFlemaxController.findManagedBean(StoreController.class);

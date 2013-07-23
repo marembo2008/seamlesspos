@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition>
+    <p:dialog header="Petty Expenses" id="pe" widgetVar="petty">
+      <h:form>
+        <p:panel id="pettyCashPanel" style="width: 400px">
+          <p:panelGrid columns="2" style="width: 100%">
+            <p:outputLabel value="Payee" for="payee"/>
+            <p:autoComplete id="payee" value="#{pettyCashController.pettyCash.payee}"
+                            completeMethod="#{employeeController.searchEmployees}"
+                            dropdown="true" var="e" itemValue="#{e}" itemLabel="#{e.name}"
+                            converter="employeeConverter" required="true"
+                            minQueryLength="1" forceSelection="true" queryDelay="100"/>
+            <p:outputLabel value="Amount" for="amount"/>
+            <p:inputText id="amount" value="#{pettyCashController.pettyCash.amount}"/>
+            <p:separator/>
+            <p:separator/>
+            <p:outputLabel value="Petty Cash Mode" for="mode"/>
+            <p:selectOneRadio id="mode" value="#{pettyCashController.pettyCash.pettyCashMode}"
+                              layout="pageDirection">
+              <f:selectItems value="#{pettyCashController.pettyCashModes}"/>
+            </p:selectOneRadio>
+            <p:separator/>
+            <p:separator/>
+            <p:outputLabel value="Remarks" for="comments"/>
+            <h:panelGroup layout="block">
+              <p:inputTextarea id="comments" value="#{pettyCashController.pettyCash.comment}"
+                               maxlength="1024" counter="commentCounter" style="max-height: 150px"/>
+              <br/>
+              <h:outputText id="commentCounter"/>
+            </h:panelGroup>
+          </p:panelGrid>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Add Petty Cash" actionListener="#{pettyCashController.createPettyCash()}"
+                         oncomplete="petty.hide()"/>
+        <p:commandButton value="Cancel" oncomplete="petty.hide()"/>
+      </h:form>
+    </p:dialog>
+  </ui:composition>
+</html>

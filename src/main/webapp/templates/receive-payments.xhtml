@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition>
+    <p:dialog id="accountReceivableDlg" header="Receive Payments" widgetVar="rec" modal="true">
+      <h:form id="receivePaymentForm">
+        <p:panel id="accountReceivablePanel">
+          <!--select the sale for which this payment is being made-->
+          <p:panelGrid id="saleReceiptSelectPanel" columns="2" style="width: 100%">
+            <p:outputLabel value="Sale Receipt" for="saleReceipt"/>
+            <p:autoComplete id="saleReceipt" value="#{salesController.receiptSale}"
+                            converter="saleConverter" var="s" itemLabel="#{s.receiptId}" itemValue="#{s}"
+                            completeMethod="#{salesController.searchSales}"
+                            forceSelection="true" queryDelay="100" minQueryLength="2">
+              <p:ajax event="itemSelect" listener="#{salesController.onSaleSelected}"
+                      partialSubmit="true" process="@this"
+                      update="accountReceivablePanel"/>
+            </p:autoComplete>
+            <p:outputLabel value="Payment Date:" for="paymentDate" />
+            <p:calendar id="paymentDate" value="#{salesController.receiptSale.payment.paymentDate}" pattern="yyyy-mm-dd"
+                        converter="dateConverter" required="true"  />
+            <h:outputText value="Payment Mode:" rendered="#{salesController.validSale}"/>
+            <h:outputText value="#{salesController.receiptSale.payment.paymentOption}"  rendered="#{salesController.validSale}"/>
+            <p:outputLabel value="Payment State:" for="paymentState" rendered="#{salesController.validSale}"/>
+            <p:selectOneRadio id="paymentState" value="#{salesController.receiptSale.payment.paymentState}"
+                              rendered="#{salesController.validSale}" required="true" layout="pageDirection">
+              <f:selectItems value="#{salesController.paymentStates}"/>
+            </p:selectOneRadio>
+          </p:panelGrid>
+          <p:separator/>
+          <p:panelGrid id="paymentOption" columns="2" style="width: 100%"
+                       rendered="#{salesController.validSale}">
+            <p:outputLabel value="Credit Maturity Date:" for="creditDate" rendered="#{salesController.creditPayment}"/>
+            <p:calendar id="creditDate" value="#{salesController.receiptSale.payment.maturityDate}" pattern="yyyy-mm-dd"
+                        converter="dateConverter" rendered="#{salesController.creditPayment}"
+                        required="true"/>
+            <p:outputLabel value="Cheque Number:" for="chequeNumber" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="chequeNumber" value="#{salesController.receiptSale.payment.chequeNumber}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Drawer" for="drawer" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="drawer" value="#{salesController.receiptSale.payment.drawer}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Bank" for="bank" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="bank" value="#{salesController.receiptSale.payment.bank}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Branch" for="branch" rendered="#{salesController.chequePayment}"/>
+            <p:inputText id="branch" value="#{salesController.receiptSale.payment.branch}" rendered="#{salesController.chequePayment}"
+                         required="true"/>
+            <p:outputLabel value="Maturity Date" for="maturityDate" rendered="#{salesController.chequePayment}"/>
+            <p:calendar id="maturityDate" value="#{salesController.receiptSale.payment.maturityDate}"
+                        pattern="yyyy-mm-dd" converter="dateConverter"
+                        rendered="#{salesController.chequePayment}"
+                        required="true"/>
+            <h:outputText value="Total Sales: " style="width: 100%; font-size: 23px"/>
+            <h:outputText value="#{salesController.receiptSale.totalSale}" style="width: 100%; font-size: 23px"/>
+          </p:panelGrid>
+          <br/>
+          <h:panelGroup id="printPanel" layout="block" style="width: 100%; height: 30px">
+            <p:selectBooleanCheckbox id="printReceiptOption" itemLabel="Print Receipt"
+                                     value="#{salesController.printReceipt}" style="float: left; margin-right: 10px; margin-top: 5px">
+              <p:ajax event="change" partialSubmit="true" process="@this" update="salesReceiptPrint"/>
+            </p:selectBooleanCheckbox>
+            <h:panelGroup layout="block" id="salesReceiptPrint" style="float: left">
+              <h:commandButton  value="Print" type="button" style="width: 60px; height: 31px"
+                                styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                rendered="#{salesController.printReceipt}">
+                <p:printer target="accountReceivablePanel" />
+              </h:commandButton>
+            </h:panelGroup>
+          </h:panelGroup>
+        </p:panel>
+        <br/>
+        <p:commandButton value="Receive Payment" actionListener="#{salesController.receivePayment()}" oncomplete="rec.hide()"/>
+        <p:commandButton value="Cancel" actionListener="#{salesController.cancelReceivePayment()}" oncomplete="rec.hide()"/>
+      </h:form>
+    </p:dialog>
+  </ui:composition>
+</html>
