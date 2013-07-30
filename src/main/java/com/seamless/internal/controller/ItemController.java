@@ -55,7 +55,7 @@ public class ItemController implements Serializable {
 
     @Override
     public Object getRowKey(Item t) {
-      return t.getItemCode();
+      return t.getItemId();
     }
 
     @Override
@@ -79,6 +79,7 @@ public class ItemController implements Serializable {
   private Item itemStocking;
   private List<Item> itemsForMixedItem;
   private boolean changeItemCost;
+  private Item mixedItem;
 
   /**
    * Creates a new instance of ItemController
@@ -91,6 +92,17 @@ public class ItemController implements Serializable {
       return new Item[0];
     }
     return itemsForMixedItem.toArray(new Item[0]);
+  }
+
+  public void setMixedItem(Item mixedItem) {
+    this.mixedItem = mixedItem;
+  }
+
+  public Item getMixedItem() {
+    if (mixedItem == null) {
+      mixedItem = new MixedItem();
+    }
+    return mixedItem;
   }
 
   public void setSelectedItems(Item[] items) {
@@ -218,6 +230,29 @@ public class ItemController implements Serializable {
     }
   }
 
+  public void createMixedItem() {
+    try {
+      if (itemsForMixedItem != null && !itemsForMixedItem.isEmpty()) {
+        for (Item i : itemsForMixedItem) {
+          ((MixedItem) mixedItem).addItem(i);
+        }
+      } else {
+        JsfUtil.addErrorMessage("Please select items for mixed items");
+        return;
+      }
+      Product product = productController.getProduct();
+      product.addItem(mixedItem);
+      productFacade.edit(product);
+      mixedItem = new Item();
+      items = null; //reload
+      itemsForMixedItem = null;
+      JsfUtil.addSuccessMessage("Item has been successfully added");
+    } catch (Exception e) {
+      Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, e);
+      JsfUtil.addErrorMessage("Error adding item. Please try again later");
+    }
+  }
+
   public void setItem(Item item) {
     this.item = item;
   }
@@ -226,8 +261,16 @@ public class ItemController implements Serializable {
     this.item.setItemCode(IdGenerator.generateId());
   }
 
+  public void generateMixedItemCode() {
+    this.mixedItem.setItemCode(IdGenerator.generateId());
+  }
+
   Item find(Long id) {
     return itemFacade.find(id);
+  }
+
+  public boolean isMixedItem(Item i) {
+    return i != null && (i instanceof MixedItem);
   }
 
   @FacesConverter(value = "itemConverter", forClass = Item.class)

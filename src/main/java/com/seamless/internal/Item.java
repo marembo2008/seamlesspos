@@ -163,7 +163,6 @@ public class Item implements Serializable {
     hash = 29 * hash + (this.price1 != null ? this.price1.hashCode() : 0);
     hash = 29 * hash + (this.price2 != null ? this.price2.hashCode() : 0);
     hash = 29 * hash + (this.price3 != null ? this.price3.hashCode() : 0);
-    hash = 29 * hash + (this.itemStore != null ? this.itemStore.hashCode() : 0);
     hash = 29 * hash + this.reorderLevel;
     return hash;
   }
@@ -193,9 +192,6 @@ public class Item implements Serializable {
       return false;
     }
     if (this.price3 != other.price3 && (this.price3 == null || !this.price3.equals(other.price3))) {
-      return false;
-    }
-    if (this.itemStore != other.itemStore && (this.itemStore == null || !this.itemStore.equals(other.itemStore))) {
       return false;
     }
     if (this.reorderLevel != other.reorderLevel) {

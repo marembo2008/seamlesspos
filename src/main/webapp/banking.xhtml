@@ -3,167 +3,65 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Banking</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
-        <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-                    <p:panel header="Banking Register" style="width: 600px;">
-                        <p:panelGrid style=" margin-top: 20px;" styleClass="grid">
-
-                            <p:row>
-                                <p:column rowspan="2">
-                                    <p:selectOneRadio id="codeRadio2" >
-                                        <f:selectItem itemLabel="Cash" itemValue="1"/>
-                                        <f:selectItem itemLabel="Orders" itemValue="2"/>
-
-                                    </p:selectOneRadio>
-                                </p:column>
-
-                                <p:column style="text-align: center; border: none"  styleClass="grid">
-
-                                    <h:outputText value="Sequence Date"/>
-                                </p:column>
-
-                                <p:column style="text-align: center;">
-                                    <p:calendar/>
-                                </p:column>
-
-                            </p:row>
-                            <p:row>
-                                <p:column>
-                                    <h:outputText value="Sequence No."/>
-                                </p:column>
-
-                                <p:column>
-                                    <p:inputText/>
-                                </p:column>
-
-                            </p:row>
-
-                        </p:panelGrid>
-                        <p:panel header="Banking Transactions">
-                            <table>
-                                <tr>
-                                    <td><h:outputText value="Receiving Bank"/></td>
-                                    <td>
-                                        <p:selectOneMenu value="" editable="true"
-                                                         style="width:400px; font-size:100%; margin:0px 0px 0px 0px">
-                                            <f:selectItem itemLabel="City Bank" itemValue="" />
-                                            <f:selectItem itemLabel="Commercial Bank of Africa" itemValue="" />
-
-                                        </p:selectOneMenu>
-                                    </td>
-
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="Account No."/></td>
-                                    <td><h:outputText value="Branch Name"/></td>
-                                </tr>
-                                <tr></tr>
-                                <tr>
-                                    <td><p:inputText/></td>
-                                    <td><p:inputText style="width: 400px;"/></td>
-                                </tr>
-                            </table>
-                        </p:panel>
-
-                        <p:panel header="Transaction Details">
-                            <table>
-                                <tr>
-                                    <td><h:outputText value="Source Account"/></td>
-                                    <td>
-                                        <p:selectOneMenu value="" editable="true"
-                                                         style="width:400px; font-size:100%; margin:0px 0px 0px 0px">
-                                            <f:selectItem itemLabel="City Bank" itemValue="" />
-                                            <f:selectItem itemLabel="Commercial Bank of Africa" itemValue="" />
-
-                                        </p:selectOneMenu>
-                                    </td>
-
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="Account No."/></td>
-                                    <td><h:outputText value="Drawer's Name"/></td>
-                                </tr>
-                                <tr></tr>
-                                <tr>
-                                    <td><p:inputText/></td>
-                                    <td><p:inputText style="width: 400px;"/></td>
-                                </tr>
-                            </table>
-
-                            <table>
-                                <tr>
-                                    <td><h:outputText value="Deposit Date"/></td>
-                                    <td><h:outputText value="Amount[Figures]"/></td>
-                                    <td><h:outputText value="Deposited By:"/></td>
-                                </tr>
-                                <tr>
-                                    <td><p:calendar/></td>
-                                    <td><p:inputText/></td>
-                                    <td><p:inputText/></td>
-                                </tr>
-                            </table>
-                        </p:panel>
-                    </p:panel>
-                    <br/>
-                    
-                    <p:commandButton value="Save"/>
-                    <p:commandButton value="Close"/>
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logistics 2013"/>
-
-                </p:layoutUnit>
-
-                <p:layoutUnit id="left" position="west" size="180" resizable="true"
-                              closable="true" collapsible="true" 
-                              minSize="200" style="">
-
-                </p:layoutUnit>
-            </p:layout>
-        </h:form>
-
-
-
-    </h:body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <p:dataTable id="bankTable" value="#{bankRegisterController.banks}" var="b">
+        <f:facet name="header">
+          <p:accordionPanel activeIndex="-1">
+            <p:tab title="Bank Information">
+              <p:separator/>
+              <h:form>
+                <p:panelGrid columns="2">
+                  <p:outputLabel value="Bank Name" for="bankName"/>
+                  <p:inputText id="bankName" value="#{bankRegisterController.bank.bankName}"/>
+                  <p:commandButton value="Add bank" actionListener="#{bankRegisterController.addBank()}"
+                                   update=":bankTable"/>
+                  <h:outputText/>
+                </p:panelGrid>
+                <p:separator/>
+              </h:form>
+              <p:separator/>
+              <h3>Add Bank Branches</h3>
+              <p:separator/>
+              <h:form>
+                <p:panelGrid columns="2">
+                  <p:outputLabel value="Bank" for="bank"/>
+                  <p:autoComplete required="true" id="bank" value="#{bankRegisterController.bankBranch.bank}"
+                                  forceSelection="true" converter="bankConverter" dropdown="true"
+                                  var="e" itemValue="#{e}" itemLabel="#{e.bankName}"
+                                  completeMethod="#{bankRegisterController.searchBanks}"/>
+                  <p:outputLabel value="Branch Code:" for="branchCode"/>
+                  <p:inputText id="branchCode" value="#{bankRegisterController.bankBranch.branchCode}"/>
+                  <p:outputLabel value="Branch Name:" for="branchName"/>
+                  <p:inputText required="true" id="branchName" value="#{bankRegisterController.bankBranch.name}"/>
+                  <p:commandButton value="Add Branch" actionListener="#{bankRegisterController.updateBank()}"
+                                   update=":bankTable"/>
+                  <h:outputText/>
+                </p:panelGrid>
+                <p:separator/>
+              </h:form>
+            </p:tab>
+          </p:accordionPanel>
+        </f:facet>
+        <p:column headerText="Bank">
+          #{b.bankName}
+        </p:column>
+        <p:summaryRow >
+          <p:column rendered="#{not empty b.bankBranches}">
+            <p:dataTable value="#{b.bankBranches}" var="r">
+              <p:column headerText="Branch Code">
+                #{r.branchCode}
+              </p:column>
+              <p:column headerText="Branch Name">
+                #{r.name}
+              </p:column>
+            </p:dataTable>
+          </p:column>
+        </p:summaryRow>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
 </html>
 

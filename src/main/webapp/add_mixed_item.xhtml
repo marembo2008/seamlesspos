@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition>
+    <p:tab id="mixed_item" title="Mixed Item" >
+      <h:form id="mixedItemForm" >
+        <p:panelGrid columns="2" style="width: 100%">
+          <p:outputLabel value="Item Product" for="productItem"/>
+          <p:autoComplete required="true" id="productItem" value="#{productController.product}"
+                          completeMethod="#{productController.searchProduct}"
+                          var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                          converter="productConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+          <p:outputLabel value="Store" for="itemStore"/>
+          <p:autoComplete required="true" id="itemStore" value="#{itemController.mixedItem.itemStore}"
+                          completeMethod="#{storeController.searchStore}"
+                          var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                          converter="storeConverter" minQueryLength="3" forceSelection="true" queryDelay="100" dropdown="true"/>
+          <p:outputLabel value="Item Code:" for="itemCode"/>
+          <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
+            <p:inputText required="true" id="itemCode" value="#{itemController.mixedItem.itemCode}"/>
+            <p:commandButton value="Generate" partialSubmit="true" process="@this"
+                             actionListener="#{itemController.generateMixedItemCode()}" update="itemCodePanel"/>
+          </p:panelGrid>
+          <p:outputLabel value="Item Name:" for="itemName"/>
+          <p:inputText required="true" id="itemName" value="#{itemController.mixedItem.name}"/>
+          <p:outputLabel value="Price Options" for="price1"/>
+          <p:panelGrid columns="3" style="width: 100%">
+            <p:outputLabel value="Price 1" for="price1"/>
+            <p:outputLabel value="Price 2" for="price2"/>
+            <p:outputLabel value="Price 3" for="price3"/>
+            <p:inputText id="price1" value="#{itemController.mixedItem.price1}"/>
+            <p:inputText id="price2" value="#{itemController.mixedItem.price2}"/>
+            <p:inputText id="price3" value="#{itemController.mixedItem.price3}"/>
+          </p:panelGrid>
+          <p:outputLabel value="Reorder Level: " for="reorderLevel"/>
+          <p:inputText id="reorderLevel" value="#{itemController.mixedItem.reorderLevel}"/>
+          <p:outputLabel value="Taxable" for="taxable"/>
+          <p:selectBooleanCheckbox id="taxable" value="#{itemController.mixedItem.taxable}"/>
+        </p:panelGrid>
+        <p:dataTable id="availableItems" var="i"
+                     value="#{itemController.items}"
+                     paginator="true"
+                     selection="#{itemController.selectedItems}"
+                     emptyMessage="You have entered no items yet"
+                     rows="20">
+          <p:column selectionMode="multiple" style="width: 15px"/>
+          <p:column headerText="Item Code" >
+            <h:outputText value="#{i.itemCode}" />
+          </p:column>
+          <p:column headerText="Item Description" >
+            <h:outputText value="#{i.name}" />
+          </p:column>
+          <p:column headerText="Store" >
+            <h:outputText value="#{i.itemStore}" />
+          </p:column>
+          <p:column  headerText="Cost">
+            <h:outputText value="#{i.costAmount}" />
+            <f:facet name="footer">
+              <h:outputText id="mixedItemCost" value="#{itemController.totalMixedItemCost}"/>
+            </f:facet>
+          </p:column>
+        </p:dataTable>
+        <p:separator style="margin: 10px 0px"/>
+        <p:commandButton value="Add Mixed Item" actionListener="#{itemController.createMixedItem()}"
+                         update="@form :itemView" oncomplete="newItemPanel.unselect(2)"/>
+      </h:form>
+    </p:tab>
+  </ui:composition>
+</html>

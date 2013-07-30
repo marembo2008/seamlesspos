@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition>
+    <p:tab id="new_item" title="New Item">
+      <h:form id="newItemForm" style="width: 100%" >
+        <p:panel header="Item Details" style="width: 100%">
+          <p:panelGrid columns="2" style="width: 100%">
+            <p:outputLabel value="Item Product" for="productItem"/>
+            <p:autoComplete id="productItem" value="#{productController.product}"
+                            completeMethod="#{productController.searchProduct}"
+                            var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                            converter="productConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+            <p:outputLabel value="Store" for="itemStore"/>
+            <p:autoComplete id="itemStore" value="#{itemController.item.itemStore}"
+                            completeMethod="#{storeController.searchStore}"
+                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                            converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+            <p:outputLabel value="Item Code:" for="itemCode"/>
+            <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
+              <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>
+              <p:commandButton value="Generate" partialSubmit="true" process="itemCodePanel"
+                               actionListener="#{itemController.generateItemCode()}" update="itemCodePanel"/>
+            </p:panelGrid>
+            <p:outputLabel value="Item Name:" for="itemName"/>
+            <p:inputText id="itemName" value="#{itemController.item.name}"/>
+            <p:outputLabel value="Item Cost" for="itemCost"/>
+            <p:inputText id="itemCost" value="#{itemController.item.costAmount}"/>
+            <p:outputLabel value="Price Options:" for="price1"/>
+            <p:panelGrid columns="3" style="width: 100%">
+              <p:outputLabel value="Price 1" for="price1"/>
+              <p:outputLabel value="Price 2" for="price2"/>
+              <p:outputLabel value="Price 3" for="price3"/>
+              <p:inputText id="price1" value="#{itemController.item.price1}"/>
+              <p:inputText id="price2" value="#{itemController.item.price2}"/>
+              <p:inputText id="price3" value="#{itemController.item.price3}"/>
+            </p:panelGrid>
+            <p:outputLabel value="Reorder Level: " for="reorderLevel"/>
+            <p:inputText id="reorderLevel" value="#{itemController.item.reorderLevel}"/>
+            <p:outputLabel value="Taxable" for="taxable"/>
+            <p:selectBooleanCheckbox id="taxable" value="#{itemController.item.taxable}"/>
+          </p:panelGrid>
+          <f:facet name="footer">
+            <p:commandButton value="Add Item" actionListener="#{itemController.create()}"
+                             update="@form :itemView" oncomplete="newItemPanel.unselect(0)" />
+          </f:facet>
+        </p:panel>
+      </h:form>
+    </p:tab>
+  </ui:composition>
+</html>

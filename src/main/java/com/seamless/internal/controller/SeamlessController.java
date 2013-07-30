@@ -7,6 +7,7 @@ package com.seamless.internal.controller;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -24,5 +25,11 @@ public class SeamlessController {
 
   public void preRenderView() {
     FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+  }
+
+  public String logout() {
+    ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).invalidate();
+    preRenderView();
+    return "#";
   }
 }

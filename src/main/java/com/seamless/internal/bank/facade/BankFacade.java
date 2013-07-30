@@ -4,7 +4,7 @@
  */
 package com.seamless.internal.bank.facade;
 
-import com.seamless.internal.bank.BankRegister;
+import com.seamless.internal.bank.Bank;
 import com.seamless.internal.facade.*;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author marembo
  */
 @Stateless
-public class BankRegisterFacade extends AbstractFacade<BankRegister> {
+public class BankFacade extends AbstractFacade<Bank> {
 
   @PersistenceContext(unitName = "com.seamless_seamlesspos_war_1.0-SNAPSHOTPU")
   private EntityManager em;
@@ -26,14 +26,14 @@ public class BankRegisterFacade extends AbstractFacade<BankRegister> {
     return em;
   }
 
-  public BankRegisterFacade() {
-    super(BankRegister.class);
+  public BankFacade() {
+    super(Bank.class);
   }
 
-  public List<BankRegister> searchBankRegisters(String query) {
+  public List<Bank> searchBanks(String query) {
     return getEntityManager()
-            .createNamedQuery("BANKREGISTER.SEARCH_BANK_REGISTERS_BY_SLIP_NUMBER")
-            .setParameter("slipNumber", "%" + query + "%")
+            .createNamedQuery("BANK.SEARCH_BANK_BY_NAME")
+            .setParameter("bankName", "%" + query + "%")
             .getResultList();
   }
 }

@@ -97,6 +97,7 @@
             <p:submenu label="Banking">
               <p:column>
                 <p:submenu>
+                  <p:menuitem value="Bank Information" url="banking.xhtml"/>
                   <p:menuitem value="Banking Register" url="banking_register.xhtml"/>
                   <p:menuitem value="Cheque Reversal" url="cheque.xhtml"/>
                   <p:menuitem value="Post Cheque" onclick="chq.show();"/>
@@ -143,6 +144,8 @@
               <p:column>
                 <p:submenu>
                   <p:menuitem value="Settings" style="float: right" url="settings.xhtml"/>
+                  <p:menuitem value="Logout" style="float: right" action="#{seamlessController.logout()}"
+                              oncomplete="location.reload(true);"/>
                 </p:submenu>
               </p:column>
             </p:submenu>

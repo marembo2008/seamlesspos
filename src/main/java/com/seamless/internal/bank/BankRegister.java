@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
@@ -22,16 +24,20 @@ import javax.persistence.Temporal;
  * @author marembo
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "BANKREGISTER.SEARCH_BANK_REGISTERS_BY_SLIP_NUMBER",
+          query = "SELECT br FROM BankRegister br WHERE br.slipNumber LIKE :slipNumber")
+})
 public class BankRegister implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 34834893893431L;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   @Column(unique = true, length = 40)
   private String slipNumber;
-  private String bankName;
-  private String bankBranch;
+  @OneToOne
+  private BankBranch bankInformation;
   private String accountNumber;
   private String drawer;
   @Temporal(javax.persistence.TemporalType.DATE)
@@ -49,28 +55,20 @@ public class BankRegister implements Serializable {
     this.id = id;
   }
 
+  public void setBankInformation(BankBranch bankInformation) {
+    this.bankInformation = bankInformation;
+  }
+
+  public BankBranch getBankInformation() {
+    return bankInformation;
+  }
+
   public String getSlipNumber() {
     return slipNumber;
   }
 
   public void setSlipNumber(String slipNumber) {
     this.slipNumber = slipNumber;
-  }
-
-  public String getBankName() {
-    return bankName;
-  }
-
-  public void setBankName(String bankName) {
-    this.bankName = bankName;
-  }
-
-  public String getBankBranch() {
-    return bankBranch;
-  }
-
-  public void setBankBranch(String bankBranch) {
-    this.bankBranch = bankBranch;
   }
 
   public String getAccountNumber() {
@@ -126,8 +124,6 @@ public class BankRegister implements Serializable {
     int hash = 3;
     hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
     hash = 47 * hash + (this.slipNumber != null ? this.slipNumber.hashCode() : 0);
-    hash = 47 * hash + (this.bankName != null ? this.bankName.hashCode() : 0);
-    hash = 47 * hash + (this.bankBranch != null ? this.bankBranch.hashCode() : 0);
     hash = 47 * hash + (this.accountNumber != null ? this.accountNumber.hashCode() : 0);
     hash = 47 * hash + (this.drawer != null ? this.drawer.hashCode() : 0);
     hash = 47 * hash + (this.depositedDate != null ? this.depositedDate.hashCode() : 0);
@@ -150,12 +146,6 @@ public class BankRegister implements Serializable {
       return false;
     }
     if ((this.slipNumber == null) ? (other.slipNumber != null) : !this.slipNumber.equals(other.slipNumber)) {
-      return false;
-    }
-    if ((this.bankName == null) ? (other.bankName != null) : !this.bankName.equals(other.bankName)) {
-      return false;
-    }
-    if ((this.bankBranch == null) ? (other.bankBranch != null) : !this.bankBranch.equals(other.bankBranch)) {
       return false;
     }
     if ((this.accountNumber == null) ? (other.accountNumber != null) : !this.accountNumber.equals(other.accountNumber)) {
@@ -181,6 +171,6 @@ public class BankRegister implements Serializable {
 
   @Override
   public String toString() {
-    return "BankRegister{" + "id=" + id + ", slipNumber=" + slipNumber + ", bankName=" + bankName + ", bankBranch=" + bankBranch + ", accountNumber=" + accountNumber + ", drawer=" + drawer + ", depositedDate=" + depositedDate + ", amount=" + amount + ", depositedBy=" + depositedBy + ", transactionType=" + transactionType + '}';
+    return "BankRegister{" + "id=" + id + ", slipNumber=" + slipNumber + ", bankInformation=" + bankInformation + ", accountNumber=" + accountNumber + ", drawer=" + drawer + ", depositedDate=" + depositedDate + ", amount=" + amount + ", depositedBy=" + depositedBy + ", transactionType=" + transactionType + '}';
   }
 }
