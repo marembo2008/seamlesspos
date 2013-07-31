@@ -19,11 +19,6 @@ and open the template in the editor.
                             completeMethod="#{productController.searchProduct}"
                             var="p" itemLabel="#{p.name}" itemValue="#{p}"
                             converter="productConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
-            <p:outputLabel value="Store" for="itemStore"/>
-            <p:autoComplete id="itemStore" value="#{itemController.item.itemStore}"
-                            completeMethod="#{storeController.searchStore}"
-                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
-                            converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
             <p:outputLabel value="Item Code:" for="itemCode"/>
             <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
               <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>

@@ -21,6 +21,11 @@
                 <p:tab title="Stock in">
                   <h:form id="newStockIn">
                     <p:panelGrid id="newBatchPanel" columns="2" style="width: 100%">
+                      <p:outputLabel value="Store" for="itemStore"/>
+                      <p:autoComplete required="true" id="itemStore" value="#{batchController.batch.store}"
+                                      completeMethod="#{storeController.searchStore}"
+                                      var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                      converter="storeConverter" forceSelection="true" dropdown="true"/>
                       <p:outputLabel value="Batch Number: " for="batchNumber"/>
                       <p:inputText id="batchNumber" value="#{batchController.batch.batchNumber}"
                                    required="true"/>
@@ -47,8 +52,6 @@
                                 :batchPanel:itemControlPanel:newStockIn:currentValue
                                 :batchPanel:itemControlPanel:newStockIn:stockinPrice"/>
                       </p:autoComplete>
-                      <h:outputLabel value="Store" for="itemStore"/>
-                      <h:outputText id="itemStore" value="#{itemController.item.itemStore}"/>
                       <p:outputLabel value="Item Supplier" for="supplier"/>
                       <p:autoComplete id="supplier" value="#{batchController.batch.supplier}"
                                       completeMethod="#{supplierController.searchSupplier}"
@@ -92,14 +95,17 @@
           <p:column  headerText="Batch No." >
             <h:outputText value="#{b.batchNumber}" />
           </p:column>
+          <p:column  headerText="Store" >
+            <h:outputText value="#{b.store}" />
+          </p:column>
           <p:column   headerText="Received Date"  >
-            <h:outputText value="#{b.receivedDate}" converter="calendarConverter" />
+            <h:outputText value="#{b.receivedDate}" converter="longDateConverter" />
           </p:column>
           <p:column   headerText="Manufactured Date"  >
-            <h:outputText value="#{b.manufacturedDate}" converter="calendarConverter" />
+            <h:outputText value="#{b.manufacturedDate}" converter="longDateConverter" />
           </p:column>
           <p:column   headerText="Expiry Date"  >
-            <h:outputText value="#{b.bestBefore}" converter="calendarConverter" />
+            <h:outputText value="#{b.bestBefore}" converter="longDateConverter" />
           </p:column>
           <p:column headerText="Item" >
             <h:outputText value="#{b.item.name}" />

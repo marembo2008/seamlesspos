@@ -3,309 +3,304 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Sales</title>
-
-        <style type="text/css">
-            .ui-layout-north {
-                z-index: 20 !important;
-                overflow: visible !important;;
-            }
-
-            .ui-layout-north .ui-layout-unit-content {
-                overflow: visible !important;
-            }
-
-            .basicList td {
-                border-style: hidden !important;
-            }
-
-            .ui-widget,.ui-widget .ui-widget {
-                font-size: 94% !important;
-            }
-        </style>
-    </h:head>
-    <h:body>
-
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <style type="text/css">
+        .ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td{
+          font-size: 11px;
+        }
+        .ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield{
+          width: 70% !important;
+        }
+      </style>
+      <p:panel>
         <h:form>
-
-            <p:layout fullPage="true">
-
-
-                <p:layoutUnit id="center3" position="center" styleClass="nestedUnit">
-
-                    <p:panel header="Details">
-                        <f:facet name="header">
-                            <p:selectOneMenu id="sal" value="" editable="true"
-                                             style="width:200px; font-size:100%; margin:0px 0px 0px 0px">
-                                <f:selectItem itemLabel="Mwaniki Joan Wanjiru" itemValue="" />
-                                <f:selectItem itemLabel="Wanjohi Daniel Muriuki" itemValue="" />
-
-                            </p:selectOneMenu>
-                            <p:watermark for="sal" value="Search Sales Person"/>
-                            <p:commandButton value="Cancel" style="float: right;"/>
-                            <p:commandButton value="Collect" style="float: right;" onclick="chqs.show();"/>
-                            <p:inputText id="dispatch" style="float:left;"/>
-                            <p:watermark for="dispatch" value="Enter Dispatch No."/>
-                        </f:facet>
-                        <table>
-                            <tr>
-                                <td><h:outputText value="Name:"/></td>
-                                <td><h:outputText value="Mwaniki Joan Wanjiru"/></td>
-                                <td><h:outputText value="Emp No:"/></td>
-                                <td><h:outputText value="Region:"/></td>
-                                <td><h:outputText value="Central Rift"/></td>
-                            </tr>
-                        </table>
-
-
-                    </p:panel>
-
-                    <p:dataTable id="dataTable" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="false"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-
-                        <f:facet name="footer">
-                            <h:outputText value="Total"/>
-                        </f:facet>
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-                        <p:column id="batch" headerText="#" style="width:4%" >
-                            <h:outputText value="12" />
-
-                        </p:column>
-                        <p:column id="name" headerText="Item Code" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column  headerText="Description" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Quantity" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Unit Price" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Disc" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Tax" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Net" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column id="sold" headerText="Sold" >
-                            <p:inputText style="width: 50px; text-align: center;"/>
-
-                        </p:column>
-                        <p:column id="cas" headerText="Cash" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column id="diff" headerText="Diff" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                    </p:dataTable>
-
-
-
-                </p:layoutUnit>
-
-
-
-
-                <p:layoutUnit id="top" position="north" size="80">
-                    <h:link value="Close" outcome="bills" style="float: right; text-decoration: none;"/>
-
-                </p:layoutUnit>
-
-
-                <p:layoutUnit id="bottom" position="south" size="35" style="text-align: center;">
-                    <h:outputText value=" &copy; Intech Logisticss 2013"/>
-
-                </p:layoutUnit>
-
-                
-
-            </p:layout>
-            <p:dialog id="che" widgetVar="chqs" header="Route Sales Postings ">
-                <p:panel>
-                    <table>
-                        <tr>
-                            <td><h:outputText value=" Total"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Diff:"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value=" Dispatched"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Cash:"/></td>
-                            <td><p:inputText/></td>
-                            <td><p:commandButton value="Credit" onclick="cr.show();"/></td>
-                        </tr>
-
-                    </table>
-                </p:panel>
-                <p:panel header="Cheques">
-                    <table>
-                        <tr>
-                            <td><h:outputText value=" Cheque No"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Drawer"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Cheque Dated"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Amount"/></td>
-                            <td><p:inputText/></td>
-                        </tr>
-                        <tr>
-                            <td><h:outputText value=" Bank"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Branch"/></td>
-                            <td><p:inputText/></td>
-                            <td><h:outputText value="Supplier"/></td>
-                            <td><p:inputText/></td>
-                            <td colspan="2" align="right"><p:commandButton value="Add" style="width: 150px;"/></td>
-
-                        </tr>
-                    </table>
-                </p:panel>
-                <p:panel>
-                    <p:dataTable id="dataTable" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="false"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-
-
-                        <f:facet name="footer">
-                            <h:outputText value="Sub Total"/>
-                            <p:commandButton value="Post" style="float: right;"/>
-                        </f:facet>
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-                        <p:column id="batch" headerText="Cheque No"  >
-                            <h:outputText value="12" />
-
-                        </p:column>
-                        <p:column id="name" headerText="Drawer" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column  headerText="Bank" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Branch" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Cheque Dated" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Amount" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-                        <p:column  headerText="Supplier" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-
-                    </p:dataTable>
-                </p:panel>
-
-            </p:dialog>
-
-            <p:dialog id="cre" widgetVar="cr" header="Credit" width="500">
-                <p:panel>
-                    <p:dataTable id="dataTable" var="v"
-                                 value="#{visitorController.visitors}"
-
-                                 emptyMessage="No Student found"
-                                 paginator="false"
-                                 rows="10"
-                                 paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} "
-                                 rowsPerPageTemplate="5,10,15,20" draggableColumns="true"   rowStyleClass="#{car.year le 1998 ? 'old' : null}" >
-
-                        <f:facet name="footer">
-                            <h:outputText value="Sub Total"/>
-                            <p:commandButton value="Post" style="float: right;"/>
-                        </f:facet>
-
-                        <f:facet name="header">
-                            <p:selectOneMenu id="sup" value="" editable="true"
-                                             style="width:200px; font-size:100%; margin:0px 0px 0px 0px; float: left;">
-                                <f:selectItem itemLabel="Mwaniki Joan Wanjiru" itemValue="" />
-                                <f:selectItem itemLabel="Wanjohi Daniel Muriuki" itemValue="" />
-
-                            </p:selectOneMenu>
-                            <p:watermark value="Debtor" for="sup"/>
-                            <p:inputText id="amt" style="float: left;"/>
-                            <p:watermark value="Amount" for="amt"/>
-                            <p:commandButton value="Add" style="float: right;"/>
-                        </f:facet>
-
-                        <p:column style="width:4%">
-                            <p:rowToggler />
-                        </p:column>
-                        <p:column id="batch" headerText="Debtor No"  >
-                            <h:outputText value="12" />
-
-                        </p:column>
-                        <p:column id="name" headerText="Name" >
-                            <h:outputText value="" />
-
-                        </p:column>
-                        <p:column  headerText="Amount" >
-                            <h:outputText value="" />
-
-                        </p:column>
-
-
-
-
-                    </p:dataTable>
-                </p:panel>
-
-            </p:dialog>
+          <p:watermark for="saleDispatchSearchField" value="Enter Dispatch No."/>
+          <p:panelGrid style="width: 100%">
+            <p:row>
+              <p:column colspan="2">
+                <p:autoComplete id="saleDispatchSearchField" value="#{salesController.saleDispatch}"
+                                completeMethod="#{saleDispatchController.searchSaleDispatches}"
+                                var="sd" itemLabel="#{sd.id}" itemValue="#{sd}" dropdown="true"
+                                converter="saleDispatchConverter" >
+                  <p:ajax event="itemSelect" update="@form :saleDispatchOrderPanel"/>
+                </p:autoComplete>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column colspan="2">
+                <p:separator/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputLabel value="Employee Number: " for="employeeNumber"/>
+              </p:column>
+              <p:column>
+                <h:outputText id="employeeNumber" value="#{salesController.saleDispatch.dispatchEmployee.employeeNumber}"
+                              rendered="#{not empty salesController.saleDispatch}"  style="text-transform: uppercase"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputLabel value="Employee Name: " for="employeeName"/>
+              </p:column>
+              <p:column>
+                <h:outputText id="employeeName" value="#{salesController.saleDispatch.dispatchEmployee.name}"
+                              rendered="#{not empty salesController.saleDispatch}" style="text-transform: uppercase"/>
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+          <br/>
+          <p:commandButton value="Cancel" style="float: right;" actionListener="#{salesController.cancelSaleDispatchCollection()}"
+                           update="@form :saleDispatchOrderPanel"/>
+          <p:commandButton value="Collect" style="float: right;"
+                           partialSubmit="true" process=":saleDispatchOrderForm"
+                           oncomplete="chqs.show();" update=":salePositingsFrom"/>
+          <br/>
+          <br/>
+          <br/>
+          <p:separator/>
         </h:form>
+      </p:panel>
+      <br/>
+      <h:panelGroup id="saleDispatchOrderPanel" layout="block" style="width: 100%">
+        <h:form id="saleDispatchOrderForm">
+          <p:dataTable var="i"
+                       value="#{salesController.saleDispatch.dispatchedItems}"
+                       rendered="#{not empty salesController.saleDispatch}"
+                       sortBy="#{salesController.saleDispatch.id}">
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column headerText="#" style="width:4%" >
+              <h:outputText value="#{i.id}" />
+            </p:column>
+            <p:column id="name" headerText="Item Code" >
+              <h:outputText value="#{i.item.itemCode}" />
+            </p:column>
+            <p:column  headerText="Description" >
+              <h:outputText value="#{i.item.name}" />
+            </p:column>
+            <p:column  headerText="Quantity" >
+              <h:outputText value="#{i.quantity}" />
+            </p:column>
+            <p:column  headerText="Unit Price" >
+              <h:outputText value="#{i.sellingPrice}" />
+            </p:column>
+            <p:column  headerText="Disc" >
+              <h:outputText value="" />
+            </p:column>
+            <p:column  headerText="Tax" >
+              <h:outputText value="#{i.tax}" />
+            </p:column>
+            <p:column  headerText="Net Price" >
+              <h:outputText value="#{i.netPrice}" />
+            </p:column>
+            <p:column  headerText="Dispatch value" >
+              <h:outputText value="#{i.dispatchValue}" />
+            </p:column>
+            <p:column id="sold" headerText="Sold Quantity" >
+              <p:inputText style="width: 100%; text-align: right;"
+                           value="#{i.soldQuantity}" required="true">
+                <p:ajax event="change" update="@form"/>
+              </p:inputText>
+            </p:column>
+            <p:column id="cas" headerText="Cash" >
+              <h:outputText value="#{i.totalSale}" />
+            </p:column>
+            <p:column id="diff" headerText="Diff" >
+              <h:outputText value="#{i.saleDifference}" />
+            </p:column>
+            <p:summaryRow>
+              <p:column colspan="11" style="text-align: right">
+                Total Dispatch
+              </p:column>
+              <p:column>
+                #{salesController.saleDispatch.totalDispatchSaleValue}
+              </p:column>
+              <p:column>
+                #{salesController.saleDispatch.totalDispatchSaleDifference}
+              </p:column>
+            </p:summaryRow>
+          </p:dataTable>
+        </h:form>
+      </h:panelGroup>
+      <p:dialog id="che" widgetVar="chqs" header="Route Sales Postings " appendToBody="true" modal="true">
+        <h:form id="salePositingsFrom">
+          <p:panel style="margin-bottom: 10px">
+            <p:panelGrid style="width: 100%">
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="Total: " for="total"/>
+                </p:column>
+                <p:column>
+                  <h:outputText id="total" value="#{salesController.saleDispatch.totalDispatchSaleValue}"/>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="Sale Difference: " for="saleDifference"/>
+                </p:column>
+                <p:column>
+                  <h:outputText id="saleDifference" value="#{salesController.saleDispatch.totalDispatchSaleDifference}"/>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="Sale Dispatch Value " for="saleDispatch"/>
+                </p:column>
+                <p:column>
+                  <h:outputText id="saleDispatch" value="#{salesController.saleDispatch.totalDispatchValue}"/>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <h:outputLabel value="Cash Payment: " for="cashPayment"/>
+                </p:column>
+                <p:column>
+                  <p:inputText id="cashPayment" />
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <p:commandButton value="Credit" oncomplete="cr.show();" style="width: 200px"/>
+                </p:column>
+                <p:column>#{salesController.totalCreditPayments}</p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  Cheque Payments:
+                </p:column>
+                <p:column>#{salesController.totalChequePayments}</p:column>
+              </p:row>
+            </p:panelGrid>
+          </p:panel>
+        </h:form>
+        <h:form>
+          <p:panel header="Cheques" style="margin-bottom: 10px">
+            <p:panelGrid columns="8">
+              <p:outputLabel value="Cheque Number" for="chequeNumber"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.chequeNumber}" id="chequeNumber"/>
+              <p:outputLabel value="Drawer" for="drawer"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.drawer}" id="drawer"/>
+              <p:outputLabel value="Cheque Date" for="chequeDate"/>
+              <p:calendar value="#{salesController.saleDispatchCurrentChequePayment.maturityDate}" id="chequeDate"
+                          pattern="yyyy-mm-dd" converter="dateConverter"/>
+              <p:outputLabel value="Amount" for="amount"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.paymentAmount}" id="amount"/>
+              <p:outputLabel value="Bank" for="bank"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.bank}" id="bank"/>
+              <p:outputLabel value="Branch" for="branch"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.branch}" id="branch"/>
+              <p:outputLabel value="Client" for="client"/>
+              <p:autoComplete id="client" value="#{salesController.saleDispatchCurrentChequePayment.client}"
+                              completeMethod="#{clientController.searchClients}" var="c"
+                              itemLabel="#{c.name}" itemValue="#{c}" dropdown="true" converter="clientConverter"/>
+              <h:outputText/>
+              <p:commandButton value="Add" style="width: 150px;"
+                               actionListener="#{salesController.addChequePayment()}"
+                               update="@form :chequePayementTable :salePositingsFrom"/>
+            </p:panelGrid>
+          </p:panel>
+        </h:form>
+        <p:panel>
+          <p:dataTable id="chequePayementTable" var="cp"
+                       sortBy="#{cp.paymentOption}"
+                       value="#{salesController.saleDispatchChequePayments}">
+            <f:facet name="footer">
+              <h:panelGroup layout="block" style="width: 100%; text-align: right">
+                <h:form>
+                  <p:commandButton value="Post" actionListener="#{salesController.createSaleForSaleDispatch()}"
+                                   oncomplete="che.hide()"/>
+                </h:form>
+              </h:panelGroup>
+            </f:facet>
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column id="batch" headerText="Cheque No"  >
+              <h:outputText value="#{cp.chequeNumber}" />
+            </p:column>
+            <p:column id="name" headerText="Drawer" >
+              <h:outputText value="#{cp.drawer}" />
+            </p:column>
+            <p:column  headerText="Bank" >
+              <h:outputText value="#{cp.bank}" />
+            </p:column>
+            <p:column  headerText="Branch" >
+              <h:outputText value="#{cp.branch}" />
+            </p:column>
+            <p:column  headerText="Cheque Dated" >
+              <h:outputText value="#{cp.maturityDate}" converter="longDateConverter" />
+            </p:column>
+            <p:column  headerText="Client" >
+              <h:outputText value="#{cp.client.name}" />
+            </p:column>
+            <p:column  headerText="Amount" >
+              <h:outputText value="#{cp.paymentAmount}" />
+            </p:column>
+            <p:summaryRow>
+              <p:column colspan="7" style="text-align: right">Sub total:</p:column>
+              <p:column>#{salesController.totalChequePayments}</p:column>
+            </p:summaryRow>
+          </p:dataTable>
+        </p:panel>
+      </p:dialog>
 
-
-
-    </h:body>
+      <p:dialog id="cre" widgetVar="cr" header="Credit" width="500" appendToBody="true" modal="true">
+        <p:panel>
+          <p:dataTable var="cr"
+                       id="creditPayementTable"
+                       value="#{salesController.saleDispatchCreditPayemts}"
+                       sortBy="#{cr.client.id}">
+            <f:facet name="footer">
+              <h:panelGroup layout="block" style="width: 100%; height: 40px">
+                <p:commandButton value="Post" style="float: right; margin-right: 10px"
+                                 oncomplete="cr.hide()" update=":salePositingsFrom"/>
+              </h:panelGroup>
+            </f:facet>
+            <f:facet name="header">
+              <h:form>
+                <p:watermark value="Debtor" for="debtors"/>
+                <p:watermark value="Amount" for="amt"/>
+                <p:panelGrid columns="1">
+                  <p:autoComplete id="debtors" value="#{salesController.saleDispatchCurrentCreditPayment.client}"
+                                  completeMethod="#{clientController.searchClients}" var="c"
+                                  itemLabel="#{c.name}" itemValue="#{c}" dropdown="true" converter="clientConverter"/>
+                  <p:inputText id="amt"
+                               value="#{salesController.saleDispatchCurrentCreditPayment.paymentAmount}"/>
+                  <p:commandButton value="Add" style="float: right;"
+                                   actionListener="#{salesController.addCreditPayment()}" update="@form :creditPayementTable"/>
+                </p:panelGrid>
+              </h:form>
+            </f:facet>
+            <p:column style="width:4%">
+              <p:rowToggler />
+            </p:column>
+            <p:column id="batch" headerText="Debtor No"  >
+              <h:outputText value="#{cr.client.id}" />
+            </p:column>
+            <p:column id="name" headerText="Name" >
+              <h:outputText value="#{cr.client.name}" />
+            </p:column>
+            <p:column  headerText="Amount" >
+              <h:outputText value="#{cr.paymentAmount}" />
+            </p:column>
+            <p:summaryRow>
+              <p:column colspan="3" style="text-align: right">
+                Sub total:
+              </p:column>
+              <p:column>
+                #{salesController.totalCreditPayments}
+              </p:column>
+            </p:summaryRow>
+          </p:dataTable>
+        </p:panel>
+      </p:dialog>
+    </ui:define>
+  </ui:composition>
 </html>
 

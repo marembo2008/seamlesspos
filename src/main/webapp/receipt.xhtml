@@ -7,20 +7,22 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
   <ui:composition template="/seamless_template.xhtml">
     <ui:define name="body">
-      <h:form>
+      <h:form id="salesForm">
         <p:panel id="salesReceiptPanel">
+          <f:facet name="header">
+            <h:panelGroup layout="block" style="width: 100%; text-align: left">
+              <h:outputText value="Search Receipt"/>
+              <p:watermark value="Enter Receipt No." for="searchSalesByReceipt"/>
+              <p:inputText id="searchSalesByReceipt" style="width: 50%; margin-left: 20px"
+                           value="#{salesController.searchQuery}">
+                <p:ajax event="keyup" listener="#{salesController.searchSaleReceipts()}" update=":salesForm:saleReceiptTable"/>
+              </p:inputText>
+            </h:panelGroup>
+          </f:facet>
           <p:dataTable id="saleReceiptTable"
                        value="#{salesController.sales}" var="s"
                        emptyMessage="You have no sales yet"
                        widgetVar="saleReceiptTableVar">
-            <f:facet name="header">
-              <p:outputPanel style="width: 100%;">
-                <h:outputText value="Search Receipt"/>
-                <p:watermark value="Enter Receipt No." for="globalFilter"/>
-                <p:inputText id="globalFilter" style="width: 50%; margin-left: 20px"
-                             onkeyup="saleReceiptTableVar.filert();"/>
-              </p:outputPanel>
-            </f:facet>
             <p:column style="width:4%">
               <p:rowToggler />
             </p:column>

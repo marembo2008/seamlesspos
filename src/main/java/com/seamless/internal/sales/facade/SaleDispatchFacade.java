@@ -56,4 +56,11 @@ public class SaleDispatchFacade extends AbstractFacade<SaleDispatch> {
       }
     }
   }
+
+  public List<SaleDispatch> searchSaleDispatches(String idQuery) {
+    return getEntityManager()
+            .createNamedQuery("SALEDISPATCH.SEARCH_SALE_DISPATCH_BY_ID")
+            .setParameter("id", "%" + idQuery + "%")
+            .getResultList();
+  }
 }

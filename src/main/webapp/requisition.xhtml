@@ -9,7 +9,7 @@
       <p:panel header="Transfer Details">
         <h:form>
           <p:panelGrid columns="2" style="width: 100%">
-            <p:outputLabel value="Item" for="item"/>
+            <p:outputLabel value="Batch Item" for="item"/>
             <p:autoComplete id="item" value="#{internalAcquisitionController.internalTransfer.transferBatch}"
                             completeMethod="#{batchController.findBatches}"
                             var="i" itemLabel="#{i.batchNumber}(#{i.item.name})" itemValue="#{i}"
@@ -22,12 +22,10 @@
                           rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch}"/>
             <h:outputText value="#{internalAcquisitionController.internalTransfer.transferBatch.currentQuantity}"
                           rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch}"/>
-            <p:outputLabel value="From Store" for="fromStore"/>
-            <p:autoComplete id="fromStore" value="#{internalAcquisitionController.internalTransfer.fromStore}"
-                            completeMethod="#{storeController.searchStore}"
-                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
-                            required="true"
-                            converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
+            <h:outputLabel value="From Store" for="fromStore"
+                           rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch.store}"/>
+            <p:outputLabel id="fromStore" value="#{internalAcquisitionController.internalTransfer.transferBatch.store.name}"
+                           rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch.store}"/>
             <p:outputLabel value="To Store" for="toStore"/>
             <p:autoComplete id="toStore" value="#{internalAcquisitionController.internalTransfer.toStore}"
                             completeMethod="#{storeController.searchStore}"
@@ -36,7 +34,7 @@
                             converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
             <p:outputLabel value="Transfer Quantity" for="transferQuantity"/>
             <p:inputText id="transferQuantity" value="#{internalAcquisitionController.internalTransfer.newStoreBatch.quantity}"
-                         required="true"/>
+                         required="true" validator="#{internalAcquisitionController.validateTransferAmount}"/>
           </p:panelGrid>
           <p:separator/>
           <p:commandButton value="Transfer" actionListener="#{internalAcquisitionController.transferItemBatch()}"
@@ -48,7 +46,7 @@
         <p:column style="width:4%">
           <p:rowToggler />
         </p:column>
-        <p:column headerText="Internal Transfer Id" style="width:4%">
+        <p:column headerText="Transfer Id" style="width:4%">
           <h:outputText value="#{it.id}" />
         </p:column>
         <p:column  headerText="Transfer Date" >

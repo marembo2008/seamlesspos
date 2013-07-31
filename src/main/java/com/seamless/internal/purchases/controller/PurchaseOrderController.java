@@ -16,8 +16,14 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
 
 /**
  *
@@ -89,7 +95,7 @@ public class PurchaseOrderController implements Serializable {
 
   public void onStoreSelected() {
     if (purchaseOrder.getStore() != null) {
-      List<Item> is = itemFacade.findItemsForStore(purchaseOrder.getStore());
+      List<Item> is = itemFacade.findAll();
       this.storeItems = new ArrayList<PurchaseOrderItem>();
       for (Item i : is) {
         this.storeItems.add(new PurchaseOrderItem(i));
@@ -99,5 +105,30 @@ public class PurchaseOrderController implements Serializable {
 
   public List<PurchaseOrderItem> getStoreItems() {
     return storeItems;
+  }
+
+  public List<PurchaseOrder> searchPurchaseOrders(String query) {
+    return purchaseOrderFacade.searchPurchaseOrders(query);
+  }
+
+  @FacesConverter("purchaseOrderConverter")
+  public static class PurchaseOrderConverter implements Converter {
+
+    private static Map<String, PurchaseOrder> map = new HashMap<String, PurchaseOrder>();
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+      return map.get(value);
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
+      if (value instanceof PurchaseOrder) {
+        PurchaseOrder po = (PurchaseOrder) value;
+        map.put(po.getPurchaseOrderNumber(), po);
+        return po.getPurchaseOrderNumber();
+      }
+      return null;
+    }
   }
 }

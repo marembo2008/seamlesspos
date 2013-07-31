@@ -14,11 +14,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -28,11 +26,9 @@ import org.hibernate.annotations.LazyCollectionOption;
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "ITEM.FIND_STORE_ITEM", query = "SELECT i FROM Item i WHERE i.itemStore.storeId = :storeId"),
   @NamedQuery(name = "item.find_available_items",
           query = "select i from Item i where (select count(b) from Batch b JOIN b.item i_ where i_.itemCode = i.itemCode AND b.frozen = :state) > 0"),
-  @NamedQuery(name = "item.search_items_by_name", query = "SELECT i FROM Item i WHERE i.name LIKE :name"),
-  @NamedQuery(name = "item.find_total_item_cost_from_store", query = "SELECT SUM(i.costAmount) FROM Item i WHERE i.itemStore.storeId = :storeId")
+  @NamedQuery(name = "item.search_items_by_name", query = "SELECT i FROM Item i WHERE i.name LIKE :name")
 })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Item implements Serializable {
@@ -46,13 +42,6 @@ public class Item implements Serializable {
   private BigDecimal price1;
   private BigDecimal price2;
   private BigDecimal price3;
-  /**
-   * Rather than making an item as a member of a store, since a store can contain so many items, and
-   * loading them at once would not be good.
-   */
-  @OneToOne
-  @JoinColumn(nullable = false)
-  private Store itemStore;
   private int reorderLevel;
   @OneToMany(cascade = CascadeType.ALL)
   @LazyCollection(LazyCollectionOption.FALSE)
@@ -136,14 +125,6 @@ public class Item implements Serializable {
 
   public void setPrice3(BigDecimal price3) {
     this.price3 = price3;
-  }
-
-  public Store getItemStore() {
-    return itemStore;
-  }
-
-  public void setItemStore(Store itemStore) {
-    this.itemStore = itemStore;
   }
 
   public int getReorderLevel() {

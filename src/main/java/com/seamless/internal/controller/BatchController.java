@@ -110,6 +110,9 @@ public class BatchController implements Serializable {
     try {
       if (batch.isFrozen()) {
         batch.setFrozen(!currentState);
+      } else {
+        JsfUtil.addErrorMessage("Batch is already unfrozen. It cannot be frozen again!");
+        return;
       }
       System.err.println("Frozen State: " + batch.isFrozen());
       batchFacade.edit(batch);

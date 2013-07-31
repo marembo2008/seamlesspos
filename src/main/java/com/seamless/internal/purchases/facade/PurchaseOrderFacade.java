@@ -6,6 +6,7 @@ package com.seamless.internal.purchases.facade;
 
 import com.seamless.internal.facade.*;
 import com.seamless.internal.purchases.PurchaseOrder;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,5 +28,12 @@ public class PurchaseOrderFacade extends AbstractFacade<PurchaseOrder> {
 
   public PurchaseOrderFacade() {
     super(PurchaseOrder.class);
+  }
+
+  public List<PurchaseOrder> searchPurchaseOrders(String orderNumberQuery) {
+    return getEntityManager()
+            .createNamedQuery("PURCHASEORDER.FIND_PURCHASE_ORDER_BY_ORDER_NUMBER")
+            .setParameter("orderNumber", "%" + orderNumberQuery + "%")
+            .getResultList();
   }
 }

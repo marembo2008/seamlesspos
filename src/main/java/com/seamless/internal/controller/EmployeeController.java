@@ -83,6 +83,11 @@ public class EmployeeController implements Serializable {
     this.currentEmployee = currentEmployee;
   }
 
+  public String toEmployeeView() {
+    onLoad();
+    return "/employee.xhtml?faces-redirect=true";
+  }
+
   public void addEmployee() {
     try {
       if (currentEmployee.getEmployeeNumber() != null

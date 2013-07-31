@@ -55,8 +55,9 @@ public class Sale implements Serializable {
   private BigDecimal totalSale; //for convinience
   private BigDecimal tenderedAmount; //the amount the customer gave
   private BigDecimal tenderedChange; //the change given to client
-  @OneToOne(cascade = CascadeType.ALL)
-  private Payment payment;
+  @OneToMany(cascade = CascadeType.ALL)
+  @LazyCollection(LazyCollectionOption.FALSE)
+  private List<Payment> payments;
   private SaleStatus status;
   @Transient
   private Map<Long, SaleItem> modelSales;
@@ -95,6 +96,9 @@ public class Sale implements Serializable {
 
   public void addSaleItem(SaleItem saleItem) {
     getSaleItems().add(saleItem);
+    if (modelSales == null) {
+      modelSales = new HashMap<Long, SaleItem>();
+    }
     modelSales.put(saleItem.getSaleItemId(), saleItem);
   }
 
@@ -170,12 +174,19 @@ public class Sale implements Serializable {
     this.tenderedChange = change;
   }
 
-  public Payment getPayment() {
-    return payment;
+  public void setPayments(List<Payment> payments) {
+    this.payments = payments;
   }
 
-  public void setPayment(Payment payment) {
-    this.payment = payment;
+  public List<Payment> getPayments() {
+    return payments;
+  }
+
+  public void addPayment(Payment payment) {
+    if (payments == null) {
+      payments = new ArrayList<Payment>();
+    }
+    payments.add(payment);
   }
 
   @Override
@@ -188,7 +199,6 @@ public class Sale implements Serializable {
     hash = 73 * hash + (this.totalSale != null ? this.totalSale.hashCode() : 0);
     hash = 73 * hash + (this.tenderedAmount != null ? this.tenderedAmount.hashCode() : 0);
     hash = 73 * hash + (this.tenderedChange != null ? this.tenderedChange.hashCode() : 0);
-    hash = 73 * hash + (this.payment != null ? this.payment.hashCode() : 0);
     hash = 73 * hash + (this.status != null ? this.status.hashCode() : 0);
     return hash;
   }
@@ -223,12 +233,22 @@ public class Sale implements Serializable {
     if (this.tenderedChange != other.tenderedChange && (this.tenderedChange == null || !this.tenderedChange.equals(other.tenderedChange))) {
       return false;
     }
-    if (this.payment != other.payment && (this.payment == null || !this.payment.equals(other.payment))) {
-      return false;
-    }
     if (this.status != other.status) {
       return false;
     }
     return true;
+  }
+
+  public void clearPayments() {
+    payments = null;
+  }
+
+  public Payment getPayment() {
+    return payments == null || payments.isEmpty() ? null : payments.get(0);
+  }
+
+  public void setPayment(Payment cashPayment) {
+    clearPayments();
+    addPayment(cashPayment);
   }
 }

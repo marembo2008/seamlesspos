@@ -13,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -25,6 +26,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @NamedQueries({
+  @NamedQuery(name = "batchitem.find_batches_in_store", query = "SELECT i FROM Batch i WHERE i.store.storeId = :storeId"),
   @NamedQuery(name = "batchitem.find_batch_by_frozen_state",
           query = "SELECT bi FROM Batch bi WHERE bi.frozen = :frozen"),
   @NamedQuery(name = "batchitem.search_batch_by_item_name",
@@ -36,7 +38,7 @@ import javax.persistence.Temporal;
   @NamedQuery(name = "batchitem.search_batch_by_id",
           query = "SELECT bi FROM Batch bi WHERE bi.frozen = :frozen AND bi.batchNumber_ LIKE :batchNumber_"),
   @NamedQuery(name = "batchitem.find_total_item_cost_from_store",
-          query = "SELECT SUM(i.costAmount * b.quantity) FROM Batch b JOIN b.item i WHERE i.itemStore.storeId = :storeId"),
+          query = "SELECT SUM(i.costAmount * b.quantity) FROM Batch b JOIN b.item i WHERE b.store.storeId = :storeId"),
   @NamedQuery(name = "batchitem.find_total_items_quantity",
           query = "SELECT SUM(b.currentQuantity) FROM Batch b JOIN b.item i WHERE i.itemId = :itemId AND b.frozen = :frozen"),
   @NamedQuery(name = "batchitem.find_total_item_cost_from_all_store",
@@ -70,6 +72,13 @@ public class Batch implements Serializable {
   private int currentQuantity;
   @OneToOne
   private Supplier supplier;
+  /**
+   * Rather than making an item as a member of a store, since a store can contain so many items, and
+   * loading them at once would not be good.
+   */
+  @OneToOne
+  @JoinColumn(nullable = false)
+  private Store store;
 
   public Batch() {
     receivedDate = Calendar.getInstance();
@@ -80,6 +89,14 @@ public class Batch implements Serializable {
   void onSave() {
     this.batchNumber_ = this.batchNumber + "";
     this.currentQuantity = this.quantity;
+  }
+
+  public void setStore(Store store) {
+    this.store = store;
+  }
+
+  public Store getStore() {
+    return store;
   }
 
   public BigDecimal getCostAmount() {

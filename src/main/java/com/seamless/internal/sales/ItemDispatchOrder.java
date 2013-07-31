@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  *
@@ -31,6 +32,11 @@ public class ItemDispatchOrder implements Serializable {
   private int quantity;
   private BigDecimal sellingPrice;
   private BigDecimal tax;
+  private int soldQuantity;
+  @Transient
+  private BigDecimal totalSale;
+  @Transient
+  private BigDecimal saleDifference;
 
   public Long getId() {
     return id;
@@ -38,6 +44,41 @@ public class ItemDispatchOrder implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public BigDecimal getTotalSale() {
+    if (sellingPrice != null) {
+      totalSale = BigDecimal.valueOf(soldQuantity).multiply(getNetPrice());
+    }
+    return totalSale;
+  }
+
+  public void setTotalSale(BigDecimal totalSale) {
+    this.totalSale = totalSale;
+  }
+
+  public BigDecimal getDispatchValue() {
+    return BigDecimal.valueOf(quantity).multiply(getNetPrice());
+  }
+
+  public BigDecimal getSaleDifference() {
+    if (getTotalSale() != null) {
+      BigDecimal expectedSale = getDispatchValue();
+      saleDifference = expectedSale.subtract(getTotalSale());
+    }
+    return saleDifference;
+  }
+
+  public void setSaleDifference(BigDecimal saleDifference) {
+    this.saleDifference = saleDifference;
+  }
+
+  public void setSoldQuantity(int soldQuantity) {
+    this.soldQuantity = soldQuantity;
+  }
+
+  public int getSoldQuantity() {
+    return soldQuantity;
   }
 
   public void setSellingPrice(BigDecimal sellingPrice) {

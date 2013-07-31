@@ -16,6 +16,10 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 
 /**
  *
@@ -42,6 +46,7 @@ public class InternalAcquisitionController implements Serializable {
   public void onTransferBatchSelected() {
     Batch newBatch = internalTransfer.getNewStoreBatch();
     Batch currentBatch = internalTransfer.getTransferBatch();
+    internalTransfer.setFromStore(currentBatch.getStore());
     newBatch.setBestBefore(currentBatch.getBestBefore());
     newBatch.setFrozen(currentBatch.isFrozen());
     newBatch.setItem(currentBatch.getItem());
@@ -53,8 +58,9 @@ public class InternalAcquisitionController implements Serializable {
   public void transferItemBatch() {
     try {
       //reduce current quantity of the other batch
-      int currentBatchQuantity = internalTransfer.getTransferBatch().getCurrentQuantity() - internalTransfer.getNewStoreBatch().getQuantity();
-      internalTransfer.getTransferBatch().setCurrentQuantity(currentBatchQuantity);
+      int currentBatchQuantity = internalTransfer.getTransferBatch().getQuantity() - internalTransfer.getNewStoreBatch().getQuantity();
+      internalTransfer.getTransferBatch().setQuantity(currentBatchQuantity);
+      internalTransfer.getNewStoreBatch().setStore(internalTransfer.getToStore());
       internalTransferFacade.create(internalTransfer);
       batchFacade.edit(internalTransfer.getTransferBatch());
       internalTransfer = null;
@@ -63,6 +69,17 @@ public class InternalAcquisitionController implements Serializable {
       JFlemaxController.logError(e);
       JsfUtil.addErrorMessage("Error Performing Internal Transfers");
     }
+  }
+
+  public void validateTransferAmount(FacesContext cxt, UIComponent cmp, Object value) {
+    try {
+      if (value != null && (Integer.parseInt(value.toString())) < internalTransfer.getTransferBatch().getCurrentQuantity()) {
+        return;
+      }
+    } catch (Exception e) {
+    }
+    String msg = "Please transfer amount equal to or less that the current available items";
+    throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
   }
 
   public List<InternalTransfer> getInternalTransfers() {

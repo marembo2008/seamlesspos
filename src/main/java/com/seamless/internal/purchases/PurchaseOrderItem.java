@@ -7,6 +7,7 @@ package com.seamless.internal.purchases;
 
 import com.seamless.internal.Item;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,6 +34,14 @@ public class PurchaseOrderItem implements Serializable {
   }
 
   public PurchaseOrderItem() {
+  }
+
+  public BigDecimal getOrderCost() {
+    BigDecimal cost = orderItem.getCostAmount();
+    if (cost != null) {
+      return cost.multiply(BigDecimal.valueOf(orderedQuantity));
+    }
+    return BigDecimal.ZERO;
   }
 
   public Long getId() {

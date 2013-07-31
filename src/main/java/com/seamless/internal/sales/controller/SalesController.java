@@ -8,6 +8,7 @@ import com.anosym.jflemax.validation.controller.JFlemaxController;
 import com.seamless.internal.Batch;
 import com.seamless.internal.Client;
 import com.seamless.internal.Item;
+import com.seamless.internal.SaleDispatch;
 import com.seamless.internal.controller.BatchController;
 import com.seamless.internal.controller.ItemController;
 import com.seamless.internal.controller.util.JsfUtil;
@@ -16,6 +17,7 @@ import com.seamless.internal.management.SaleReceiptGenerator;
 import com.seamless.internal.sales.CashPayment;
 import com.seamless.internal.sales.ChequePayment;
 import com.seamless.internal.sales.CreditPayment;
+import com.seamless.internal.sales.ItemDispatchOrder;
 import com.seamless.internal.sales.ItemOrder;
 import com.seamless.internal.sales.Payment;
 import com.seamless.internal.sales.Sale;
@@ -30,6 +32,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ListIterator;
@@ -95,6 +98,156 @@ public class SalesController implements Serializable {
    */
   public SalesController() {
   }
+  /* ************************************************************************************************
+   * Sale dispatch collection options
+   * ************************************************************************************************/
+  private SaleDispatch saleDispatch;
+  private CashPayment saleDispatchCashPayments;
+  private List<CreditPayment> saleDispatchCreditPayemts;
+  private List<ChequePayment> saleDispatchChequePayments;
+  private CreditPayment saleDispatchCurrentCreditPayment;
+  private ChequePayment saleDispatchCurrentChequePayment;
+
+  public void setSaleDispatchCreditPayemts(List<CreditPayment> saleDispatchCreditPayemts) {
+    this.saleDispatchCreditPayemts = saleDispatchCreditPayemts;
+  }
+
+  public void setSaleDispatchChequePayments(List<ChequePayment> saleDispatchChequePayments) {
+    this.saleDispatchChequePayments = saleDispatchChequePayments;
+  }
+
+  public void setSaleDispatchCashPayments(CashPayment saleDispatchCashPayments) {
+    this.saleDispatchCashPayments = saleDispatchCashPayments;
+  }
+
+  public List<CreditPayment> getSaleDispatchCreditPayemts() {
+    return saleDispatchCreditPayemts;
+  }
+
+  public List<ChequePayment> getSaleDispatchChequePayments() {
+    return saleDispatchChequePayments;
+  }
+
+  public void setSaleDispatchCurrentCreditPayment(CreditPayment saleDispatchCurrentCreditPayment) {
+    this.saleDispatchCurrentCreditPayment = saleDispatchCurrentCreditPayment;
+  }
+
+  public CreditPayment getSaleDispatchCurrentCreditPayment() {
+    if (saleDispatchCurrentCreditPayment == null) {
+      saleDispatchCurrentCreditPayment = new CreditPayment();
+    }
+    return saleDispatchCurrentCreditPayment;
+  }
+
+  public void setSaleDispatchCurrentChequePayment(ChequePayment saleDispatchCurrentChequePayment) {
+    this.saleDispatchCurrentChequePayment = saleDispatchCurrentChequePayment;
+  }
+
+  public ChequePayment getSaleDispatchCurrentChequePayment() {
+    if (saleDispatchCurrentChequePayment == null) {
+      saleDispatchCurrentChequePayment = new ChequePayment();
+    }
+    return saleDispatchCurrentChequePayment;
+  }
+
+  public void addCreditPayment() {
+    if (saleDispatchCurrentCreditPayment != null) {
+      if (saleDispatchCreditPayemts == null) {
+        saleDispatchCreditPayemts = new ArrayList<CreditPayment>();
+      }
+      saleDispatchCreditPayemts.add(saleDispatchCurrentCreditPayment);
+      saleDispatchCurrentCreditPayment = null;
+    }
+  }
+
+  public void addChequePayment() {
+    if (saleDispatchCurrentChequePayment != null) {
+      if (saleDispatchChequePayments == null) {
+        saleDispatchChequePayments = new ArrayList<ChequePayment>();
+      }
+      saleDispatchChequePayments.add(saleDispatchCurrentChequePayment);
+      saleDispatchCurrentChequePayment = null;
+    }
+  }
+
+  public CashPayment getSaleDispatchCashPayments() {
+    if (saleDispatchCashPayments == null) {
+      saleDispatchCashPayments = new CashPayment();
+    }
+    return saleDispatchCashPayments;
+  }
+
+  public BigDecimal getTotalCreditPayments() {
+    BigDecimal total = BigDecimal.ZERO;
+    if (saleDispatchCreditPayemts != null) {
+      for (CreditPayment cp : saleDispatchCreditPayemts) {
+        total = total.add(cp.getPaymentAmount());
+      }
+    }
+    return total;
+  }
+
+  public BigDecimal getTotalChequePayments() {
+    BigDecimal total = BigDecimal.ZERO;
+    if (saleDispatchChequePayments != null) {
+      for (ChequePayment cp : saleDispatchChequePayments) {
+        total = total.add(cp.getPaymentAmount());
+      }
+    }
+    return total;
+  }
+
+  public void addSaleDispatchCreditPayments() {
+    for (CreditPayment cp : saleDispatchCreditPayemts) {
+      sale.addPayment(cp);
+    }
+  }
+
+  public void addSaleDispatchChequePayments() {
+    for (ChequePayment cp : saleDispatchChequePayments) {
+      sale.addPayment(cp);
+    }
+  }
+
+  public void addSaleDispatchCashPayments() {
+    sale.addPayment(saleDispatchCashPayments);
+  }
+
+  public void setSaleDispatch(SaleDispatch saleDispatch) {
+    this.saleDispatch = saleDispatch;
+  }
+
+  public SaleDispatch getSaleDispatch() {
+    return saleDispatch;
+  }
+
+  public void cancelSaleDispatchCollection() {
+    saleDispatch = null;
+  }
+
+  public void createSaleForSaleDispatch() {
+    sale = new Sale();
+    receiptGenerator.setSaleReceipt(sale);
+    //convert all the ItemDispatch to SaleItem
+    for (ItemDispatchOrder ido : saleDispatch.getDispatchedItems()) {
+      SaleItem i = new SaleItem();
+      i.setItem(ido.getItem());
+      i.setOrderedQuantity(ido.getSoldQuantity());
+      i.setSale(sale);
+      i.setSalePrice(ido.getSellingPrice());
+      i.setTax(ido.getTax());
+      processSaleItem(i);
+      sale.addSaleItem(i);
+    }
+    addSaleDispatchCashPayments();
+    addSaleDispatchChequePayments();
+    addSaleDispatchCreditPayments();
+    doSave();
+    cancelSaleDispatchCollection();
+  }
+  /* ************************************************************************************************
+   * End sale dispatch options
+   * ************************************************************************************************/
 
   public void setPrintReceipt(boolean printReceipt) {
     this.printReceipt = printReceipt;
@@ -229,15 +382,16 @@ public class SalesController implements Serializable {
   }
 
   public void calculatePaymentOption() {
+    getSale().clearPayments();
     switch (paymentOption) {
       case CASH:
-        getSale().setPayment(new CashPayment(getSale().getTotalSale(), getSale().getCustomer()));
+        getSale().addPayment(new CashPayment(getSale().getTotalSale(), getSale().getCustomer()));
         break;
       case CREDIT:
-        getSale().setPayment(new CreditPayment(getSale().getTotalSale(), getSale().getCustomer()));
+        getSale().addPayment(new CreditPayment(getSale().getTotalSale(), getSale().getCustomer()));
         break;
       case CHEQUE:
-        getSale().setPayment(new ChequePayment(getSale().getTotalSale(), getSale().getCustomer()));
+        getSale().addPayment(new ChequePayment(getSale().getTotalSale(), getSale().getCustomer()));
         break;
     }
   }
@@ -323,36 +477,40 @@ public class SalesController implements Serializable {
       validateQuantity(null, null, saleItem.getOrderedQuantity());
       //TODO(marembo). load the relevant batch to add the sale item order.
       SaleItem si = saleItem;
-      if (!si.isOrderSet()) {
-        Item i = si.getItem();
-        //get the batches.
-        /*
-         * TODO(marembo) this will fail if the item has been referenced in more than one sale item!
-         *
-         */
-        List<Batch> availableBatches = batchFacade.findAvailableBatches(i);
-        ListIterator<Batch> it_b = availableBatches.listIterator();
-        //for us to reach here, there must have been available items
-        int orderedQuantity = si.getOrderedQuantity();
-        while (orderedQuantity > 0 && it_b.hasNext()) {
-          Batch b = it_b.next();
-          int b_quantity = b.getCurrentQuantity();
-          //get the order quantity for item order
-          int io_quantity = Math.min(orderedQuantity, b_quantity);
-          //get the current order quantity for this batch if any
-          int b_currentQuantity = Math.max(b_quantity - io_quantity, 0);
-          b.setCurrentQuantity(b_currentQuantity);
-          ItemOrder io = new ItemOrder(b, io_quantity);
-          orderedQuantity -= io_quantity;
-          si.addItem(io);
-        }
-      }
+      processSaleItem(si);
       getSale().addSaleItem(saleItem);
     } catch (Exception e) {
       JFlemaxController.logError(e);
       JsfUtil.addErrorMessage("Sorry, unable to add item: " + e.getMessage());
     } finally {
       saleItem = null;
+    }
+  }
+
+  private void processSaleItem(SaleItem si) {
+    if (!si.isOrderSet()) {
+      Item i = si.getItem();
+      //get the batches.
+        /*
+       * TODO(marembo) this will fail if the item has been referenced in more than one sale item!
+       *
+       */
+      List<Batch> availableBatches = batchFacade.findAvailableBatches(i);
+      ListIterator<Batch> it_b = availableBatches.listIterator();
+      //for us to reach here, there must have been available items
+      int orderedQuantity = si.getOrderedQuantity();
+      while (orderedQuantity > 0 && it_b.hasNext()) {
+        Batch b = it_b.next();
+        int b_quantity = b.getCurrentQuantity();
+        //get the order quantity for item order
+        int io_quantity = Math.min(orderedQuantity, b_quantity);
+        //get the current order quantity for this batch if any
+        int b_currentQuantity = Math.max(b_quantity - io_quantity, 0);
+        b.setCurrentQuantity(b_currentQuantity);
+        ItemOrder io = new ItemOrder(b, io_quantity);
+        orderedQuantity -= io_quantity;
+        si.addItem(io);
+      }
     }
   }
 
@@ -371,9 +529,6 @@ public class SalesController implements Serializable {
   private void doSave() {
     try {
       if (sale.getStatus() != SaleStatus.CANCELLED) {
-        if (sale.getCustomer() == null) {
-          throw new IllegalArgumentException("Please specify the customer to sell to");
-        }
         if (sale.getSaleItems().isEmpty()) {
           throw new IllegalArgumentException("Please add items for this sale");
         }
@@ -385,6 +540,7 @@ public class SalesController implements Serializable {
         saleFacade.create(sale);
         JsfUtil.addSuccessMessage("Sale Successfull");
       }
+      sales = null;
     } catch (Exception e) {
       JFlemaxController.logError(e);
       JsfUtil.addErrorMessage("Failed: " + e.getLocalizedMessage());
@@ -444,6 +600,19 @@ public class SalesController implements Serializable {
       prepareSale();
     }
   }
+  private String searchQuery;
+
+  public void setSearchQuery(String searchQuery) {
+    this.searchQuery = searchQuery;
+  }
+
+  public String getSearchQuery() {
+    return searchQuery;
+  }
+
+  public void searchSaleReceipts() {
+    this.sales = saleFacade.searchSales(searchQuery);
+  }
 
   public List<Sale> searchSales(String query) {
     return saleFacade.searchSales(query);
@@ -457,9 +626,13 @@ public class SalesController implements Serializable {
     this.sale = (Sale) se.getObject();
     this.saleItems = new SaleItemDataModel();
   }
+  private List<Sale> sales;
 
   public List<Sale> getSales() {
-    return saleFacade.findAll();
+    if (sales == null) {
+      return sales = saleFacade.findAll();
+    }
+    return sales;
   }
 
   Sale find(String id) {

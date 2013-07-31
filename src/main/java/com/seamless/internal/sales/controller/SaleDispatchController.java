@@ -24,6 +24,8 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 
@@ -168,5 +170,30 @@ public class SaleDispatchController implements Serializable {
       }
     }
     return total;
+  }
+
+  public List<SaleDispatch> searchSaleDispatches(String idQuery) {
+    return saleDispatchFacade.searchSaleDispatches(idQuery);
+  }
+
+  @FacesConverter("saleDispatchConverter")
+  public static class SaleDispatchConverter implements Converter {
+
+    private static Map<String, SaleDispatch> map = new HashMap<String, SaleDispatch>();
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+      return map.get(value);
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
+      if (value instanceof SaleDispatch) {
+        SaleDispatch sd = (SaleDispatch) value;
+        map.put(sd.getId(), sd);
+        return sd.getId();
+      }
+      return null;
+    }
   }
 }

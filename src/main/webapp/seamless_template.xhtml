@@ -64,7 +64,7 @@
               <p:column>
                 <p:submenu>
                   <p:menuitem ajax="false" value="Stores" action="/store.xhtml?faces-redirect=true"/>
-                  <p:menuitem ajax="false" value="Employees" action="/employee.xhtml?faces-redirect=true"/>
+                  <p:menuitem ajax="false" value="Employees" action="#{employeeController.toEmployeeView()}"/>
                   <p:menuitem ajax="false" value="Vehicles" action="/vehicle.xhtml?faces-redirect=true"/>
                 </p:submenu>
               </p:column>
@@ -243,59 +243,7 @@
         <p:commandButton value="Save"/>
         <p:commandButton value="Close"/>
       </p:dialog>
-      <p:dialog header="Settle Account Payable" id="ba" widgetVar="billA" >
-        <p:panel>
-          <table>
-            <tr>
-              <td><h:outputText value="Bill No." style="width: 80px;"/></td>
-              <td><p:inputText/></td>
-              <td><h:outputText value="Payment Date" style="width: 80px; text-align: right"/></td>
-              <td><p:calendar/></td>
-            </tr>
-          </table>
-        </p:panel>
-        <p:panel>
-          <table style="">
-            <tr>
-              <td><h:outputText value="Supplier"/></td>
-              <td colspan="3"><p:inputText style="width: 345px;"/></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Date Due"/></td>
-              <td><p:calendar /></td>
-              <td >
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Amt Inclusive of VAT" itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Amount Due"/></td>
-              <td><p:inputText /></td>
-            </tr>
-            <tr>
-              <td><h:outputText value="Payment Account"/></td>
-              <td colspan="3"><p:inputText style="width: 345px;"/></td>
-            </tr>
-            <tr>
-              <td >
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Cheque No." itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-              <td><p:inputText/></td>
-              <td >
-                <p:selectManyCheckbox>
-                  <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
-                </p:selectManyCheckbox>
-              </td>
-            </tr>
-          </table>
-        </p:panel>
-        <br/>
-        <p:commandButton value="Save"/>
-        <p:commandButton value="Close"/>
-      </p:dialog>
+      <ui:include src="/account-payable.xhtml"/>
       <p:dialog header="Settle Account Payable" id="tr" widgetVar="trans" height="305" width="520">
         <h:outputText value="Select Transaction" style="text-align: center; font-size: 20px;"/>
         <br/>

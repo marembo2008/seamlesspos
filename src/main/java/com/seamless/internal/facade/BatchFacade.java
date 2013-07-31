@@ -74,6 +74,13 @@ public class BatchFacade extends AbstractFacade<Batch> {
             .getResultList();
   }
 
+  public List<Batch> findBatchesInStore(Store store) {
+    return getEntityManager()
+            .createNamedQuery("batchitem.find_batches_in_store")
+            .setParameter("storeId", store.getStoreId())
+            .getResultList();
+  }
+
   public BigDecimal findTotalStoreItemCost() {
     BigDecimal val = getEntityManager()
             .createNamedQuery("batchitem.find_total_item_cost_from_all_store", BigDecimal.class)

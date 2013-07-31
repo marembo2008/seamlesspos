@@ -5,7 +5,6 @@
 package com.seamless.internal.facade;
 
 import com.seamless.internal.Item;
-import com.seamless.internal.Store;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.EJB;
@@ -54,13 +53,6 @@ public class ItemFacade extends AbstractFacade<Item> {
     return getEntityManager()
             .createQuery(sql)
             .setParameter("name", "%" + query + "%")
-            .getResultList();
-  }
-
-  public List<Item> findItemsForStore(Store store) {
-    return getEntityManager()
-            .createNamedQuery("ITEM.FIND_STORE_ITEM")
-            .setParameter("storeId", store.getStoreId())
             .getResultList();
   }
 }
