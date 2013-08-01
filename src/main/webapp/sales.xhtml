@@ -17,6 +17,7 @@
           color: coral;
         }
       </style>
+      <ui:include src="/sale-receipt.xhtml"/>
       <p:dataTable id="saleItemTable" var="v"
                    value="#{salesController.saleItems}"
                    emptyMessage="No sales has been made under this receipt"
@@ -214,8 +215,8 @@
             </p:inputText>
             <h:outputText value="Change:  " style="width: 100%; font-size: 23px"/>
             <h:outputText  value="#{salesController.sale.change}" style="width: 100%; font-size: 23px"/>
-            <p:commandButton value="OK" actionListener="#{salesController.doSale()}" oncomplete="completeSaleDlg.hide()"
-                             update="@all" />
+            <p:commandButton value="OK"  oncomplete="completeSaleDlg.hide(); saleReceiptDlg.show()"
+                             update=":saleReceiptPanel" />
             <p:commandButton value="Cancel" oncomplete="completeSaleDlg.hide()"/>
           </p:panelGrid>
         </h:form>

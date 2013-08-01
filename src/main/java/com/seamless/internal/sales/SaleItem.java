@@ -124,6 +124,10 @@ public class SaleItem implements Serializable {
     return tax.multiply(BigDecimal.valueOf(getOrderedQuantity()));
   }
 
+  public BigDecimal getNetPrice() {
+    return tax != null ? getSalePrice().subtract(tax) : getSalePrice();
+  }
+
   public BigDecimal getTotalSale() {
     BigDecimal total = BigDecimal.ZERO;
     if (getSalePrice() != null) {

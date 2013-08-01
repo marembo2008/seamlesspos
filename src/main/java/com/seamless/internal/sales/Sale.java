@@ -146,6 +146,14 @@ public class Sale implements Serializable {
     this.saleItems = saleItems;
   }
 
+  public int getTotalOrderedQuantity() {
+    int total = 0;
+    for (SaleItem i : saleItems) {
+      total += i.getOrderedQuantity();
+    }
+    return total;
+  }
+
   public BigDecimal getTotalSale() {
     BigDecimal total = BigDecimal.ZERO;
     for (SaleItem i : getSaleItems()) {

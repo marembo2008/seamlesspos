@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+  <ui:composition>
+    <style type="text/css">
+      .sale-receipts .ui-panelgrid td, .sale-receipts .ui-panelgrid{
+        border: 0px none !important;
+      }
+      h3{
+        font-size: 16px;
+        padding: 1px;
+        color: #ef4d4e;
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+    <p:dialog header="Sale Receipt" modal="true" appendToBody="true" closable="true" width="400px"
+              widgetVar="saleReceiptDlg">
+      <h:panelGroup id="saleReceiptPanel" layout="block" styleClass="sale-receipts">
+        <h3>Sale Receipts</h3>
+        <p:separator/>
+        <p:panelGrid columns="2" style="width: 100%">
+          <h:outputText value="Receipt No."/>
+          <h:outputText value="#{salesController.sale.receiptId}"/>
+          <h:outputText value="Date &amp; Time"/>
+          <h:outputText value="#{salesController.sale.receiptId.saleDate}" converter="calendarConverter"/>
+          <h:outputText value="Customer"/>
+          <h:outputText value="#{salesController.sale.customer.name}"/>
+        </p:panelGrid>
+        <p:separator/>
+        <p:dataTable value="#{salesController.sale.saleItems}" var="i"
+                     sortBy="#{salesController.defaultSortOrderForSummaryRow}">
+          <p:column headerText="Item">
+            #{i.item.name}
+          </p:column>
+          <p:column headerText="Qty">
+            #{i.orderedQuantity}
+          </p:column>
+          <p:column headerText="@">
+            <h:outputText value="#{i.netPrice}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:column headerText="Amount">
+            <h:outputText value="#{i.totalSale}" converter="bigDecimalConverter"/>
+          </p:column>
+          <p:summaryRow>
+            <p:column>
+              #Items:
+            </p:column>
+            <p:column>
+              #{salesController.sale.totalOrderedQuantity}
+            </p:column>
+            <p:column>
+              Total Sales:
+            </p:column>
+            <p:column>
+              <h:outputText value="#{salesController.sale.totalSale}" converter="bigDecimalConverter"/>
+            </p:column>
+          </p:summaryRow>
+        </p:dataTable>
+        <br/>
+        <p:separator/>
+        <h:form>
+          <h:commandButton value="Print">
+            <p:printer target=":saleReceiptPanel"/>
+          </h:commandButton>
+        </h:form>
+      </h:panelGroup>
+    </p:dialog>
+  </ui:composition>
+</html>
