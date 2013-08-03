@@ -31,10 +31,10 @@
                                    required="true"/>
                       <p:outputLabel value="Manufactured Date: " for="manufacturedDate"/>
                       <p:calendar id="manufacturedDate" value="#{batchController.batch.manufacturedDate}"
-                                  pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"/>
+                                  pattern="yyyy-mm-dd" converter="dateConverter"/>
                       <p:outputLabel value="Best Before Date: " for="bestBeforeDate"/>
                       <p:calendar id="bestBeforeDate" value="#{batchController.batch.bestBefore}"
-                                  pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"/>
+                                  pattern="yyyy-mm-dd" converter="dateConverter"/>
                       <p:outputLabel value="Item Quantity in Batch" for="quantity"/>
                       <p:inputText id="quantity" value="#{batchController.batch.quantity}"
                                    required="true" requiredMessage="You must enter the quantity of items in this batch"

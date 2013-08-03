@@ -40,9 +40,13 @@ import javax.persistence.Temporal;
   @NamedQuery(name = "batchitem.find_total_item_cost_from_store",
           query = "SELECT SUM(i.costAmount * b.quantity) FROM Batch b JOIN b.item i WHERE b.store.storeId = :storeId"),
   @NamedQuery(name = "batchitem.find_total_items_quantity",
-          query = "SELECT SUM(b.currentQuantity) FROM Batch b JOIN b.item i WHERE i.itemId = :itemId AND b.frozen = :frozen"),
+          query = "SELECT SUM(b.currentQuantity) FROM Batch b JOIN b.item i WHERE i.itemCode = :itemCode AND b.frozen = :frozen"),
   @NamedQuery(name = "batchitem.find_total_item_cost_from_all_store",
-          query = "SELECT SUM(i.costAmount * b.quantity) FROM Batch b JOIN b.item i")
+          query = "SELECT SUM(i.costAmount * b.quantity) FROM Batch b JOIN b.item i"),
+  @NamedQuery(name = "batchitem.find_batch_by_expiry_date",
+          query = "SELECT b FROM Batch b WHERE b.bestBefore = :expiryDate"),
+  @NamedQuery(name = "batchitem.find_batch_by_received_date",
+          query = "SELECT b FROM Batch b WHERE b.receivedDate = :receivedDate")
 })
 public class Batch implements Serializable {
 

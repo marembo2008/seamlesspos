@@ -4,15 +4,16 @@
  */
 package com.seamless.internal;
 
-import com.seamless.internal.purchases.PurchaseOrder;
+import com.anosym.utilities.IdGenerator;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 
 /**
@@ -20,19 +21,22 @@ import javax.persistence.Temporal;
  * @author marembo
  */
 @Entity
-public class AccountPayable implements Serializable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@NamedQueries({
+  @NamedQuery(name = "ACCOUNTPAYABLE.FIND_ACCOUNT_PAYABLE_WITHIN_RANGE",
+          query = "SELECT a FROM AccountPayable a WHERE a.paymentDate BETWEEN :start AND :end")
+})
+public abstract class AccountPayable implements Serializable {
 
   private static final long serialVersionUID = 12728472842L;
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private Long id = IdGenerator.generateId();
   @Temporal(javax.persistence.TemporalType.DATE)
   private Calendar paymentDate;
-  @OneToOne
-  private PurchaseOrder purchaseOrder;
   private String chequeNumber;
   private BigDecimal amountPayable;
-  private boolean amountInclusiveOfVat;
+
+  public abstract String getDescription();
 
   public Long getId() {
     return id;
@@ -40,14 +44,6 @@ public class AccountPayable implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public void setAmountInclusiveOfVat(boolean amountInclusiveOfVat) {
-    this.amountInclusiveOfVat = amountInclusiveOfVat;
-  }
-
-  public boolean isAmountInclusiveOfVat() {
-    return amountInclusiveOfVat;
   }
 
   public void setAmountPayable(BigDecimal amountPayable) {
@@ -64,14 +60,6 @@ public class AccountPayable implements Serializable {
 
   public void setPaymentDate(Calendar paymentDate) {
     this.paymentDate = paymentDate;
-  }
-
-  public PurchaseOrder getPurchaseOrder() {
-    return purchaseOrder;
-  }
-
-  public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
-    this.purchaseOrder = purchaseOrder;
   }
 
   public String getChequeNumber() {

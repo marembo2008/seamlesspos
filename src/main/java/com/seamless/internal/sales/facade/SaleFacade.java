@@ -6,12 +6,15 @@ package com.seamless.internal.sales.facade;
 
 import com.anosym.jflemax.validation.controller.JFlemaxController;
 import com.seamless.internal.Batch;
+import com.seamless.internal.Employee;
 import com.seamless.internal.facade.*;
 import com.seamless.internal.sales.ItemOrder;
 import com.seamless.internal.sales.Sale;
 import com.seamless.internal.sales.SaleItem;
+import com.seamless.internal.sales.util.SaleReportOption;
 import com.seamless.internal.sales.util.SaleStatus;
 import com.seamless.internal.sales.util.SalesReceipt;
+import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -112,5 +115,26 @@ public class SaleFacade extends AbstractFacade<Sale> {
         batchFacade.edit(b);
       }
     }
+  }
+
+  public List<Sale> findSalesByDate(Calendar start, Calendar end) {
+    return getEntityManager()
+            .createNamedQuery("sale.find_sales_by_date_range")
+            .setParameter("startDate", start)
+            .setParameter("endDate", end)
+            .getResultList();
+  }
+
+  public List<Sale> findSalesByEmployee(Employee employee) {
+    return getEntityManager()
+            .createNamedQuery("sale.find_sales_by_employee")
+            .setParameter("employeeNumber", employee.getEmployeeNumber())
+            .getResultList();
+  }
+
+  public List<Sale> findSales(SaleReportOption saleReportOption) {
+    String sql = "";
+
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

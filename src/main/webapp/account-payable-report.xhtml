@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <h:form>
+        <p:panelGrid columns="2" style="width: 100%">
+          <p:outputLabel value="Report Options" for="reportOption"/>
+          <p:selectOneRadio value="#{accountPayableController.accountPayableReportOption}" id="reportOption">
+            <f:selectItems value="#{accountPayableController.accountPayableReportOptions}"/>
+            <p:ajax event="change" listener="#{accountPayableController.onAccountPayableReportOptionSelected()}"
+                    update=":accountPayableReportTable :accountPayableDateRangeSelectionForm"
+                    partialSubmit="true" process="@this"/>
+          </p:selectOneRadio>
+        </p:panelGrid>
+      </h:form>
+      <br/>
+      <h:form id="accountPayableDateRangeSelectionForm">
+        <p:panelGrid id="dateRangePanel" columns="2" rendered="#{accountPayableController.dateRangeSelected}">
+          <p:outputLabel value="Start Date:" for="startDate"/>
+          <p:calendar id="startDate" pattern="yyyy-mm-dd"
+                      value="#{accountPayableController.start}" converter="dateConverter"/>
+          <p:outputLabel value="End Date:" for="endDate"/>
+          <p:calendar id="endDate" pattern="yyyy-mm-dd"
+                      value="#{accountPayableController.end}" converter="dateConverter"/>
+          <p:commandButton value="Generate Report"
+                           actionListener="#{accountPayableController.generateAccountPayableReports()}"
+                           update=":accountPayableReportTable"/>
+          <br/>
+        </p:panelGrid>
+      </h:form>
+      <br/>
+      <p:dataTable id="accountPayableReportTable"
+                   value="#{accountPayableController.accountPayables}" var="ap"
+                   sortBy="#{salesController.defaultSortOrderForSummaryRow}">
+        <p:column headerText="Description">
+          #{ap.description}
+        </p:column>
+        <p:column headerText="Date">
+          <h:outputText value="#{ap.paymentDate}" converter="longDateConverter"/>
+        </p:column>
+        <p:column headerText="Amount" style="text-align: right">
+          <h:outputText value="#{ap.amountPayable}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:summaryRow>
+          <p:column colspan="2" style="text-align: right">
+            Total Accounts:
+          </p:column>
+          <p:column style="text-align: right">
+            <h:outputText value="#{accountPayableController.totalAccountPayable}" converter="bigDecimalConverter"/>
+          </p:column>
+        </p:summaryRow>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>

@@ -55,12 +55,12 @@ public class ItemController implements Serializable {
 
     @Override
     public Object getRowKey(Item t) {
-      return t.getItemId();
+      return t.getItemCode();
     }
 
     @Override
-    public Item getRowData(String string) {
-      return itemFacade.find(Long.parseLong(string));
+    public Item getRowData(String itemCode) {
+      return itemFacade.find(itemCode);
     }
   }
   @EJB
@@ -258,14 +258,14 @@ public class ItemController implements Serializable {
   }
 
   public void generateItemCode() {
-    this.item.setItemCode(IdGenerator.generateId());
+    this.item.setItemCode(IdGenerator.generateStringId());
   }
 
   public void generateMixedItemCode() {
-    this.mixedItem.setItemCode(IdGenerator.generateId());
+    this.mixedItem.setItemCode(IdGenerator.generateStringId());
   }
 
-  Item find(Long id) {
+  Item find(String id) {
     return itemFacade.find(id);
   }
 
@@ -279,14 +279,14 @@ public class ItemController implements Serializable {
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
       System.err.println("Finding item: " + value);
-      Object item = value != null ? JFlemaxController.findManagedBean(ItemController.class).find(Long.parseLong(value)) : null;
+      Object item = value != null ? JFlemaxController.findManagedBean(ItemController.class).find(value) : null;
       System.out.println(item);
       return item;
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-      return (value instanceof Item) ? ((Item) value).getItemId() + "" : null;
+      return (value instanceof Item) ? ((Item) value).getItemCode() : null;
     }
   }
 }

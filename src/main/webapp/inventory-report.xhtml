@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <h:form>
+        <p:panelGrid columns="2" style="width: 100%">
+          <p:outputLabel value="Item Report Option" for="reportOption"/>
+          <p:selectOneRadio value="#{inventoryController.itemReportOption}" id="reportOption">
+            <f:selectItems value="#{inventoryController.itemReportOptions}"/>
+            <p:ajax event="change" listener="#{inventoryController.onItemReportOptionSelected()}"
+                    update=":itemReportOptionForm :itemReportTable"/>
+          </p:selectOneRadio>
+        </p:panelGrid>
+      </h:form>
+      <br/>
+      <h:form id="itemReportOptionForm">
+        <h:panelGroup layout="block" rendered="#{inventoryController.expiryDateOption}">
+          <p:outputLabel value="Expiry Date: " for="expiryDate" style="margin-right: 10px"/>
+          <p:calendar id="expiryDate" value="#{inventoryController.expiryDate}"
+                      pattern="yyyy-mm-dd" converter="dateConverter" >
+            <p:ajax event="dateSelect" listener="#{inventoryController.onItemReportOptionSelected()}"
+                    update=":itemReportTable"/>
+          </p:calendar>
+        </h:panelGroup>
+        <h:panelGroup layout="block" rendered="#{inventoryController.receivedDateOption}">
+          <p:outputLabel value="Received Date: " for="receivedDate" style="margin-right: 10px"/>
+          <p:calendar id="receivedDate" value="#{inventoryController.receivedDate}"
+                      pattern="yyyy-mm-dd" converter="dateConverter" >
+            <p:ajax event="dateSelect" listener="#{inventoryController.onItemReportOptionSelected()}"
+                    update=":itemReportTable"/>
+          </p:calendar>
+        </h:panelGroup>
+        <h:panelGroup layout="block" rendered="#{inventoryController.storeOption}">
+          <p:outputLabel value="Item Store: " for="itemStore" style="margin-right: 10px"/>
+          <p:autoComplete required="true" id="itemStore" value="#{inventoryController.store}"
+                          completeMethod="#{storeController.searchStore}"
+                          var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                          converter="storeConverter" forceSelection="true" dropdown="true">
+            <p:ajax event="itemSelect" listener="#{inventoryController.onItemReportOptionSelected()}"
+                    update=":itemReportTable"/>
+          </p:autoComplete>
+        </h:panelGroup>
+      </h:form>
+      <br/>
+      <p:dataTable id="itemReportTable" value="#{inventoryController.batches}" var="b"
+                   sortBy="#{salesController.defaultSortOrderForSummaryRow}">
+        <p:column headerText="Batch Number">
+          #{b.batchNumber}
+        </p:column>
+        <p:column headerText="Item">
+          #{b.item.name}
+        </p:column>
+        <p:column headerText="Best Before Date">
+          <h:outputText value="#{b.bestBefore}" converter="longDateConverter"/>
+        </p:column>
+        <p:column headerText="Received Date">
+          <h:outputText value="#{b.receivedDate}" converter="longDateConverter"/>
+        </p:column>
+        <p:column headerText="Ordered Quantity">
+          #{b.quantity}
+        </p:column>
+        <p:column headerText="Current Available Quantity">
+          #{b.currentQuantity}
+        </p:column>
+        <p:column headerText="Unit Cost" style="text-align: right">
+          <h:outputText value="#{b.costAmount}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:column headerText="Total Cost" style="text-align: right">
+          <h:outputText value="#{b.totalCost}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:summaryRow>
+          <p:column colspan="7" style="text-align: right">
+            Total Cost:
+          </p:column>
+          <p:column style="text-align: right">
+            <h:outputText value="#{inventoryController.totalBatchCost}" converter="bigDecimalConverter"/>
+          </p:column>
+        </p:summaryRow>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>

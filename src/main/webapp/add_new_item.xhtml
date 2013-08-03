@@ -11,8 +11,8 @@ and open the template in the editor.
       xmlns:h="http://java.sun.com/jsf/html">
   <ui:composition>
     <p:tab id="new_item" title="New Item">
-      <h:form id="newItemForm" style="width: 100%" >
-        <p:panel header="Item Details" style="width: 100%">
+      <p:panel id="newItemPanel" header="Item Details" style="width: 100%">
+        <h:form id="newItemForm" style="width: 100%" >
           <p:panelGrid columns="2" style="width: 100%">
             <p:outputLabel value="Item Product" for="productItem"/>
             <p:autoComplete id="productItem" value="#{productController.product}"
@@ -20,11 +20,7 @@ and open the template in the editor.
                             var="p" itemLabel="#{p.name}" itemValue="#{p}"
                             converter="productConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>
             <p:outputLabel value="Item Code:" for="itemCode"/>
-            <p:panelGrid id="itemCodePanel" columns="2" style="width: 100%">
-              <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>
-              <p:commandButton value="Generate" partialSubmit="true" process="itemCodePanel"
-                               actionListener="#{itemController.generateItemCode()}" update="itemCodePanel"/>
-            </p:panelGrid>
+            <p:inputText id="itemCode" value="#{itemController.item.itemCode}"/>
             <p:outputLabel value="Item Name:" for="itemName"/>
             <p:inputText id="itemName" value="#{itemController.item.name}"/>
             <p:outputLabel value="Item Cost" for="itemCost"/>
@@ -43,12 +39,15 @@ and open the template in the editor.
             <p:outputLabel value="Taxable" for="taxable"/>
             <p:selectBooleanCheckbox id="taxable" value="#{itemController.item.taxable}"/>
           </p:panelGrid>
-          <f:facet name="footer">
+        </h:form>
+        <f:facet name="footer">
+          <h:form  >
             <p:commandButton value="Add Item" actionListener="#{itemController.create()}"
-                             update="@form :itemView" oncomplete="newItemPanel.unselect(0)" />
-          </f:facet>
-        </p:panel>
-      </h:form>
+                             partialSubmit="true" process=":itemControlPanel:newItemForm @form"
+                             update=":itemControlPanel:newItemForm :itemView" oncomplete="newItemPanel.unselect(0)" />
+          </h:form>
+        </f:facet>
+      </p:panel>
     </p:tab>
   </ui:composition>
 </html>

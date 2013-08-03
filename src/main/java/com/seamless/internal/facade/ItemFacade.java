@@ -46,7 +46,7 @@ public class ItemFacade extends AbstractFacade<Item> {
     String sql = "SELECT i FROM Item i WHERE i.name LIKE :name ";
     if (itemsToIgnore != null && !itemsToIgnore.isEmpty()) {
       for (Item i : itemsToIgnore) {
-        sql += " AND i.itemId != " + i.getItemId();
+        sql += " AND i.itemCode != " + i.getItemCode();
       }
     }
     System.err.println(sql);

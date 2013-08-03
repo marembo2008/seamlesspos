@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <ui:composition template="/seamless_template.xhtml">
+    <ui:define name="body">
+      <h:form>
+        <h:panelGroup layout="block" style="padding: 10px; background: rgba(200, 200, 200, 0.4)">
+          <h:outputText value="Sales Report Options:"/>
+          <br/>
+          <p:selectOneRadio value="#{salesReportController.saleReportOption}">
+            <f:selectItems value="#{salesReportController.saleReportOptions}"/>
+            <p:ajax event="change" partialSubmit="true" process="@this"
+                    listener="#{salesReportController.onSaleReportOptionSelected()}"
+                    update=":salesReportSelectionOptionForm :saleReceiptTable"/>
+          </p:selectOneRadio>
+        </h:panelGroup>
+      </h:form>
+      <br/>
+      <h:form id="salesReportSelectionOptionForm">
+        <p:panelGrid id="dateRangePanel" columns="2" rendered="#{salesReportController.dateRangeRequest}">
+          <p:outputLabel value="Start Date:" for="startDate"/>
+          <p:calendar id="startDate" pattern="yyyy-mm-dd"
+                      value="#{salesReportController.startDate}" converter="dateConverter"/>
+          <p:outputLabel value="End Date:" for="endDate"/>
+          <p:calendar id="endDate" pattern="yyyy-mm-dd"
+                      value="#{salesReportController.endDate}" converter="dateConverter"/>
+          <p:commandButton value="Generate Report" actionListener="#{salesReportController.generateDateRangeReport()}"
+                           partialSubmit="true" process="dateRangePanel" update=":saleReceiptTable"/>
+          <br/>
+        </p:panelGrid>
+        <p:panelGrid columns="2" style="width: 100%" rendered="#{salesReportController.employeeRequest}">
+          <h:outputLabel value="Sales Employee" for="dispatchEmployee"/>
+          <p:autoComplete id="dispatchEmployee" value="#{salesReportController.employee}"
+                          completeMethod="#{employeeController.searchEmployees}"
+                          dropdown="true" var="e" itemValue="#{e}" itemLabel="#{e.name}"
+                          converter="employeeConverter" required="true"
+                          minQueryLength="1" forceSelection="true" queryDelay="100">
+            <p:ajax event="itemSelect" listener="#{salesReportController.generateEmployeeSalesReport()}"
+                    update=":saleReceiptTable"/>
+          </p:autoComplete>
+        </p:panelGrid>
+      </h:form>
+      <br/>
+      <p:dataTable id="saleReceiptTable"
+                   value="#{salesReportController.sales}" var="s"
+                   sortBy="#{salesController.defaultSortOrderForSummaryRow}"
+                   emptyMessage="You have no sales yet"
+                   widgetVar="saleReceiptTableVar">
+        <p:column style="width:4%">
+          <p:rowToggler />
+        </p:column>
+        <p:column headerText="Receipt Date" >
+          <h:outputText value="#{s.receiptId.saleDate}" converter="dateConverter" />
+        </p:column>
+        <p:column headerText="Receipt No.">
+          <h:outputText value="#{s.receiptId}" />
+        </p:column>
+        <p:column id="batch" headerText="No of Items"  >
+          <h:outputText value="#{s.saleItems.size()}" />
+        </p:column>
+        <p:column id="name" headerText="Total Amount" style="text-align: right">
+          <h:outputText value="#{s.totalSale}" converter="bigDecimalConverter"/>
+        </p:column>
+        <p:summaryRow>
+          <p:column colspan="4" style="text-align: right">
+            Total Sales:
+          </p:column>
+          <p:column style="text-align: right">
+            <h:outputText value="#{salesReportController.totalSaleAmount}" converter="bigDecimalConverter"/>
+          </p:column>
+        </p:summaryRow>
+        <p:rowExpansion>
+          <p:panel header="Sale Items">
+            <p:dataTable id="saleItemTable" var="i"
+                         value="#{s.saleItems}"
+                         sortBy="#{salesController.defaultSortOrderForSummaryRow}"
+                         emptyMessage="This sale has no sale items">
+              <p:column  headerText="Item" >
+                <h:outputText value="#{i.item.name}" />
+              </p:column>
+              <p:column id="batch" headerText="Qty"  >
+                <h:outputText value="#{i.orderedQuantity}" />
+              </p:column>
+              <p:column id="name" headerText="Unit Sale" >
+                <h:outputText value="#{i.salePrice}" />
+              </p:column>
+              <p:column headerText="Tax" >
+                <h:outputText value="#{i.tax}" />
+              </p:column>
+              <p:column headerText="Discount" >
+                <h:outputText value="#{i.discount}" />
+              </p:column>
+              <p:column id="Qty" headerText="Net Total Sale" >
+                <h:outputText value="#{i.totalSale}" />
+              </p:column>
+              <p:summaryRow>
+                <p:column colspan="5" style="text-align: right;">
+                  <h:outputText value="Total:"/>
+                </p:column>
+                <p:column style="text-align: right">
+                  <h:outputText value="#{s.totalSale}"/>
+                </p:column>
+              </p:summaryRow>
+            </p:dataTable>
+          </p:panel>
+        </p:rowExpansion>
+      </p:dataTable>
+    </ui:define>
+  </ui:composition>
+</html>

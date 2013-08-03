@@ -17,125 +17,81 @@ and open the template in the editor.
       }
     </style>
     <p:dialog header="Settle Account Payable" id="ba" widgetVar="billA" modal="true">
-      <h:form id="accoutPayableInformationForm">
-        <p:panel>
-          <p:panelGrid id="purchaseOrderPanel" columns="2" style="width: 600px">
-            <p:outputLabel value="Purchase Order Number:" for="purchaseOrderNumber"/>
-            <p:autoComplete required="true" id="purchaseOrderNumber" value="#{accountPayableController.accountPayable.purchaseOrder}"
-                            completeMethod="#{purchaseOrderController.searchPurchaseOrders}" var="po"
-                            itemLabel="#{po.purchaseOrderNumber}" itemValue="#{po}" dropdown="true"
-                            converter="purchaseOrderConverter">
-              <p:ajax event="itemSelect" listener="#{accountPayableController.onPurchaseOrderSelected()}"
-                      process="@this" update="accoutPayableInformationPanel purchaseOrderPanel"/>
-            </p:autoComplete>
-            <h:outputLabel value="Purchase Order Date" for="orderDate"
-                           rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
-            <h:outputText id="orderDate" value="#{accountPayableController.accountPayable.purchaseOrder.purchaseOrderDate}"
-                          converter="longDateConverter"
-                          rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
-          </p:panelGrid>
-          <ui:fragment rendered="false">
-            <table>
-              <tr>
-                <td><h:outputText value="Bill No." style="width: 80px;"/></td>
-                <td><p:inputText/></td>
-                <td><h:outputText value="Payment Date" style="width: 80px; text-align: right"/></td>
-                <td><p:calendar/></td>
-              </tr>
-            </table>
-          </ui:fragment>
-        </p:panel>
-        <p:panel id="accoutPayableInformationPanel">
-          <p:panelGrid style="width: 100%">
-            <p:row>
-              <p:column>
-                <h:outputLabel value="Supplier" for="supplier"
-                               rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
-              </p:column>
-              <p:column>
-                <h:outputText id="supplier" value="#{accountPayableController.accountPayable.purchaseOrder.supplier.name}"
-                              rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
-              </p:column>
-            </p:row>
-            <p:row>
-              <p:column>
-                <p:outputLabel value="Amount Due" for="amountDue"/>
-              </p:column>
-              <p:column>
-                <p:inputText id="amountDue" value="#{accountPayableController.accountPayable.amountPayable}"/>
-              </p:column>
-            </p:row>
-            <p:row>
-              <p:column colspan="2" style="text-align: right">
-                <p:selectBooleanCheckbox value="#{accountPayableController.accountPayable.amountInclusiveOfVat}"
-                                         itemLabel="Amount Inclusive of VAT" />
-              </p:column>
-            </p:row>
-            <p:row>
-              <p:column>
-                <p:outputLabel value="Due Date" for="dueDate"/>
-              </p:column>
-              <p:column>
-                <p:calendar id="dueDate" value="#{accountPayableController.accountPayable.paymentDate}"
-                            pattern="yyyy-mm-dd" converter="dateConverter"/>
-              </p:column>
-            </p:row>
-            <p:row>
-              <p:column>
-                <p:outputLabel value="Cheque Number" for="chequeNumber"/>
-              </p:column>
-              <p:column>
-                <p:inputText id="chequeNumber" value="#{accountPayableController.accountPayable.chequeNumber}"/>
-              </p:column>
-            </p:row>
-          </p:panelGrid>
-          <ui:fragment rendered="false">
-            <table style="">
-              <tr>
-                <td><h:outputText value="Supplier"/></td>
-                <td colspan="3"><p:inputText style="width: 345px;"/></td>
-              </tr>
-              <tr>
-                <td><h:outputText value="Date Due"/></td>
-                <td><p:calendar /></td>
-                <td >
-                  <p:selectManyCheckbox>
-                    <f:selectItem itemLabel="Amt Inclusive of VAT" itemValue="1"/>
-                  </p:selectManyCheckbox>
-                </td>
-              </tr>
-              <tr>
-                <td><h:outputText value="Amount Due"/></td>
-                <td><p:inputText /></td>
-              </tr>
-              <tr>
-                <td><h:outputText value="Payment Account"/></td>
-                <td colspan="3"><p:inputText style="width: 345px;"/></td>
-              </tr>
-              <tr>
-                <td >
-                  <p:selectManyCheckbox>
-                    <f:selectItem itemLabel="Cheque No." itemValue="1"/>
-                  </p:selectManyCheckbox>
-                </td>
-                <td><p:inputText/></td>
-                <td >
-                  <p:selectManyCheckbox>
-                    <f:selectItem itemLabel="Print Voucher" itemValue="1"/>
-                  </p:selectManyCheckbox>
-                </td>
-              </tr>
-            </table>
-          </ui:fragment>
-        </p:panel>
-        <br/>
-        <p:commandButton value="Save"
-                         actionListener="#{accountPayableController.saveAccountPayable()}"
-                         oncomplete="billA.hide()" update="@form"/>
-        <p:commandButton value="Close"
-                         actionListener="#{accountPayableController.cancel()}"
-                         oncomplete="billA.hide()" update="@form"/>
+      <h:form>
+        <p:outputLabel value="Select Account Payable Option:" for="accountPayableOption"/>
+        <p:selectOneRadio value="#{accountPayableController.accountPayableOption}" id="accountPayableOption">
+          <f:selectItems value="#{accountPayableController.accountPayableOptions}"/>
+          <p:ajax event="change" listener="#{accountPayableController.onAccountPayableOptionSelected()}"
+                  update=":accountPayableInformationPanel"/>
+        </p:selectOneRadio>
       </h:form>
+      <h:panelGroup layout="block" id="accountPayableInformationPanel">
+        <h:form id="accoutPayableInformationForm" rendered="#{accountPayableController.accountPayableOptionSelected}">
+          <p:panel rendered="#{not accountPayableController.expenseAccountPayable}">
+            <p:panelGrid id="purchaseOrderPanel" columns="2" style="width: 600px">
+              <p:outputLabel value="Purchase Order Number:" for="purchaseOrderNumber"/>
+              <p:autoComplete required="true" id="purchaseOrderNumber" value="#{accountPayableController.accountPayable.purchaseOrder}"
+                              completeMethod="#{purchaseOrderController.searchPurchaseOrders}" var="po"
+                              itemLabel="#{po.purchaseOrderNumber}" itemValue="#{po}" dropdown="true"
+                              converter="purchaseOrderConverter">
+                <p:ajax event="itemSelect" listener="#{accountPayableController.onPurchaseOrderSelected()}"
+                        process="@this" update="accoutPayableInformationPanel purchaseOrderPanel"/>
+              </p:autoComplete>
+              <h:outputLabel value="Purchase Order Date" for="orderDate"
+                             rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
+              <h:outputText id="orderDate" value="#{accountPayableController.accountPayable.purchaseOrder.purchaseOrderDate}"
+                            converter="longDateConverter"
+                            rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
+              <h:outputLabel value="Supplier" for="supplier"
+                             rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
+              <h:outputText id="supplier" value="#{accountPayableController.accountPayable.purchaseOrder.supplier.name}"
+                            rendered="#{not empty accountPayableController.accountPayable.purchaseOrder}"/>
+            </p:panelGrid>
+          </p:panel>
+          <p:panel rendered="#{accountPayableController.expenseAccountPayable}">
+            <p:panelGrid columns="2" style="width: 600px">
+              <p:outputLabel value="Expense Description" for="expense"/>
+              <p:inputText value="#{accountPayableController.accountPayable.expense}" id="expense"/>
+            </p:panelGrid>
+          </p:panel>
+          <p:panel id="accoutPayableInformationPanel">
+            <p:panelGrid style="width: 100%">
+              <p:row>
+                <p:column>
+                  <p:outputLabel value="Amount Due" for="amountDue"/>
+                </p:column>
+                <p:column>
+                  <p:inputText id="amountDue" value="#{accountPayableController.accountPayable.amountPayable}"/>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <p:outputLabel value="Due Date" for="dueDate"/>
+                </p:column>
+                <p:column>
+                  <p:calendar id="dueDate" value="#{accountPayableController.accountPayable.paymentDate}"
+                              pattern="yyyy-mm-dd" converter="dateConverter"/>
+                </p:column>
+              </p:row>
+              <p:row>
+                <p:column>
+                  <p:outputLabel value="Cheque Number" for="chequeNumber"/>
+                </p:column>
+                <p:column>
+                  <p:inputText id="chequeNumber" value="#{accountPayableController.accountPayable.chequeNumber}"/>
+                </p:column>
+              </p:row>
+            </p:panelGrid>
+          </p:panel>
+          <br/>
+          <p:commandButton value="Save"
+                           actionListener="#{accountPayableController.saveAccountPayable()}"
+                           oncomplete="billA.hide()" update="@form"/>
+          <p:commandButton value="Close"
+                           actionListener="#{accountPayableController.cancel()}"
+                           oncomplete="billA.hide()" update="@form"/>
+        </h:form>
+      </h:panelGroup>
     </p:dialog>
   </ui:composition>
 </html>

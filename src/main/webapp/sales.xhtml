@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-  <ui:composition template="seamless_template.xhtml">
+  <ui:composition template="seamless_template_1.xhtml">
     <ui:define name="title">Point of Sale</ui:define>
     <ui:define name="body">
       <style type="text/css">
@@ -19,11 +19,11 @@
       </style>
       <ui:include src="/sale-receipt.xhtml"/>
       <p:dataTable id="saleItemTable" var="v"
+                   rowIndexVar="i"
                    value="#{salesController.saleItems}"
                    emptyMessage="No sales has been made under this receipt"
-                   sortBy="#{salesController.sorter}"
-                   selectionMode="single">
-        <f:facet name="header">
+                   sortBy="#{salesController.sorter}">
+        <f:facet name="header" >
           <p:panel id="salePanel" header="Sale Receipt: #{salesController.sale.receiptId}">
             <h:form>
               <p:hotkey bind="F2" handler="recallHeldSalesDlg.show()"/>
@@ -45,7 +45,7 @@
                 </p:autoComplete>
               </p:panelGrid>
             </h:form>
-            <p:accordionPanel id="saleItemAccordionPanel" activeIndex="0">
+            <p:accordionPanel id="saleItemAccordionPanel" activeIndex="-1">
               <p:tab title="Add Sale Item">
                 <h:form id="saleItemForm">
                   <p:hotkey actionListener="#{salesController.addItem()}" bind="a"
@@ -100,7 +100,20 @@
           <p:rowToggler />
         </p:column>
         <p:column headerText="Item Code" style="width: 20%;">
-          <h:outputText value="#{v.item.itemCode}" />
+          <h:form prependId="false" onsubmit="return false;">
+            <p:inputText id="itemCodeInput" value="#{salesController.currentItemCode}" rendered="#{empty v.item}">
+              <p:ajax listener="#{salesController.onItemCodeSelected()}" update=":saleItemTable" />
+            </p:inputText>
+            <script type="text/javascript">
+              var input = $('#saleItemTable\\:#{i}\\:itemCodeInput');
+              input.val('');
+              input.focus();
+              function clear() {
+                $('#saleItemTable\\:#{i}\\:itemCodeInput').val('');
+              }
+            </script>
+          </h:form>
+          <h:outputText value="#{v.item.itemCode}" rendered="#{not empty v.item}"/>
         </p:column>
         <p:column headerText="Description" style="width: 30%;">
           <h:outputText value="#{v.item.name}"/>
@@ -122,7 +135,7 @@
         </p:column>
         <p:column>
           <h:form>
-            <p:commandButton title="Remove" icon="ui-icon-circle-plus"
+            <p:commandButton title="Remove" icon="ui-icon-circle-plus" rendered="#{not empty v.item}"
                              actionListener="#{salesController.removeItem(v)}" update=":saleItemTable"/>
           </h:form>
         </p:column>
@@ -207,17 +220,36 @@
                         pattern="yyyy-mm-dd hh:mm:ss" converter="calendarConverter"
                         rendered="#{salesController.chequePayment}"
                         required="true"/>
-            <h:outputText value="Total Sales: " style="width: 100%; font-size: 23px"/>
-            <h:outputText value="#{salesController.sale.totalSale}" style="width: 100%; font-size: 23px"/>
+            <h:outputText value="Total Sales: " style="width: 100%; font-size: 23px" />
+            <h:outputText value="#{salesController.sale.totalSale}" style="width: 100%; font-size: 23px"
+                          converter="bigDecimalConverter"/>
             <h:outputText value="Tendered:  " style="width: 100%; font-size: 23px"/>
             <p:inputText  value="#{salesController.sale.tenderedAmount}" style="width: 100%; font-size: 23px">
               <p:ajax event="change" process="@form" update="@form"/>
             </p:inputText>
+            <h:inputHidden id="salesReceiptField" value="#{salesController.salesReceipt}"/>
+            <h:inputHidden id="salesReceiptField_09" />
             <h:outputText value="Change:  " style="width: 100%; font-size: 23px"/>
             <h:outputText  value="#{salesController.sale.change}" style="width: 100%; font-size: 23px"/>
-            <p:commandButton value="OK"  oncomplete="completeSaleDlg.hide(); saleReceiptDlg.show()"
+            <p:commandButton value="OK" actionListener="#{salesController.doSale()}"
+                             oncomplete="completeSaleDlg.hide();"
+                             onstart="setSalesReceipt()"
                              update=":saleReceiptPanel" />
             <p:commandButton value="Cancel" oncomplete="completeSaleDlg.hide()"/>
+            <script type="text/javascript">
+              function setSalesReceipt() {
+                var someElement = document.getElementById("saleReceiptDialog");
+                var someElementToString;
+                if (someElement.outerHTML)
+                  someElementToString = someElement.outerHTML;
+                else if (XMLSerializer)
+                  someElementToString = new XMLSerializer().serializeToString(someElement);
+                var txt = someElementToString;
+                console.log(txt);
+                $('#saleTenderForm\\:salesReceiptField').val(txt);
+                console.log($('#saleTenderForm\\:salesReceiptField').val());
+              }
+            </script>
           </p:panelGrid>
         </h:form>
       </p:dialog>
@@ -328,7 +360,7 @@
           </p:panel>
           <br/>
           <p:commandButton value="OK" onclick="sed.show();
-                  cd.hide();"/>
+                cd.hide();"/>
           <p:commandButton value="Exit" onclick="ext.show();"/>
         </p:dialog>
         <p:dialog id="xt" widgetVar="ext" header="Stores" width="750" appendToBody="true">

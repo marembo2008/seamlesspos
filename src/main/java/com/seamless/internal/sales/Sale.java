@@ -7,6 +7,7 @@ package com.seamless.internal.sales;
 import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Client;
 import com.seamless.internal.Item;
+import com.seamless.internal.SaleDispatch;
 import com.seamless.internal.sales.util.SaleStatus;
 import com.seamless.internal.sales.util.SalesReceipt;
 import java.io.Serializable;
@@ -39,7 +40,11 @@ import org.hibernate.annotations.LazyCollectionOption;
   @NamedQuery(name = "sale.search_sales_by_receipt_id_and_status",
           query = "SELECT s FROM Sale s WHERE s.receiptId_ LIKE :receiptId_ AND s.status = :status"),
   @NamedQuery(name = "sale.find_sales_by_receipt_id",
-          query = "SELECT s FROM Sale s WHERE s.receiptId_ = :receiptId_")
+          query = "SELECT s FROM Sale s WHERE s.receiptId_ = :receiptId_"),
+  @NamedQuery(name = "sale.find_sales_by_date_range",
+          query = "SELECT s FROM Sale s WHERE s.receiptId.saleDate BETWEEN :startDate AND :endDate"),
+  @NamedQuery(name = "sale.find_sales_by_employee",
+          query = "SELECT s FROM Sale s WHERE s.saleDispatch.dispatchEmployee.employeeNumber = :employeeNumber")
 })
 public class Sale implements Serializable {
 
@@ -60,11 +65,16 @@ public class Sale implements Serializable {
   private List<Payment> payments;
   private SaleStatus status;
   @Transient
-  private Map<Long, SaleItem> modelSales;
+  private Map<String, SaleItem> modelSales;
+  /**
+   * Not null if this was done through sale dispatch collection
+   */
+  @OneToOne
+  private SaleDispatch saleDispatch;
 
   public Sale() {
     status = SaleStatus.PENDING;
-    modelSales = new HashMap<Long, SaleItem>();
+    modelSales = new HashMap<String, SaleItem>();
   }
 
   /**
@@ -84,6 +94,14 @@ public class Sale implements Serializable {
     return receiptId_;
   }
 
+  public void setSaleDispatch(SaleDispatch saleDispatch) {
+    this.saleDispatch = saleDispatch;
+  }
+
+  public SaleDispatch getSaleDispatch() {
+    return saleDispatch;
+  }
+
   public int getOrderedQuantity(Item i) {
     int orderQuantity = 0;
     for (SaleItem si : getSaleItems()) {
@@ -95,20 +113,24 @@ public class Sale implements Serializable {
   }
 
   public void addSaleItem(SaleItem saleItem) {
-    getSaleItems().add(saleItem);
-    if (modelSales == null) {
-      modelSales = new HashMap<Long, SaleItem>();
+    if (!getSaleItems().contains(saleItem)) {
+      getSaleItems().add(saleItem);
     }
-    modelSales.put(saleItem.getSaleItemId(), saleItem);
+    if (modelSales == null) {
+      modelSales = new HashMap<String, SaleItem>();
+    }
+    if (saleItem.getItem() != null) {
+      modelSales.put(saleItem.getItem().getItemCode(), saleItem);
+    }
   }
 
   public void removeSaleItem(SaleItem item) {
     getSaleItems().remove(item);
-    modelSales.remove(item.getSaleItemId());
+    modelSales.remove(item.getItem().getItemCode());
   }
 
-  public SaleItem getSaleItem(String saleItemId) {
-    return saleItemId != null ? modelSales.get(Long.parseLong(saleItemId)) : null;
+  public SaleItem getSaleItem(String itemCode) {
+    return itemCode != null ? modelSales.get(itemCode) : null;
   }
 
   public void setReceiptId(SalesReceipt receiptId) {
@@ -138,6 +160,7 @@ public class Sale implements Serializable {
   public List<SaleItem> getSaleItems() {
     if (saleItems == null) {
       saleItems = new ArrayList<SaleItem>();
+      saleItems.add(new SaleItem());
     }
     return saleItems;
   }

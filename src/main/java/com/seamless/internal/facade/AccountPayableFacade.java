@@ -5,6 +5,8 @@
 package com.seamless.internal.facade;
 
 import com.seamless.internal.AccountPayable;
+import java.util.Calendar;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,5 +28,13 @@ public class AccountPayableFacade extends AbstractFacade<AccountPayable> {
 
   public AccountPayableFacade() {
     super(AccountPayable.class);
+  }
+
+  public List<AccountPayable> findAccountPayableWithinRange(Calendar start, Calendar end) {
+    return getEntityManager()
+            .createNamedQuery("ACCOUNTPAYABLE.FIND_ACCOUNT_PAYABLE_WITHIN_RANGE")
+            .setParameter("start", start)
+            .setParameter("end", end)
+            .getResultList();
   }
 }

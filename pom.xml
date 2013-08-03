@@ -83,6 +83,11 @@
       <version>3.5</version>
     </dependency>
     <dependency>
+      <groupId>article.print</groupId>
+      <artifactId>articleprint</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-web-api</artifactId>
       <version>6.0</version>

@@ -8,6 +8,7 @@ import com.seamless.internal.Batch;
 import com.seamless.internal.Item;
 import com.seamless.internal.Store;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -81,6 +82,20 @@ public class BatchFacade extends AbstractFacade<Batch> {
             .getResultList();
   }
 
+  public List<Batch> findBatchesByExpiryDate(Calendar expiryDate) {
+    return getEntityManager()
+            .createNamedQuery("batchitem.find_batch_by_expiry_date")
+            .setParameter("expiryDate", expiryDate)
+            .getResultList();
+  }
+
+  public List<Batch> findBatchesByReceivedDate(Calendar receivedDate) {
+    return getEntityManager()
+            .createNamedQuery("batchitem.find_batch_by_received_date")
+            .setParameter("receivedDate", receivedDate)
+            .getResultList();
+  }
+
   public BigDecimal findTotalStoreItemCost() {
     BigDecimal val = getEntityManager()
             .createNamedQuery("batchitem.find_total_item_cost_from_all_store", BigDecimal.class)
@@ -91,7 +106,7 @@ public class BatchFacade extends AbstractFacade<Batch> {
   public int getTotalItemQuantitiesAvailable(Item item) {
     Long i = getEntityManager()
             .createNamedQuery("batchitem.find_total_items_quantity", Long.class)
-            .setParameter("itemId", item.getItemId())
+            .setParameter("itemCode", item.getItemCode())
             .setParameter("frozen", false)
             .getSingleResult();
     return i != null ? i.intValue() : 0;

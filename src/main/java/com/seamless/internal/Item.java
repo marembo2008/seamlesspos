@@ -4,12 +4,12 @@
  */
 package com.seamless.internal;
 
-import com.anosym.utilities.IdGenerator;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -35,8 +35,8 @@ public class Item implements Serializable {
 
   private static final long serialVersionUID = 12345246284278L;
   @Id
-  private Long itemId = IdGenerator.generateId();
-  private Long itemCode;
+  @Column(length = 50)
+  private String itemCode;
   private String name;
   private BigDecimal costAmount;
   private BigDecimal price1;
@@ -47,14 +47,6 @@ public class Item implements Serializable {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<Item> stockins;
   private boolean taxable;
-
-  public void setItemId(Long itemId) {
-    this.itemId = itemId;
-  }
-
-  public Long getItemId() {
-    return itemId;
-  }
 
   public void setTaxable(boolean taxable) {
     this.taxable = taxable;
@@ -79,11 +71,11 @@ public class Item implements Serializable {
     stockins.add(stockin);
   }
 
-  public Long getItemCode() {
+  public String getItemCode() {
     return itemCode;
   }
 
-  public void setItemCode(Long itemCode) {
+  public void setItemCode(String itemCode) {
     this.itemCode = itemCode;
   }
 
@@ -179,5 +171,10 @@ public class Item implements Serializable {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Item{" + "itemCode=" + itemCode + ", name=" + name + ", costAmount=" + costAmount + ", price1=" + price1 + ", price2=" + price2 + ", price3=" + price3 + ", reorderLevel=" + reorderLevel + ", stockins=" + stockins + ", taxable=" + taxable + '}';
   }
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -25,7 +24,6 @@ public class MixedItem extends Item implements Serializable {
   private static final long serialVersionUID = IdGenerator.serialVersionUID(MixedItem.class);
   @ManyToMany
   @LazyCollection(LazyCollectionOption.FALSE)
-  @NotNull
   private List<Item> items;
 
   public List<Item> getItems() {

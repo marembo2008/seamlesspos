@@ -4,6 +4,7 @@
  */
 package com.seamless.internal.sales.controller;
 
+import articles.print.EditorPanePrinter;
 import com.anosym.jflemax.validation.controller.JFlemaxController;
 import com.seamless.internal.Batch;
 import com.seamless.internal.Client;
@@ -13,6 +14,7 @@ import com.seamless.internal.controller.BatchController;
 import com.seamless.internal.controller.ItemController;
 import com.seamless.internal.controller.util.JsfUtil;
 import com.seamless.internal.facade.BatchFacade;
+import com.seamless.internal.facade.ItemFacade;
 import com.seamless.internal.management.SaleReceiptGenerator;
 import com.seamless.internal.sales.CashPayment;
 import com.seamless.internal.sales.ChequePayment;
@@ -28,6 +30,8 @@ import com.seamless.internal.sales.util.PaymentOption;
 import com.seamless.internal.sales.util.SaleStatus;
 import com.seamless.settings.Setting;
 import com.seamless.settings.SettingUtil;
+import java.awt.Insets;
+import java.awt.print.Paper;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -47,6 +51,7 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
+import javax.swing.JEditorPane;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.SelectableDataModel;
 
@@ -66,7 +71,7 @@ public class SalesController implements Serializable {
 
     @Override
     public Object getRowKey(SaleItem t) {
-      return t.getSaleItemId();
+      return t.getItem().getItemCode();
     }
 
     @Override
@@ -75,6 +80,8 @@ public class SalesController implements Serializable {
     }
   }
   private SaleItem saleItem;
+  @EJB
+  private ItemFacade itemFacade;
   @EJB
   private BatchFacade batchFacade;
   @EJB
@@ -198,14 +205,18 @@ public class SalesController implements Serializable {
   }
 
   public void addSaleDispatchCreditPayments() {
-    for (CreditPayment cp : saleDispatchCreditPayemts) {
-      sale.addPayment(cp);
+    if (saleDispatchCreditPayemts != null) {
+      for (CreditPayment cp : saleDispatchCreditPayemts) {
+        sale.addPayment(cp);
+      }
     }
   }
 
   public void addSaleDispatchChequePayments() {
-    for (ChequePayment cp : saleDispatchChequePayments) {
-      sale.addPayment(cp);
+    if (saleDispatchChequePayments != null) {
+      for (ChequePayment cp : saleDispatchChequePayments) {
+        sale.addPayment(cp);
+      }
     }
   }
 
@@ -227,6 +238,7 @@ public class SalesController implements Serializable {
 
   public void createSaleForSaleDispatch() {
     sale = new Sale();
+    sale.setSaleDispatch(saleDispatch);
     receiptGenerator.setSaleReceipt(sale);
     //convert all the ItemDispatch to SaleItem
     for (ItemDispatchOrder ido : saleDispatch.getDispatchedItems()) {
@@ -347,6 +359,38 @@ public class SalesController implements Serializable {
   public void setSaleItem(SaleItem saleItem) {
     this.saleItem = saleItem;
   }
+  private String currentItemCode;
+
+  public void setCurrentItemCode(String currentItemCode) {
+    this.currentItemCode = currentItemCode;
+  }
+
+  public String getCurrentItemCode() {
+    return currentItemCode;
+  }
+
+  public void onItemCodeSelected() {
+    Item i = itemFacade.find(currentItemCode);
+    //get the sales item last item
+    if (i != null) {
+      SaleItem si = getSale().getSaleItem(i.getItemCode());
+      if (si != null) {
+        si.setOrderedQuantity(1 + si.getOrderedQuantity());
+      } else {
+        List<SaleItem> li = getSale().getSaleItems();
+        si = li.get(li.size() - 1);
+        si.setItem(i);
+        si.setSalePrice(i.getPrice1());
+        si.setSale(getSale());
+        calculateTax(si);
+        getSale().addSaleItem(si);
+        getSale().addSaleItem(new SaleItem());
+      }
+    }
+    //reset whether we had something or not.F
+    currentItemCode = null;
+    System.out.println("onItemCodeSelected........." + i);
+  }
 
   public void onItemLoaded(SelectEvent event) {
     Item i = (Item) event.getObject();
@@ -362,6 +406,15 @@ public class SalesController implements Serializable {
       Setting settings = SettingUtil.getSetting();
       tax = tax.multiply(settings.getVat());
       getSaleItem().setTax(tax);
+    }
+  }
+
+  public void calculateTax(SaleItem item) {
+    if (item.getItem().isTaxable()) {
+      BigDecimal tax = item.getSalePrice();
+      Setting settings = SettingUtil.getSetting();
+      tax = tax.multiply(settings.getVat());
+      item.setTax(tax);
     }
   }
 
@@ -540,7 +593,16 @@ public class SalesController implements Serializable {
         saleFacade.create(sale);
         JsfUtil.addSuccessMessage("Sale Successfull");
       }
+      //it is successfull.
+      //print the receipt
+      if (salesReceipt != null) {
+        System.out.println("java.awt.headless:" + System.getProperty("java.awt.headless"));
+        JEditorPane editorPane = new JEditorPane("text/html", salesReceipt);
+        EditorPanePrinter epp = new EditorPanePrinter(editorPane, new Paper(), new Insets(18, 18, 18, 18));
+        epp.print();
+      }
       sales = null;
+      salesReceipt = null;
     } catch (Exception e) {
       JFlemaxController.logError(e);
       JsfUtil.addErrorMessage("Failed: " + e.getLocalizedMessage());
@@ -558,6 +620,16 @@ public class SalesController implements Serializable {
       saleFacade.edit(sale);
     }
   }
+  private String salesReceipt;
+
+  public String getSalesReceipt() {
+    return salesReceipt;
+  }
+
+  public void setSalesReceipt(String salesReceipt) {
+    this.salesReceipt = salesReceipt;
+    System.out.println(salesReceipt);
+  }
 
   public void prepareToTender() {
     //by default we set cash payment.
@@ -565,6 +637,8 @@ public class SalesController implements Serializable {
       paymentOption = PaymentOption.CASH;
       sale.setPayment(new CashPayment(sale.getTotalSale(), getSale().getCustomer()));
     }
+    //remove the last sale item added.
+//    getSale().getSaleItems().remove(getSale().getSaleItems().size() - 1);
   }
 
   public void holdSale() {
