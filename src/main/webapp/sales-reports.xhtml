@@ -47,6 +47,16 @@ and open the template in the editor.
                     update=":saleReceiptTable"/>
           </p:autoComplete>
         </p:panelGrid>
+        <p:panelGrid columns="2" style="width: 100%" rendered="#{salesReportController.storeRequest}">
+          <p:outputLabel value="Store" for="assignedStore"/>
+          <p:autoComplete required="true" id="assignedStore" value="#{salesReportController.store}"
+                          completeMethod="#{storeController.searchStore}"
+                          var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                          converter="storeConverter" forceSelection="true" dropdown="true">
+            <p:ajax event="itemSelect" listener="#{salesReportController.generateStoreReport()}"
+                    update=":saleReceiptTable"/>
+          </p:autoComplete>
+        </p:panelGrid>
       </h:form>
       <br/>
       <p:dataTable id="saleReceiptTable"

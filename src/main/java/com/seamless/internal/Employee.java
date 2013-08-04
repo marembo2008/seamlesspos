@@ -24,6 +24,8 @@ import javax.persistence.Temporal;
  */
 @Entity
 @NamedQueries({
+  @NamedQuery(name = "EMPLOYEE.FIND_EMPLOYEE_BY_CREDENTIAL",
+          query = "SELECT e FROM Employee e WHERE e.username = :username AND e.password = :password"),
   @NamedQuery(name = "EMPLOYEE.SEARCH_EMPLOYEE",
           query = "SELECT DISTINCT e FROM Employee e WHERE e.surname LIKE :surname OR e.otherNames LIKE :otherNames OR e.employeeNumber LIKE :empNumber")
 })
@@ -34,8 +36,6 @@ public class Employee implements Serializable {
   @Column(length = 30)
   private String employeeNumber;
   private String id;
-  @ManyToOne
-  private Store outlet;
   private String surname;
   private String otherNames;
   private String title;
@@ -51,6 +51,8 @@ public class Employee implements Serializable {
   private Address address;
   @OneToOne(cascade = CascadeType.ALL)
   private BankAccountInformation accountInformation;
+  @ManyToOne
+  private Store assignedStore;
 
   public void setAddress(Address address) {
     this.address = address;
@@ -58,6 +60,14 @@ public class Employee implements Serializable {
 
   public void setAccountInformation(BankAccountInformation accountInformation) {
     this.accountInformation = accountInformation;
+  }
+
+  public void setAssignedStore(Store assignedStore) {
+    this.assignedStore = assignedStore;
+  }
+
+  public Store getAssignedStore() {
+    return assignedStore;
   }
 
   public Address getAddress() {
@@ -168,20 +178,11 @@ public class Employee implements Serializable {
     return surname + " " + otherNames;
   }
 
-  public Store getOutlet() {
-    return outlet;
-  }
-
-  public void setOutlet(Store outlet) {
-    this.outlet = outlet;
-  }
-
   @Override
   public int hashCode() {
     int hash = 7;
     hash = 17 * hash + (this.employeeNumber != null ? this.employeeNumber.hashCode() : 0);
     hash = 17 * hash + (this.id != null ? this.id.hashCode() : 0);
-    hash = 17 * hash + (this.outlet != null ? this.outlet.hashCode() : 0);
     hash = 17 * hash + (this.surname != null ? this.surname.hashCode() : 0);
     hash = 17 * hash + (this.otherNames != null ? this.otherNames.hashCode() : 0);
     hash = 17 * hash + (this.title != null ? this.title.hashCode() : 0);
@@ -210,9 +211,6 @@ public class Employee implements Serializable {
       return false;
     }
     if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
-      return false;
-    }
-    if (this.outlet != other.outlet && (this.outlet == null || !this.outlet.equals(other.outlet))) {
       return false;
     }
     if ((this.surname == null) ? (other.surname != null) : !this.surname.equals(other.surname)) {

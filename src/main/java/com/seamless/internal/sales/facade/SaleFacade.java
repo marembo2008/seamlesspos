@@ -7,6 +7,7 @@ package com.seamless.internal.sales.facade;
 import com.anosym.jflemax.validation.controller.JFlemaxController;
 import com.seamless.internal.Batch;
 import com.seamless.internal.Employee;
+import com.seamless.internal.Store;
 import com.seamless.internal.facade.*;
 import com.seamless.internal.sales.ItemOrder;
 import com.seamless.internal.sales.Sale;
@@ -129,6 +130,13 @@ public class SaleFacade extends AbstractFacade<Sale> {
     return getEntityManager()
             .createNamedQuery("sale.find_sales_by_employee")
             .setParameter("employeeNumber", employee.getEmployeeNumber())
+            .getResultList();
+  }
+
+  public List<Sale> findSalesByStore(Store store) {
+    return getEntityManager()
+            .createNamedQuery("sale.find_sales_by_store")
+            .setParameter("storeId", store.getStoreId())
             .getResultList();
   }
 

@@ -4,10 +4,12 @@
  */
 package com.seamless.internal.facade;
 
+import com.anosym.jflemax.validation.controller.JFlemaxController;
 import com.seamless.internal.Employee;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -36,5 +38,19 @@ public class EmployeeFacade extends AbstractFacade<Employee> {
             .setParameter("otherNames", "%" + query + "%")
             .setParameter("empNumber", "%" + query + "%")
             .getResultList();
+  }
+
+  public Employee findEmployee(String username, String password) {
+    try {
+      return getEntityManager()
+              .createNamedQuery("EMPLOYEE.FIND_EMPLOYEE_BY_CREDENTIAL", Employee.class)
+              .setParameter("username", username)
+              .setParameter("password", password)
+              .getSingleResult();
+    } catch (NoResultException ex) {
+    } catch (Exception e) {
+      JFlemaxController.logError(e);
+    }
+    return null;
   }
 }

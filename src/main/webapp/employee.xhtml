@@ -35,6 +35,11 @@
               <p:inputText id="basicSalary" value="#{employeeController.currentEmployee.basicSalary}" required="true"/>
               <p:outputLabel value="Department" for="department"/>
               <p:inputText id="department" value="#{employeeController.currentEmployee.department}" required="true"/>
+              <p:outputLabel value="Assigned Store" for="assignedStore"/>
+              <p:autoComplete required="true" id="assignedStore" value="#{employeeController.currentEmployee.assignedStore}"
+                              completeMethod="#{storeController.searchStore}"
+                              var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                              converter="storeConverter" forceSelection="true" dropdown="true"/>
             </p:panelGrid>
             <p:separator/>
             <p:accordionPanel activeIndex="0" multiple="true">

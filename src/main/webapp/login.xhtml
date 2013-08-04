@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+  <h:head>
+    <title>Seamless login</title>
+    <style type="text/css">
+      .ui-panelgrid, .ui-panelgrid tr, .ui-panelgrid td{
+        border: 0px none;
+      }
+      body{
+        background: #dedede;
+      }
+    </style>
+  </h:head>
+  <h:body>
+    <div align="center" style="padding-top: 100px; width: 100%">
+      <div style="width: 50%; border-radius: 20px; background: white; padding: 10px">
+        <p:messages autoUpdate="true"/>
+        <h:form>
+          <p:panelGrid columns="2">
+            <p:outputLabel value="Username:" for="username"/>
+            <p:inputText id="username" required="true" value="#{employeeController.username}"/>
+            <p:outputLabel value="Password:" for="password"/>
+            <p:password id="password" required="true" value="#{employeeController.password}"/>
+            <p:commandButton ajax="false" value="Login" action="#{employeeController.login()}"/>
+            <br/>
+          </p:panelGrid>
+        </h:form>
+      </div>
+    </div>
+  </h:body>
+</html>

@@ -12,6 +12,7 @@ import com.seamless.internal.Item;
 import com.seamless.internal.SaleDispatch;
 import com.seamless.internal.controller.BatchController;
 import com.seamless.internal.controller.ItemController;
+import com.seamless.internal.controller.SeamlessController;
 import com.seamless.internal.controller.util.JsfUtil;
 import com.seamless.internal.facade.BatchFacade;
 import com.seamless.internal.facade.ItemFacade;
@@ -90,6 +91,8 @@ public class SalesController implements Serializable {
   private SaleItemFacade saleItemFacade;
   @EJB
   private SaleReceiptGenerator receiptGenerator;
+  @Inject
+  private SeamlessController seamlessController;
   @Inject
   private BatchController batchController;
   @Inject
@@ -586,6 +589,7 @@ public class SalesController implements Serializable {
           throw new IllegalArgumentException("Please add items for this sale");
         }
       }
+      sale.setPostingEmployee(seamlessController.getCurrentEmployee());
       if (saleFacade.findSale(sale.getReceiptId()) != null) {
         saleFacade.edit(sale);
         JsfUtil.addSuccessMessage("Sale Successfully Updated");

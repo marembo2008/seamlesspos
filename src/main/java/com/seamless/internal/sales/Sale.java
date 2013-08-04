@@ -6,6 +6,7 @@ package com.seamless.internal.sales;
 
 import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Client;
+import com.seamless.internal.Employee;
 import com.seamless.internal.Item;
 import com.seamless.internal.SaleDispatch;
 import com.seamless.internal.sales.util.SaleStatus;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
@@ -44,7 +46,9 @@ import org.hibernate.annotations.LazyCollectionOption;
   @NamedQuery(name = "sale.find_sales_by_date_range",
           query = "SELECT s FROM Sale s WHERE s.receiptId.saleDate BETWEEN :startDate AND :endDate"),
   @NamedQuery(name = "sale.find_sales_by_employee",
-          query = "SELECT s FROM Sale s WHERE s.saleDispatch.dispatchEmployee.employeeNumber = :employeeNumber")
+          query = "SELECT s FROM Sale s WHERE s.postingEmployee.employeeNumber = :employeeNumber"),
+  @NamedQuery(name = "sale.find_sales_by_store",
+          query = "SELECT s FROM Sale s WHERE s.postingEmployee.assignedStore.storeId = :storeId")
 })
 public class Sale implements Serializable {
 
@@ -71,6 +75,11 @@ public class Sale implements Serializable {
    */
   @OneToOne
   private SaleDispatch saleDispatch;
+  /**
+   * The employee who actually did this posting;
+   */
+  @OneToOne
+  private Employee postingEmployee;
 
   public Sale() {
     status = SaleStatus.PENDING;
@@ -88,6 +97,21 @@ public class Sale implements Serializable {
       status = SaleStatus.SOLD;
     }
     receiptId_ = receiptId.toString();
+    //do not save sale item without item
+    for (ListIterator<SaleItem> it = saleItems.listIterator(); it.hasNext();) {
+      SaleItem si = it.next();
+      if (si.getItem() == null) {
+        it.remove();
+      }
+    }
+  }
+
+  public void setPostingEmployee(Employee postingEmployee) {
+    this.postingEmployee = postingEmployee;
+  }
+
+  public Employee getPostingEmployee() {
+    return postingEmployee;
   }
 
   public String getReceiptId_() {

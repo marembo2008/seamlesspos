@@ -5,6 +5,7 @@
 package com.seamless.internal.controller;
 
 import com.anosym.jflemax.validation.controller.JFlemaxController;
+import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Address;
 import com.seamless.internal.BankAccountInformation;
 import com.seamless.internal.Employee;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -26,6 +28,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import org.primefaces.model.SelectableDataModel;
 
 /**
@@ -55,8 +58,27 @@ public class EmployeeController implements Serializable {
   private static final long serialVersionUID = 1782378272888L;
   @EJB
   private EmployeeFacade employeeFacade;
+  @Inject
+  private SeamlessController seamlessController;
   private Employee currentEmployee;
   private DataModel<Employee> employees;
+  private String username;
+  private String password;
+
+  //get default employee
+  @PostConstruct
+  void createDefaultEmployee() {
+    String empNumber = IdGenerator.serialVersionUID(Employee.class) + "";
+    if (employeeFacade.find(empNumber) == null) {
+      Employee e = new Employee();
+      e.setEmployeeNumber(empNumber);
+      e.setUsername("admin");
+      e.setPassword("adminadmin");
+      e.setSurname("Admin");
+      e.setOtherNames("Admin");
+      employeeFacade.create(e);
+    }
+  }
 
   void onLoad() {
     employees = new EmployeeDataModel();
@@ -64,6 +86,32 @@ public class EmployeeController implements Serializable {
 
   public List<Employee> searchEmployees(String query) {
     return employeeFacade.searchEmployees(query);
+  }
+
+  public String login() {
+    Employee e = employeeFacade.findEmployee(username, password);
+    if (e != null) {
+      seamlessController.onLogin(e);
+      return "store.xhtml?faces-redirect=true";
+    }
+    JsfUtil.addErrorMessage("Login failed. Username or password incorrect");
+    return null;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public Employee getCurrentEmployee() {

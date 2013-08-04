@@ -5,6 +5,7 @@
 package com.seamless.internal.sales.controller;
 
 import com.seamless.internal.Employee;
+import com.seamless.internal.Store;
 import com.seamless.internal.sales.Sale;
 import com.seamless.internal.sales.facade.SaleFacade;
 import com.seamless.internal.sales.util.SaleReportOption;
@@ -31,6 +32,7 @@ public class SalesReportController implements Serializable {
   private Calendar startDate;
   private Calendar endDate;
   private Employee employee;
+  private Store store;
 
   /**
    * Creates a new instance of SalesReportController
@@ -50,12 +52,24 @@ public class SalesReportController implements Serializable {
     return SaleReportOption.values();
   }
 
+  public void setStore(Store store) {
+    this.store = store;
+  }
+
+  public Store getStore() {
+    return store;
+  }
+
   public boolean isDateRangeRequest() {
     return saleReportOption == SaleReportOption.DATE_RANGE;
   }
 
   public boolean isEmployeeRequest() {
     return saleReportOption == SaleReportOption.BY_USER;
+  }
+
+  public boolean isStoreRequest() {
+    return saleReportOption == SaleReportOption.BY_STORE;
   }
 
   public Employee getEmployee() {
@@ -67,9 +81,36 @@ public class SalesReportController implements Serializable {
   }
 
   public void onSaleReportOptionSelected() {
-    if (saleReportOption == SaleReportOption.ALL_SALES) {
-      sales = null;
+    generateReport();
+  }
+
+  public void generateReport() {
+    if (saleReportOption != null) {
+      switch (saleReportOption) {
+        case ALL_SALES:
+          sales = null;
+          break;
+        case BY_USER:
+          if (employee != null) {
+            generateEmployeeSalesReport();
+          }
+          break;
+        case DATE_RANGE:
+          if (startDate != null && endDate != null) {
+            generateDateRangeReport();
+          }
+          break;
+        case BY_STORE:
+          if (store != null) {
+            generateStoreReport();
+          }
+          break;
+      }
     }
+  }
+
+  public void generateStoreReport() {
+    sales = saleFacade.findSalesByStore(store);
   }
 
   public void generateDateRangeReport() {
