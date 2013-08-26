@@ -4,12 +4,12 @@
  */
 package com.seamless.internal.purchases;
 
+import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Batch;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -21,10 +21,9 @@ import javax.persistence.Temporal;
 @Entity
 public class PurchasesReturn implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 16764564564L;
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private Long id = IdGenerator.generateId();
   @OneToOne
   private Batch batch;
   private int returnQuantity;
@@ -53,6 +52,10 @@ public class PurchasesReturn implements Serializable {
 
   public int getReturnQuantity() {
     return returnQuantity;
+  }
+
+  public BigDecimal getReturnCost() {
+    return getBatch().getItem().getCostAmount().multiply(BigDecimal.valueOf((getReturnQuantity())));
   }
 
   public void setReturnQuantity(int returnQuantity) {

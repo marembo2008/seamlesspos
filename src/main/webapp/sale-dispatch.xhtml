@@ -108,7 +108,7 @@
               </h:panelGroup>
             </h:form>
           </f:facet>
-          <p:column id="batch" headerText="#" style="width:10%" >
+          <p:column id="batch" headerText="#" style="width:15%" >
             <h:outputText value="#{d.item.itemCode}" />
           </p:column>
           <p:column  headerText="Description" >
@@ -118,13 +118,13 @@
             <h:outputText value="#{d.quantity}" />
           </p:column>
           <p:column  headerText="Unit Price" >
-            <h:outputText value="#{d.item.price1}" />
+            <h:outputText value="#{d.item.price1}" converter="bigDecimalConverter"/>
           </p:column>
-          <p:column  headerText="Tax" >
-            <h:outputText value="#{d.tax}" />
+          <p:column  headerText="Total Tax" >
+            <h:outputText value="#{d.totalTax}" converter="bigDecimalConverter"/>
           </p:column>
-          <p:column  headerText="Net Selling Price" style="text-align: right">
-            <h:outputText value="#{d.netPrice}" converter="bigDecimalConverter"/>
+          <p:column  headerText="Total Dispatch Cost" style="text-align: right">
+            <h:outputText value="#{d.totalOrderCost}" converter="bigDecimalConverter"/>
           </p:column>
           <p:summaryRow>
             <p:column style="text-align: right" colspan="5">

@@ -45,21 +45,23 @@
             </p:tab>
           </p:accordionPanel>
         </f:facet>
+        <p:column style="width: 5%">
+          <p:rowToggler/>
+        </p:column>
         <p:column headerText="Bank">
           #{b.bankName}
         </p:column>
-        <p:summaryRow >
-          <p:column rendered="#{not empty b.bankBranches}">
-            <p:dataTable value="#{b.bankBranches}" var="r">
-              <p:column headerText="Branch Code">
-                #{r.branchCode}
-              </p:column>
-              <p:column headerText="Branch Name">
-                #{r.name}
-              </p:column>
-            </p:dataTable>
-          </p:column>
-        </p:summaryRow>
+        <p:rowExpansion>
+          <p:dataTable value="#{b.bankBranches}" var="r"
+                       rendered="#{not empty b.bankBranches}">
+            <p:column headerText="Branch Code">
+              #{r.branchCode}
+            </p:column>
+            <p:column headerText="Branch Name">
+              #{r.name}
+            </p:column>
+          </p:dataTable>
+        </p:rowExpansion>
       </p:dataTable>
     </ui:define>
   </ui:composition>

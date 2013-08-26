@@ -32,7 +32,8 @@
                   </p:selectOneMenu>
                   <h:outputLabel value="Purchase Order Items" for="storeItems"/>
                   <p:dataTable id="storeItems" value="#{purchaseOrderController.storeItems}" var="i"
-                               emptyMessage="Please select store above to add items" rowKey="#{i.orderItem.itemId}"
+                               emptyMessage="If you have selected a store, it may not have items that have reached reorder level"
+                               rowKey="#{i.id}"
                                selection="#{purchaseOrderController.selectedStoreItems}"
                                style="width: 82%">
                     <p:column selectionMode="multiple"
@@ -44,7 +45,8 @@
                       <h:outputText value="#{i.orderItem.name}"/>
                     </p:column>
                     <p:column headerText="Ordered Quantity">
-                      <p:inputText value="#{i.orderedQuantity}"/>
+                      <p:inputText value="#{i.orderedQuantity}"
+                                   validator="#{purchaseOrderController.validateOrderedQuantity}"/>
                     </p:column>
                   </p:dataTable>
                   <p:outputLabel value="Supplier" for="supplier"/>

@@ -164,8 +164,8 @@ public class SaleDispatchController implements Serializable {
     BigDecimal total = BigDecimal.ZERO;
     if (getDispatchOrders() != null) {
       for (ItemDispatchOrder ido : getDispatchOrders()) {
-        if (ido.getNetPrice() != null) {
-          total = total.add(ido.getNetPrice());
+        if (ido.getTotalSale() != null) {
+          total = total.add(ido.getTotalOrderCost());
         }
       }
     }

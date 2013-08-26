@@ -14,7 +14,8 @@
       </style>
       <p:panel id="purchaseReturnPanel">
         <p:dataTable id="purchaseReturnTable" var="pr"
-                     value="#{purchasesReturnController.purchasesReturns}" >
+                     value="#{purchasesReturnController.purchasesReturns}"
+                     sortBy="#{pr.id}">
           <f:facet name="header">
             <p:accordionPanel activeIndex="0">
               <p:tab title="Return Goods">
@@ -47,24 +48,49 @@
               </p:tab>
             </p:accordionPanel>
           </f:facet>
-          <p:column  headerText="Batch Number" >
-            <h:outputText value="#{pr.batch.batchNumber}" />
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column rowspan="4" headerText="Debit Note" />
+              <p:column colspan="5" headerText="Purchases Returns"/>
+            </p:row>
+            <p:row>
+              <p:column headerText="Item"/>
+              <p:column headerText="Purchased Quantity"/>
+              <p:column headerText="Total Purchase Amount"/>
+              <p:column headerText="Returned Quantity"/>
+              <p:column headerText="Purchase Return Cost"/>
+            </p:row>
+          </p:columnGroup>
+          <p:column colspan="2">
+            <p:panelGrid columns="2" style="width: 100%">
+              <h:outputText value="Debit Note Number:"/>
+              <h:outputText value="#{pr.id}"/>
+              <h:outputText value="Issued Date"/>
+              <h:outputText value="#{pr.returnDate}" converter="dateConverter"/>
+              <h:outputText value="Purchase Batch Number"/>
+              <h:outputText value="#{pr.batch.batchNumber}"/>
+            </p:panelGrid>
           </p:column>
-          <p:column id="batch" headerText="Item Code."  >
-            <h:outputText value="#{pr.batch.item.itemCode}" />
-          </p:column>
-          <p:column id="name" headerText="Name" >
+          <p:column >
             <h:outputText value="#{pr.batch.item.name}" />
           </p:column>
-          <p:column id="uPrice" headerText="Unit Price" >
-            <h:outputText value="#{pr.batch.item.costAmount}" />
-          </p:column>
-          <p:column id="Qty" headerText="Batch Quantity" >
+          <p:column>
             <h:outputText value="#{pr.batch.quantity}" />
           </p:column>
-          <p:column  headerText="Return Quantity" >
+          <p:column >
+            <h:outputText value="#{pr.batch.totalCost}" />
+          </p:column>
+          <p:column >
             <h:outputText value="#{pr.returnQuantity}" />
           </p:column>
+          <p:column >
+            <h:outputText value="#{pr.returnCost}" />
+          </p:column>
+          <p:summaryRow >
+            <p:column colspan="6">
+              <p:separator style="height: 5px"/>
+            </p:column>
+          </p:summaryRow>
           <f:facet name="footer">
             <h:commandButton value="Print" type="button" style="width: 80px; height: 31px; margin-left: 30px"
                              styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">

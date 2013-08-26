@@ -84,8 +84,8 @@ public class BatchController implements Serializable {
     return batchFacade.itemBatches(item);
   }
 
-  public List<Batch> findBatches(String startId) {
-    return batchFacade.searchFrozenbatchItems(startId);
+  public List<Batch> findBatches(String itemName) {
+    return batchFacade.searchBatch(itemName);
   }
 
   void addAndUpdate(Item item) {

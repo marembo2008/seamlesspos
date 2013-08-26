@@ -41,11 +41,14 @@ and open the template in the editor.
           <p:selectBooleanCheckbox id="taxable" value="#{itemController.mixedItem.taxable}"/>
         </p:panelGrid>
         <p:dataTable id="availableItems" var="i"
-                     value="#{itemController.items}"
+                     value="#{itemController.itemsForMixedItemOptions}"
                      paginator="true"
+                     rowKey="#{i.id}"
+                     sortBy="#{itemController.mixedItem.hashCode()}"
                      selection="#{itemController.selectedItems}"
                      emptyMessage="You have entered no items yet"
                      rows="20">
+          <p:ajax event="rowSelectCheckbox" update="@form"/>
           <p:column selectionMode="multiple" style="width: 15px"/>
           <p:column headerText="Item Code" >
             <h:outputText value="#{i.itemCode}" />
@@ -53,12 +56,26 @@ and open the template in the editor.
           <p:column headerText="Item Description" >
             <h:outputText value="#{i.name}" />
           </p:column>
-          <p:column  headerText="Cost">
-            <h:outputText value="#{i.costAmount}" />
+          <p:column headerText="Mixed Proportion" >
+            <p:inputText value="#{i.proportion}">
+              <p:ajax event="change" process="@form" update="@form"/>
+            </p:inputText>
+          </p:column>
+          <p:column  headerText="Cost" style="text-align: right">
+            <h:outputText value="#{i.costAmount}" converter="bigDecimalConverter" />
             <f:facet name="footer">
-              <h:outputText id="mixedItemCost" value="#{itemController.totalMixedItemCost}"/>
+
             </f:facet>
           </p:column>
+          <p:summaryRow>
+            <p:column colspan="4" style="text-align: right">
+              Mixed Item Cost
+            </p:column>
+            <p:column  style="text-align: right">
+              <h:outputText id="mixedItemCost" value="#{itemController.totalMixedItemCost}"
+                            converter="bigDecimalConverter" />
+            </p:column>
+          </p:summaryRow>
         </p:dataTable>
         <p:separator style="margin: 10px 0px"/>
         <p:commandButton value="Add Mixed Item" actionListener="#{itemController.createMixedItem()}"

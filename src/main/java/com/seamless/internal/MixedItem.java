@@ -9,8 +9,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -19,24 +22,26 @@ import org.hibernate.annotations.LazyCollectionOption;
  * @author marembo
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "MixedItem.search_items_by_name", query = "SELECT i FROM MixedItem i WHERE i.name LIKE :name"),})
 public class MixedItem extends Item implements Serializable {
 
   private static final long serialVersionUID = IdGenerator.serialVersionUID(MixedItem.class);
-  @ManyToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @LazyCollection(LazyCollectionOption.FALSE)
-  private List<Item> items;
+  private List<MixedItemOption> items;
 
-  public List<Item> getItems() {
-    return items;
-  }
-
-  public void setItems(List<Item> items) {
+  public void setItems(List<MixedItemOption> items) {
     this.items = items;
   }
 
-  public void addItem(Item i) {
+  public List<MixedItemOption> getItems() {
+    return items;
+  }
+
+  public void addItem(MixedItemOption i) {
     if (items == null) {
-      items = new ArrayList<Item>();
+      items = new ArrayList<MixedItemOption>();
     }
     items.add(i);
   }
@@ -50,7 +55,7 @@ public class MixedItem extends Item implements Serializable {
       return BigDecimal.ZERO;
     }
     BigDecimal cost = BigDecimal.ZERO;
-    for (Item i : items) {
+    for (MixedItemOption i : items) {
       cost = cost.add(i.getCostAmount());
     }
     super.setCostAmount(cost);

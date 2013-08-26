@@ -84,23 +84,20 @@
             <p:column  headerText="Description" >
               <h:outputText value="#{i.item.name}" />
             </p:column>
-            <p:column  headerText="Quantity" >
+            <p:column  headerText="Quantity"  style="text-align: right">
               <h:outputText value="#{i.quantity}" />
             </p:column>
-            <p:column  headerText="Unit Price" >
-              <h:outputText value="#{i.sellingPrice}" />
+            <p:column  headerText="Unit Price"  style="text-align: right">
+              <h:outputText value="#{i.sellingPrice}" converter="bigDecimalConverter" />
             </p:column>
             <p:column  headerText="Disc" >
               <h:outputText value="" />
             </p:column>
-            <p:column  headerText="Tax" >
-              <h:outputText value="#{i.tax}" />
+            <p:column  headerText="Total TTax"  style="text-align: right">
+              <h:outputText value="#{i.totalTax}" converter="bigDecimalConverter" />
             </p:column>
-            <p:column  headerText="Net Price" >
-              <h:outputText value="#{i.netPrice}" />
-            </p:column>
-            <p:column  headerText="Dispatch value" >
-              <h:outputText value="#{i.dispatchValue}" />
+            <p:column  headerText="Dispatch value"  style="text-align: right">
+              <h:outputText value="#{i.dispatchValue}" converter="bigDecimalConverter" />
             </p:column>
             <p:column id="sold" headerText="Sold Quantity" >
               <p:inputText style="width: 100%; text-align: right;"
@@ -108,21 +105,21 @@
                 <p:ajax event="change" update="@form"/>
               </p:inputText>
             </p:column>
-            <p:column id="cas" headerText="Cash" >
-              <h:outputText value="#{i.totalSale}" />
+            <p:column id="cas" headerText="Cash" style="text-align: right">
+              <h:outputText value="#{i.totalSale}" converter="bigDecimalConverter" />
             </p:column>
-            <p:column id="diff" headerText="Diff" >
-              <h:outputText value="#{i.saleDifference}" />
+            <p:column id="diff" headerText="Diff"  style="text-align: right">
+              <h:outputText value="#{i.saleDifference}" converter="bigDecimalConverter" />
             </p:column>
             <p:summaryRow>
-              <p:column colspan="11" style="text-align: right">
+              <p:column colspan="10" style="text-align: right">
                 Total Dispatch
               </p:column>
-              <p:column>
-                #{salesController.saleDispatch.totalDispatchSaleValue}
+              <p:column  style="text-align: right">
+                <h:outputText value="#{salesController.saleDispatch.totalDispatchSaleValue}" converter="bigDecimalConverter" />
               </p:column>
-              <p:column>
-                #{salesController.saleDispatch.totalDispatchSaleDifference}
+              <p:column  style="text-align: right">
+                <h:outputText value="#{salesController.saleDispatch.totalDispatchSaleDifference}" converter="bigDecimalConverter" />
               </p:column>
             </p:summaryRow>
           </p:dataTable>
@@ -136,45 +133,52 @@
                 <p:column>
                   <h:outputLabel value="Total: " for="total"/>
                 </p:column>
-                <p:column>
-                  <h:outputText id="total" value="#{salesController.saleDispatch.totalDispatchSaleValue}"/>
+                <p:column  style="text-align: right">
+                  <h:outputText id="total" value="#{salesController.saleDispatch.totalDispatchSaleValue}"
+                                converter="bigDecimalConverter"/>
                 </p:column>
               </p:row>
               <p:row>
                 <p:column>
                   <h:outputLabel value="Sale Difference: " for="saleDifference"/>
                 </p:column>
-                <p:column>
-                  <h:outputText id="saleDifference" value="#{salesController.saleDispatch.totalDispatchSaleDifference}"/>
+                <p:column  style="text-align: right">
+                  <h:outputText id="saleDifference" value="#{salesController.saleDispatch.totalDispatchSaleDifference}"
+                                converter="bigDecimalConverter"/>
                 </p:column>
               </p:row>
               <p:row>
                 <p:column>
                   <h:outputLabel value="Sale Dispatch Value " for="saleDispatch"/>
                 </p:column>
-                <p:column>
-                  <h:outputText id="saleDispatch" value="#{salesController.saleDispatch.totalDispatchValue}"/>
+                <p:column style="text-align: right">
+                  <h:outputText id="saleDispatch" value="#{salesController.saleDispatch.totalDispatchValue}"
+                                converter="bigDecimalConverter"/>
                 </p:column>
               </p:row>
               <p:row>
                 <p:column>
                   <h:outputLabel value="Cash Payment: " for="cashPayment"/>
                 </p:column>
-                <p:column>
-                  <p:inputText id="cashPayment" />
+                <p:column style="text-align: right">
+                  <p:inputText id="cashPayment"  style="text-align: right"/>
                 </p:column>
               </p:row>
               <p:row>
                 <p:column>
                   <p:commandButton value="Credit" oncomplete="cr.show();" style="width: 200px"/>
                 </p:column>
-                <p:column>#{salesController.totalCreditPayments}</p:column>
+                <p:column  style="text-align: right">
+                  <h:outputText value="#{salesController.totalCreditPayments}" converter="bigDecimalConverter"/>
+                </p:column>
               </p:row>
               <p:row>
                 <p:column>
                   Cheque Payments:
                 </p:column>
-                <p:column>#{salesController.totalChequePayments}</p:column>
+                <p:column  style="text-align: right">
+                  <h:outputText value="#{salesController.totalChequePayments}" converter="bigDecimalConverter"/>
+                </p:column>
               </p:row>
             </p:panelGrid>
           </p:panel>
@@ -190,7 +194,8 @@
               <p:calendar value="#{salesController.saleDispatchCurrentChequePayment.maturityDate}" id="chequeDate"
                           pattern="yyyy-mm-dd" converter="dateConverter"/>
               <p:outputLabel value="Amount" for="amount"/>
-              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.paymentAmount}" id="amount"/>
+              <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.paymentAmount}" id="amount"
+                           converter="bigDecimalConverter"/>
               <p:outputLabel value="Bank" for="bank"/>
               <p:inputText value="#{salesController.saleDispatchCurrentChequePayment.bank}" id="bank"/>
               <p:outputLabel value="Branch" for="branch"/>

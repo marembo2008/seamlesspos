@@ -251,7 +251,7 @@ public class SalesController implements Serializable {
       i.setSale(sale);
       i.setSalePrice(ido.getSellingPrice());
       i.setTax(ido.getTax());
-      processSaleItem(i);
+      processSaleItemForDispatch(i);
       sale.addSaleItem(i);
     }
     addSaleDispatchCashPayments();
@@ -495,12 +495,48 @@ public class SalesController implements Serializable {
     return PaymentOption.values();
   }
 
+  public void updateOrderedQuantity(SaleItem si) {
+    saleItem = si;
+    processSaleItem(si);
+    editItem(si);
+    saleItem = new SaleItem(getSale());
+  }
+
   public void editItem() {
     try {
       validateQuantity(null, null, saleItem.getOrderedQuantity());
       //TODO(marembo). load the relevant batch to add the sale item order.
       SaleItem si = saleItem;
       if (si != null) {
+        if (!si.isOrderSet()) {
+          //set the batch orders appropriately
+          int unassignedOrder = si.getUnassignedOrderedQuantity();
+          for (ItemOrder io : si.getItemOrders()) {
+            Batch ioBatch = io.getItem();
+            if (ioBatch.getCurrentQuantity() > 0) {
+              int ordered = Math.min(unassignedOrder, ioBatch.getCurrentQuantity());
+              unassignedOrder -= ordered;
+              ioBatch.decreaseCurrentQuantity(ordered);
+              io.increaseOrderedQuantity(ordered);
+            }
+            if (si.isOrderSet()) {
+              break;
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      JFlemaxController.logError(e);
+      JsfUtil.addErrorMessage("Sorry, unable to edit item: " + e.getMessage());
+    }
+  }
+
+  public void editItem(SaleItem saleItem) {
+    try {
+      SaleItem si = saleItem;
+      if (si != null) {
+        validateQuantity(null, null, saleItem.getOrderedQuantity());
+        //TODO(marembo). load the relevant batch to add the sale item order.
         if (!si.isOrderSet()) {
           //set the batch orders appropriately
           int unassignedOrder = si.getUnassignedOrderedQuantity();
@@ -570,6 +606,34 @@ public class SalesController implements Serializable {
     }
   }
 
+  private void processSaleItemForDispatch(SaleItem si) {
+    if (!si.isOrderSet()) {
+      Item i = si.getItem();
+      //get the batches.
+        /*
+       * TODO(marembo) this will fail if the item has been referenced in more than one sale item!
+       *
+       */
+      List<Batch> availableBatches = batchFacade.findAvailableBatches(i);
+      ListIterator<Batch> it_b = availableBatches.listIterator();
+      //for us to reach here, there must have been available items
+      int orderedQuantity = si.getOrderedQuantity();
+      while (orderedQuantity > 0 && it_b.hasNext()) {
+        Batch b = it_b.next();
+        int b_quantity = b.getCurrentQuantity();
+        //get the order quantity for item order
+        int io_quantity = Math.min(orderedQuantity, b_quantity);
+        //get the current order quantity for this batch if any
+        int b_currentQuantity = Math.max(b_quantity - io_quantity, 0);
+        //we do not reset the batch quantity since we had done the same during dispatch.
+        //b.setCurrentQuantity(b_currentQuantity);
+        ItemOrder io = new ItemOrder(b, io_quantity);
+        orderedQuantity -= io_quantity;
+        si.addItem(io);
+      }
+    }
+  }
+
   public void doSale() {
     try {
       sale.setStatus(SaleStatus.SOLD);
@@ -597,14 +661,14 @@ public class SalesController implements Serializable {
         saleFacade.create(sale);
         JsfUtil.addSuccessMessage("Sale Successfull");
       }
-      //it is successfull.
-      //print the receipt
-      if (salesReceipt != null) {
-        System.out.println("java.awt.headless:" + System.getProperty("java.awt.headless"));
-        JEditorPane editorPane = new JEditorPane("text/html", salesReceipt);
-        EditorPanePrinter epp = new EditorPanePrinter(editorPane, new Paper(), new Insets(18, 18, 18, 18));
-        epp.print();
-      }
+//      //it is successfull.
+//      //print the receipt
+//      if (salesReceipt != null) {
+//        System.out.println("java.awt.headless:" + System.getProperty("java.awt.headless"));
+//        JEditorPane editorPane = new JEditorPane("text/html", salesReceipt);
+//        EditorPanePrinter epp = new EditorPanePrinter(editorPane, new Paper(), new Insets(18, 18, 18, 18));
+//        epp.print();
+//      }
       sales = null;
       salesReceipt = null;
     } catch (Exception e) {
@@ -654,6 +718,11 @@ public class SalesController implements Serializable {
     } finally {
       prepareSale();
     }
+  }
+
+  public void prepareForSaleRecall() {
+    this.sale = null;
+    this.saleItems = null;
   }
 
   public int getSorter() {

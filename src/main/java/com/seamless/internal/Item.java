@@ -28,7 +28,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @NamedQueries({
   @NamedQuery(name = "item.find_available_items",
           query = "select i from Item i where (select count(b) from Batch b JOIN b.item i_ where i_.itemCode = i.itemCode AND b.frozen = :state) > 0"),
-  @NamedQuery(name = "item.search_items_by_name", query = "SELECT i FROM Item i WHERE i.name LIKE :name")
+  @NamedQuery(name = "item.search_items_by_name", query = "SELECT i FROM Item i WHERE i.name LIKE :name"),
+  @NamedQuery(name = "Item.find_store_item_for_reorder",
+          query = "SELECT i FROM Item i WHERE i.reorderLevel >= (SELECT SUM(b.currentQuantity) FROM Batch b WHERE b.item.itemCode = i.itemCode AND b.store.storeId = :storeId)")
 })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Item implements Serializable {

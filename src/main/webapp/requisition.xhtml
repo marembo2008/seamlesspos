@@ -12,7 +12,7 @@
             <p:outputLabel value="Batch Item" for="item"/>
             <p:autoComplete id="item" value="#{internalAcquisitionController.internalTransfer.transferBatch}"
                             completeMethod="#{batchController.findBatches}"
-                            var="i" itemLabel="#{i.batchNumber}(#{i.item.name})" itemValue="#{i}"
+                            var="i" itemLabel="#{i.storeDescription}" itemValue="#{i}"
                             converter="batchConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
               <p:ajax event="itemSelect" partialSubmit="true" process="@this"
                       listener="#{internalAcquisitionController.onTransferBatchSelected()}"
@@ -28,7 +28,7 @@
                            rendered="#{not empty internalAcquisitionController.internalTransfer.transferBatch.store}"/>
             <p:outputLabel value="To Store" for="toStore"/>
             <p:autoComplete id="toStore" value="#{internalAcquisitionController.internalTransfer.toStore}"
-                            completeMethod="#{storeController.searchStore}"
+                            completeMethod="#{internalAcquisitionController.searchStoreForTransfer}"
                             var="s" itemLabel="#{s.name}" itemValue="#{s}"
                             required="true"
                             converter="storeConverter" minQueryLength="2" forceSelection="true" queryDelay="100" dropdown="true"/>

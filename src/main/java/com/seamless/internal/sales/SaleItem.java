@@ -45,6 +45,12 @@ public class SaleItem implements Serializable {
   @OneToOne
   private Item item;
 
+  public SaleItem(Sale sale) {
+    this.sale = sale;
+    salePrice = discount = tax = BigDecimal.ZERO;
+    orderedQuantity = 1;
+  }
+
   public SaleItem() {
     salePrice = discount = tax = BigDecimal.ZERO;
     orderedQuantity = 1;
@@ -134,7 +140,7 @@ public class SaleItem implements Serializable {
       total = getSalePrice();
       total = total.multiply(BigDecimal.valueOf(getOrderedQuantity()));
     }
-    return total.subtract(getTotalTax()).subtract(discount);
+    return total.subtract(discount);
   }
 
   public BigDecimal getSalePrice() {

@@ -20,10 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.validator.ValidatorException;
 
 /**
  *
@@ -95,12 +98,26 @@ public class PurchaseOrderController implements Serializable {
 
   public void onStoreSelected() {
     if (purchaseOrder.getStore() != null) {
-      List<Item> is = itemFacade.findAll();
+      List<Item> is = itemFacade.getStoreItemsForReorder(purchaseOrder.getStore());
       this.storeItems = new ArrayList<PurchaseOrderItem>();
       for (Item i : is) {
         this.storeItems.add(new PurchaseOrderItem(i));
       }
+      System.out.println("onStoreSelected: " + storeItems.size());
     }
+  }
+
+  public void validateOrderedQuantity(FacesContext cxt, UIComponent cmp, Object value) {
+    int qty = 0;
+    try {
+      if (value != null && (qty = Integer.parseInt(value.toString())) > 0) {
+        return;
+      }
+    } catch (Exception e) {
+    }
+    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid ordered quantity: " + value, "Invalid ordered quantity: " + value);
+    ((UIInput) cmp).setValid(false);
+    throw new ValidatorException(msg);
   }
 
   public List<PurchaseOrderItem> getStoreItems() {

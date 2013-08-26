@@ -80,7 +80,7 @@ public class StoreController implements Serializable {
   public List<Store> searchStore(String query) {
     return storeFacade.searchStore(query);
   }
-
+  
   public void setStore(Store store) {
     this.store = store;
   }

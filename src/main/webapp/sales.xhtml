@@ -18,83 +18,82 @@
         }
       </style>
       <ui:include src="/sale-receipt.xhtml"/>
+
+      <p:panel id="salePanel" header="Sale Receipt: #{salesController.sale.receiptId}">
+        <h:form>
+          <p:hotkey bind="F2" handler="recallHeldSalesDlg.show()"/>
+          <p:hotkey bind="F3" actionListener="#{salesController.holdSale()}"
+                    update="@all" partialSubmit="true" process="@this"/>
+          <p:hotkey bind="F4" handler="cancelSalesDlg.show()"/>
+          <p:hotkey bind="tab" actionListener="#{salesController.prepareToTender()}"
+                    oncomplete="completeSaleDlg.show()" update=":saleTenderForm"/>
+        </h:form>
+        <h:form id="salesCustomer">
+          <p:panelGrid columns="2" style="width: 100%; border-radius: 20px">
+            <p:outputLabel value="Customer" for="customer"/>
+            <p:autoComplete id="customer" value="#{salesController.sale.customer}"
+                            completeMethod="#{clientController.searchClients}"
+                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                            converter="clientConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true"
+                            required="true">
+              <p:ajax event="itemSelect" listener="#{salesController.setSelectedCustomer}" update="@form"/>
+            </p:autoComplete>
+          </p:panelGrid>
+        </h:form>
+        <p:accordionPanel id="saleItemAccordionPanel" activeIndex="-1">
+          <p:tab title="Add Sale Item">
+            <h:form id="saleItemForm">
+              <p:hotkey actionListener="#{salesController.addItem()}" bind="a"
+                        process="@form"
+                        update="@form :saleItemTable :saleTenderForm"/>
+              <p:panelGrid id="saleItemPanel" columns="2" style="width: 100%; text-align: left">
+                <h:outputLabel value="Available Quantities" for="availableQuantities"/>
+                <h:outputText id="availableQuantities" value="#{salesController.totalItemQuantitiesAvailable}"
+                              style="font-size: 15px; font-weight: bold; color: cyan"/>
+                <p:outputLabel value="Item" for="item"/>
+                <p:autoComplete id="item" value="#{salesController.saleItem.item}"
+                                completeMethod="#{itemController.searchItem}"
+                                var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                converter="itemConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
+                  <p:ajax event="itemSelect" listener="#{salesController.onItemLoaded}" partialSubmit="true" process="@this"
+                          update="@form"/>
+                </p:autoComplete>
+                <p:outputLabel value="Selling Price:" for="salePrice" />
+                <p:selectOneRadio id="salePrice"  style="width: 100px;"
+                                  value="#{salesController.saleItem.salePrice}">
+                  <f:selectItems value="#{salesController.salePriceOptions}"/>
+                  <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="quantity @this"
+                          update="totalSales taxPanel"/>
+                </p:selectOneRadio>
+                <p:outputLabel value="Quantity" for="quantity"/>
+                <p:inputText id="quantity" value="#{salesController.saleItem.orderedQuantity}"
+                             validator="#{salesController.validateQuantity}">
+                  <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="salePrice @this"
+                          update="totalSales taxPanel"/>
+                </p:inputText>
+                <p:outputLabel value="Discount" for="discount"/>
+                <p:inputText id="discount" value="#{salesController.saleItem.discount}"/>
+                <p:outputLabel value="Tax" for="taxt"/>
+                <h:panelGroup id="taxPanel" layout="block" style="width: 89.5%; padding: 5px; border: 2px solid green; border-radius: 10px">
+                  <h:outputText id="taxt" value="#{salesController.saleItem.totalTax}"
+                                converter="bigDecimalConverter"/>
+                </h:panelGroup>
+                <h:outputLabel value="Total Sales" for="totalSales"/>
+                <h:outputText id="totalSales" value="#{salesController.saleItem.totalSale}" converter="bigDecimalConverter"/>
+                <p:commandButton value="Add" partialSubmit="true" process="@this"
+                                 update="@form :saleItemTable :saleTenderForm"
+                                 actionListener="#{salesController.addItem()}"/>
+                <h:outputText value=""/>
+              </p:panelGrid>
+            </h:form>
+          </p:tab>
+        </p:accordionPanel>
+      </p:panel>
       <p:dataTable id="saleItemTable" var="v"
                    rowIndexVar="i"
                    value="#{salesController.saleItems}"
                    emptyMessage="No sales has been made under this receipt"
                    sortBy="#{salesController.sorter}">
-        <f:facet name="header" >
-          <p:panel id="salePanel" header="Sale Receipt: #{salesController.sale.receiptId}">
-            <h:form>
-              <p:hotkey bind="F2" handler="recallHeldSalesDlg.show()"/>
-              <p:hotkey bind="F3" actionListener="#{salesController.holdSale()}"
-                        update="@all" partialSubmit="true" process="@this"/>
-              <p:hotkey bind="F4" handler="cancelSalesDlg.show()"/>
-              <p:hotkey bind="tab" actionListener="#{salesController.prepareToTender()}"
-                        oncomplete="completeSaleDlg.show()" update=":saleTenderForm"/>
-            </h:form>
-            <h:form id="salesCustomer">
-              <p:panelGrid columns="2" style="width: 100%; border-radius: 20px">
-                <p:outputLabel value="Customer" for="customer"/>
-                <p:autoComplete id="customer" value="#{salesController.sale.customer}"
-                                completeMethod="#{clientController.searchClients}"
-                                var="s" itemLabel="#{s.name}" itemValue="#{s}"
-                                converter="clientConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true"
-                                required="true">
-                  <p:ajax event="itemSelect" listener="#{salesController.setSelectedCustomer}" update="@form"/>
-                </p:autoComplete>
-              </p:panelGrid>
-            </h:form>
-            <p:accordionPanel id="saleItemAccordionPanel" activeIndex="-1">
-              <p:tab title="Add Sale Item">
-                <h:form id="saleItemForm">
-                  <p:hotkey actionListener="#{salesController.addItem()}" bind="a"
-                            process="@form"
-                            update=":saleItemTable:saleItemAccordionPanel:saleItemForm :saleItemTable :saleTenderForm"/>
-                  <p:panelGrid id="saleItemPanel" columns="2" style="width: 100%; text-align: left">
-                    <h:outputLabel value="Available Quantities" for="availableQuantities"/>
-                    <h:outputText id="availableQuantities" value="#{salesController.totalItemQuantitiesAvailable}"
-                                  style="font-size: 15px; font-weight: bold; color: cyan"/>
-                    <p:outputLabel value="Item" for="item"/>
-                    <p:autoComplete id="item" value="#{salesController.saleItem.item}"
-                                    completeMethod="#{itemController.searchItem}"
-                                    var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                    converter="itemConverter" minQueryLength="1" forceSelection="true" queryDelay="100" dropdown="true">
-                      <p:ajax event="itemSelect" listener="#{salesController.onItemLoaded}" partialSubmit="true" process="@this"
-                              update="saleItemPanel"/>
-                    </p:autoComplete>
-                    <p:outputLabel value="Selling Price:" for="salePrice" />
-                    <p:selectOneRadio id="salePrice"  style="width: 100px;"
-                                      value="#{salesController.saleItem.salePrice}">
-                      <f:selectItems value="#{salesController.salePriceOptions}"/>
-                      <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="quantity @this"
-                              update="totalSales taxPanel"/>
-                    </p:selectOneRadio>
-                    <p:outputLabel value="Quantity" for="quantity"/>
-                    <p:inputText id="quantity" value="#{salesController.saleItem.orderedQuantity}"
-                                 validator="#{salesController.validateQuantity}">
-                      <p:ajax event="change" listener="#{salesController.calculateTax()}" partialSubmit="true" process="salePrice @this"
-                              update="totalSales taxPanel"/>
-                    </p:inputText>
-                    <p:outputLabel value="Discount" for="discount"/>
-                    <p:inputText id="discount" value="#{salesController.saleItem.discount}"/>
-                    <p:outputLabel value="Tax" for="taxt"/>
-                    <h:panelGroup id="taxPanel" layout="block" style="width: 89.5%; padding: 5px; border: 2px solid green; border-radius: 10px">
-                      <h:outputText id="taxt" value="#{salesController.saleItem.totalTax}"
-                                    converter="bigDecimalConverter"/>
-                    </h:panelGroup>
-                    <h:outputLabel value="Total Sales" for="totalSales"/>
-                    <h:outputText id="totalSales" value="#{salesController.saleItem.totalSale}" converter="bigDecimalConverter"/>
-                    <p:commandButton value="Add" partialSubmit="true" process="@this"
-                                     update=":saleItemTable:saleItemAccordionPanel:saleItemForm :saleItemTable :saleTenderForm"
-                                     actionListener="#{salesController.addItem()}"/>
-                    <h:outputText value=""/>
-                  </p:panelGrid>
-                </h:form>
-              </p:tab>
-            </p:accordionPanel>
-          </p:panel>
-        </f:facet>
         <p:ajax event="rowSelect" listener="#{salesController.saleItemSelected}" update="@this"/>
         <p:column style="width:4%">
           <p:rowToggler />
@@ -105,12 +104,12 @@
               <p:ajax listener="#{salesController.onItemCodeSelected()}" update=":saleItemTable" />
             </p:inputText>
             <script type="text/javascript">
-              var input = $('#saleItemTable\\:#{i}\\:itemCodeInput');
-              input.val('');
-              input.focus();
-              function clear() {
-                $('#saleItemTable\\:#{i}\\:itemCodeInput').val('');
-              }
+            var input = $('#saleItemTable\\:#{i}\\:itemCodeInput');
+            input.val('');
+            input.focus();
+            function clear() {
+              $('#saleItemTable\\:#{i}\\:itemCodeInput').val('');
+            }
             </script>
           </h:form>
           <h:outputText value="#{v.item.itemCode}" rendered="#{not empty v.item}"/>
@@ -122,7 +121,12 @@
           <h:outputText value="#{v.salePrice}" converter="bigDecimalConverter"/>
         </p:column>
         <p:column headerText="Quantity" style="width: 10%;">
-          <h:outputText value="#{v.orderedQuantity}" />
+          <h:form>
+            <p:inputText value="#{v.orderedQuantity}">
+              <p:ajax event="change" listener="#{salesController.updateOrderedQuantity(v)}"
+                      update=":saleItemTable"/>
+            </p:inputText>
+          </h:form>
         </p:column>
         <p:column headerText="Discount" >
           <h:outputText value="#{v.discount}" converter="bigDecimalConverter"/>
@@ -152,7 +156,8 @@
             <p:panelGrid columns="7">
               <p:commandButton value="Complete Sale[tab]" actionListener="#{salesController.prepareToTender()}"
                                oncomplete="completeSaleDlg.show()" update=":saleTenderForm"/>
-              <p:commandButton value="Recall[F2]" oncomplete="recallHeldSalesDlg.show()"/>
+              <p:commandButton value="Recall[F2]" actionListener="#{salesController.prepareForSaleRecall()}"
+                               oncomplete="recallHeldSalesDlg.show()"/>
               <p:commandButton value="Hold[F3]" actionListener="#{salesController.holdSale()}"
                                update=":saleItemTable"/>
               <p:commandButton value="Cancel[F4]" onclick="cancelSalesDlg.show()"/>
@@ -179,8 +184,8 @@
       <p:dialog id="recallHeldSales" widgetVar="recallHeldSalesDlg" header="Search Sales"
                 appendToBody="true" modal="true" style="width: 400px" width="400">
         <h:form>
-          <p:panelGrid columns="2" style="width: 100%">
-            <p:outputLabel value="Search Sale Receipts" for="receiptId"/>
+          <p:panelGrid columns="1" style="width: 100%">
+            <p:outputLabel value="Search Sale Receipts" for="receiptId" />
             <p:autoComplete id="receiptId" value="#{salesController.sale}"
                             completeMethod="#{salesController.searchHeldSales}"
                             var="i" itemLabel="#{i.receiptId}" itemValue="#{i}"
@@ -234,21 +239,21 @@
             <p:commandButton value="OK" actionListener="#{salesController.doSale()}"
                              oncomplete="completeSaleDlg.hide();"
                              onstart="setSalesReceipt()"
-                             update=":saleReceiptPanel" />
+                             update=":saleItemTable" />
             <p:commandButton value="Cancel" oncomplete="completeSaleDlg.hide()"/>
             <script type="text/javascript">
-              function setSalesReceipt() {
-                var someElement = document.getElementById("saleReceiptDialog");
-                var someElementToString;
-                if (someElement.outerHTML)
-                  someElementToString = someElement.outerHTML;
-                else if (XMLSerializer)
-                  someElementToString = new XMLSerializer().serializeToString(someElement);
-                var txt = someElementToString;
-                console.log(txt);
-                $('#saleTenderForm\\:salesReceiptField').val(txt);
-                console.log($('#saleTenderForm\\:salesReceiptField').val());
-              }
+            function setSalesReceipt() {
+              var someElement = document.getElementById("saleReceiptDialog");
+              var someElementToString;
+              if (someElement.outerHTML)
+                someElementToString = someElement.outerHTML;
+              else if (XMLSerializer)
+                someElementToString = new XMLSerializer().serializeToString(someElement);
+              var txt = someElementToString;
+              console.log(txt);
+              $('#saleTenderForm\\:salesReceiptField').val(txt);
+              console.log($('#saleTenderForm\\:salesReceiptField').val());
+            }
             </script>
           </p:panelGrid>
         </h:form>
@@ -360,7 +365,7 @@
           </p:panel>
           <br/>
           <p:commandButton value="OK" onclick="sed.show();
-                cd.hide();"/>
+              cd.hide();"/>
           <p:commandButton value="Exit" onclick="ext.show();"/>
         </p:dialog>
         <p:dialog id="xt" widgetVar="ext" header="Stores" width="750" appendToBody="true">

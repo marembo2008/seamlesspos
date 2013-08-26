@@ -9,10 +9,12 @@ import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Batch;
 import com.seamless.internal.Item;
 import com.seamless.internal.MixedItem;
+import com.seamless.internal.MixedItemOption;
 import com.seamless.internal.Product;
 import com.seamless.internal.controller.util.JsfUtil;
 import com.seamless.internal.facade.BatchFacade;
 import com.seamless.internal.facade.ItemFacade;
+import com.seamless.internal.facade.MixedItemOptionFacade;
 import com.seamless.internal.facade.ProductFacade;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -63,10 +65,35 @@ public class ItemController implements Serializable {
       return itemFacade.find(itemCode);
     }
   }
+
+  private class MixedItemOptionDataModel extends ListDataModel<MixedItemOption> implements SelectableDataModel<MixedItemOption> {
+
+    public MixedItemOptionDataModel() {
+    }
+
+    public MixedItemOptionDataModel(List<MixedItemOption> list) {
+      super(list);
+    }
+
+    @Override
+    public Object getRowKey(MixedItemOption t) {
+      return t.getId();
+    }
+
+    @Override
+    public MixedItemOption getRowData(String id) {
+      if (id == null) {
+        return null;
+      }
+      return mixedItemOptionFacade.find(Long.parseLong(id));
+    }
+  }
   @EJB
   private ProductFacade productFacade;
   @EJB
   private BatchFacade batchFacade;
+  @EJB
+  private MixedItemOptionFacade mixedItemOptionFacade;
   @EJB
   private ItemFacade itemFacade;
   @Inject
@@ -75,9 +102,10 @@ public class ItemController implements Serializable {
   private ProductController productController;
   private Item item;
   private DataModel<Item> items;
+  private List<MixedItemOption> itemsForMixedItemOptions;
   private Batch batch;
   private Item itemStocking;
-  private List<Item> itemsForMixedItem;
+  private List<MixedItemOption> itemsForMixedItem;
   private boolean changeItemCost;
   private Item mixedItem;
 
@@ -87,11 +115,11 @@ public class ItemController implements Serializable {
   public ItemController() {
   }
 
-  public Item[] getSelectedItems() {
+  public MixedItemOption[] getSelectedItems() {
     if (itemsForMixedItem == null) {
-      return new Item[0];
+      return new MixedItemOption[0];
     }
-    return itemsForMixedItem.toArray(new Item[0]);
+    return itemsForMixedItem.toArray(new MixedItemOption[0]);
   }
 
   public void setMixedItem(Item mixedItem) {
@@ -105,11 +133,12 @@ public class ItemController implements Serializable {
     return mixedItem;
   }
 
-  public void setSelectedItems(Item[] items) {
+  public void setSelectedItems(MixedItemOption[] items) {
     if (items != null && items.length > 0) {
       if (itemsForMixedItem == null) {
-        itemsForMixedItem = new ArrayList<Item>();
+        itemsForMixedItem = new ArrayList<MixedItemOption>();
       }
+      itemsForMixedItem.clear();
       itemsForMixedItem.addAll(Arrays.asList(items));
     }
   }
@@ -123,18 +152,18 @@ public class ItemController implements Serializable {
   }
 
   public void onItemSelected(SelectEvent se) {
-    Item i = (Item) se.getObject();
+    MixedItemOption i = (MixedItemOption) se.getObject();
     System.out.println("Mixed: " + i);
     if (i != null) {
       if (itemsForMixedItem == null) {
-        itemsForMixedItem = new ArrayList<Item>();
+        itemsForMixedItem = new ArrayList<MixedItemOption>();
       }
       itemsForMixedItem.add(i);
     }
   }
 
   public void onItemUnselected(UnselectEvent se) {
-    Item i = (Item) se.getObject();
+    MixedItemOption i = (MixedItemOption) se.getObject();
     if (i != null) {
       itemsForMixedItem.remove(i);
     }
@@ -145,7 +174,18 @@ public class ItemController implements Serializable {
       return BigDecimal.ZERO;
     }
     BigDecimal cost = BigDecimal.ZERO;
-    for (Item i : itemsForMixedItem) {
+    for (MixedItemOption i : itemsForMixedItem) {
+      cost = cost.add(i.getCostAmount());
+    }
+    return cost;
+  }
+
+  public BigDecimal getTotalMixedItemCostForView() {
+    if (!isMixedItemOption()) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal cost = BigDecimal.ZERO;
+    for (MixedItemOption i : ((MixedItem) item).getItems()) {
       cost = cost.add(i.getCostAmount());
     }
     return cost;
@@ -167,12 +207,36 @@ public class ItemController implements Serializable {
     }
   }
 
+  public boolean isMixedItemOption() {
+    return item instanceof MixedItem;
+  }
+
+  public void stockinMixedItem() {
+    try {
+      Batch newBatch = batchController.getBatch();
+      newBatch.setItem(item);
+      batchFacade.createBatchForMixedItem(newBatch);
+      batchController.prepareCreate();
+      item = new Item();
+      items = null; //reload
+      changeItemCost = false;
+      JsfUtil.addSuccessMessage("Item has been successfully stocked: Stocked quantity=" + newBatch.getQuantity());
+    } catch (Exception e) {
+      Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, e);
+      JsfUtil.addErrorMessage("Error adding item. Please try again later");
+    }
+  }
+
   public void prepareMixedItem(TabChangeEvent event) {
     this.item = new MixedItem();
   }
 
   public List<Item> searchItem(String query) {
     return itemFacade.searchItems(query);
+  }
+
+  public List<Item> searchMixedItem(String query) {
+    return itemFacade.searchMixedItems(query);
   }
 
   public List<Batch> searchItemBatch(String query) {
@@ -200,6 +264,16 @@ public class ItemController implements Serializable {
 
   public Batch getItemBatch() {
     return batch;
+  }
+
+  public List<MixedItemOption> getItemsForMixedItemOptions() {
+    if (itemsForMixedItemOptions == null) {
+      itemsForMixedItemOptions = new ArrayList<MixedItemOption>();
+      for (Item i : itemFacade.findAll()) {
+        itemsForMixedItemOptions.add(new MixedItemOption(i));
+      }
+    }
+    return itemsForMixedItemOptions;
   }
 
   public DataModel<Item> getItems() {
@@ -233,8 +307,14 @@ public class ItemController implements Serializable {
   public void createMixedItem() {
     try {
       if (itemsForMixedItem != null && !itemsForMixedItem.isEmpty()) {
-        for (Item i : itemsForMixedItem) {
+        BigDecimal proportion = BigDecimal.ZERO;
+        for (MixedItemOption i : itemsForMixedItem) {
           ((MixedItem) mixedItem).addItem(i);
+          proportion = proportion.add(i.getProportion());
+        }
+        if (proportion.compareTo(BigDecimal.ONE) != 0) {
+          JsfUtil.addErrorMessage("Error adding mixed items. Mixed item proportion not valid. Please make sure total proportion equals 1.0. Current total proportion=" + proportion);
+          return;
         }
       } else {
         JsfUtil.addErrorMessage("Please select items for mixed items");

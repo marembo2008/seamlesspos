@@ -26,7 +26,10 @@ import javax.persistence.Temporal;
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "batchitem.find_batches_in_store", query = "SELECT i FROM Batch i WHERE i.store.storeId = :storeId"),
+  @NamedQuery(name = "batchitem.find_batches_in_store",
+          query = "SELECT i FROM Batch i WHERE i.store.storeId = :storeId"),
+  @NamedQuery(name = "batchitem.find_batches_in_store_by_item",
+          query = "SELECT i FROM Batch i WHERE i.store.storeId = :storeId AND i.item.itemCode = :itemCode"),
   @NamedQuery(name = "batchitem.find_batch_by_frozen_state",
           query = "SELECT bi FROM Batch bi WHERE bi.frozen = :frozen"),
   @NamedQuery(name = "batchitem.search_batch_by_item_name",
@@ -97,6 +100,10 @@ public class Batch implements Serializable {
 
   public void setStore(Store store) {
     this.store = store;
+  }
+
+  public String getStoreDescription() {
+    return getBatchNumber() + "(" + getItem().getName() + ")(Store: " + getStore().getName() + ")";
   }
 
   public Store getStore() {

@@ -5,12 +5,11 @@
  */
 package com.seamless.internal.purchases;
 
+import com.anosym.utilities.IdGenerator;
 import com.seamless.internal.Item;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -23,8 +22,7 @@ public class PurchaseOrderItem implements Serializable {
 
   private static final long serialVersionUID = 8378229091L;
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private Long id = IdGenerator.generateId();
   @OneToOne
   private Item orderItem;
   private int orderedQuantity;

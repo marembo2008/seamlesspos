@@ -48,7 +48,7 @@ public class ItemDispatchOrder implements Serializable {
 
   public BigDecimal getTotalSale() {
     if (sellingPrice != null) {
-      totalSale = BigDecimal.valueOf(soldQuantity).multiply(getNetPrice());
+      totalSale = BigDecimal.valueOf(soldQuantity).multiply(getSellingPrice());
     }
     return totalSale;
   }
@@ -58,7 +58,7 @@ public class ItemDispatchOrder implements Serializable {
   }
 
   public BigDecimal getDispatchValue() {
-    return BigDecimal.valueOf(quantity).multiply(getNetPrice());
+    return BigDecimal.valueOf(quantity).multiply(getSellingPrice());
   }
 
   public BigDecimal getSaleDifference() {
@@ -95,6 +95,14 @@ public class ItemDispatchOrder implements Serializable {
 
   public BigDecimal getNetPrice() {
     return sellingPrice != null && tax != null ? (sellingPrice.add(tax)) : sellingPrice;
+  }
+
+  public BigDecimal getTotalOrderCost() {
+    return sellingPrice != null ? sellingPrice.multiply(BigDecimal.valueOf(getQuantity())) : BigDecimal.ZERO;
+  }
+
+  public BigDecimal getTotalTax() {
+    return tax != null ? tax.multiply(BigDecimal.valueOf(getQuantity())) : BigDecimal.ZERO;
   }
 
   public void setTax(BigDecimal tax) {
